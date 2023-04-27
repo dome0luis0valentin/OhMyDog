@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from .models import Mascota, Usuario
-#from .form import UsuarioForm
+from .form import UsuarioForm
 
 
 
@@ -20,19 +20,20 @@ def about(request):
 #Registrarse
 def registro(request):
 
-    """
     form = UsuarioForm()
     if request.method == "POST":
         form = UsuarioForm(request.POST)
         if form.is_valid():
             form.save()
+        print("\n-------Datos-------\n")
+        print(form.data["correo"])
     context = {'form':form}
 
     return render(request, "registro.html", context)
-    """
+
     
 
-    return render(request, "prueba_registro.html")
+    #return render(request, "prueba_registro.html")
 
 #Lista de Mascotas
 def lista_mascotas(request):
