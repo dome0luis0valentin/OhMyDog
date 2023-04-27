@@ -1,0 +1,11 @@
+Les dejo una guia para que sepan que tiene cada archivo:
+
+form: contiene los formulario que va a hacer la pagina
+
+models: contiene lo que en Django se llaman modelos, cada modelo es una entidad en lo que
+serían Bases de Datos, por lo que pueden tomar a estos modelos como Objetos, con sus
+atributos.
+
+urls: contiene urls, cada url se mapea con una seccion de la pagina, ej: si el usuario pone
+"www.ohmydog.com/menu" se lo dirige a la vista "Menu" (una view o vista es el HTML basicamente)
+        menu/ --> views.menu        
