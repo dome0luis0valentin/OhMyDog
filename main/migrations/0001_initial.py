@@ -2,6 +2,8 @@
 
 from django.db import migrations, models
 
+from main.models import Mascota
+
 
 class Migration(migrations.Migration):
 
@@ -12,7 +14,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Mascota',
+            name='Mascota', 
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nombre', models.CharField(max_length=100)),
@@ -20,6 +22,7 @@ class Migration(migrations.Migration):
                 ('raza', models.CharField(max_length=1000)),
                 ('fecha_nac', models.DateTimeField()),
                 ('foto', models.FileField(upload_to='')),
+                ('dueno', models.ForeignKey('Cliente',on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -28,10 +31,39 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nombre', models.CharField(max_length=50)),
                 ('apellido', models.CharField(max_length=50)),
-                ('dni', models.IntegerField()),
-                ('direccion', models.CharField(max_length=200, unique=True)),
-                ('correo', models.EmailField(max_length=254)),
+                ('dni', models.IntegerField()), #RangeIntegerField(min_value=0, max_value=99999999)
+                ('direccion', models.CharField(max_length=200, unique=True)),#no puede repetirse la direccion
+                ('correo', models.EmailField(max_length=254, unique=True)),
                 ('telefono', models.CharField(max_length=20)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Cliente',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('nombre_usuario', models.CharField(max_length=50)),
+                ('password', models.CharField(max_length=10)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Turno',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('fecha', models.DateTimeField()),
+                ('asistio', models.BooleanField()),
+                ('motivo', models.CharField(max_length=50)),
+                ('aceptado', models.BooleanField()),
+                ('turnos', models.ForeignKey('Cliente',on_delete=models.CASCADE)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Campana',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('nombre', models.CharField(max_length=50)),
+                ('motivo', models.CharField(max_length=50)),
+                ('fecha_fin', models.DateTimeField()),
+                ('Total_donado', models.FloatField()),
             ],
         ),
     ]
