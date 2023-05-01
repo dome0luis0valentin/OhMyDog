@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from .models import Mascota, Usuario, Mascota_Adopcion
-from .form import UsuarioForm
+from .form import UsuarioForm, MascotaAdopcionForm
 
 
 
@@ -27,7 +27,7 @@ def registro(request):
             form.save()
         print("\nSe registro a:\n")
         print(form.data["correo"])
-    context = {'form':form}
+    context = {'form':form, 'titulo': "Registro de Usuario"}
 
     return render(request, "registro.html", context)
 
@@ -89,6 +89,30 @@ class AdopcionDetailView(generic.DetailView):
 
         return render(
             request,
-            'main/detalle_mascota.html',
+            'main/templates/detalle_mascota.html',
             context={'mascota':mascota_adopcion_id,}
         )
+    
+
+def registrar_adopcion(request):
+    form = MascotaAdopcionForm()
+    if request.method == "POST":
+        form = MascotaAdopcionForm(request.POST)
+        if form.is_valid():
+
+            mi_objeto = form.save(commit=False)
+            #Por ahora se los asignos al usuario 1
+            mi_objeto.dueno = Usuario.objects.filter(pk=1)[0] # asignar el valor adicional al campo correspondiente
+            # guardar el objeto en la base de datos
+
+            #AGREGAR A FORM LOS DATOS DEL USUARIO
+            print(mi_objeto.save())
+            #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
+            #form.save()
+        
+        return render(request, "index.html")
+        print("\nSe registro a:\n")
+        print()
+    context = {'form':form, 'titulo': "Registro de Adopcion"}
+
+    return render(request, "registro.html", context)
