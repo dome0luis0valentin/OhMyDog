@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Nombre: {{ mascota.name }}</h1>
+  <h1>Nombre: {{ object }}</h1>
 
-  <p><strong>Dueño:</strong> <a href="">{{ mascota.dueno }}</a></p> <!-- author detail link not yet defined -->
-  <p><strong>Color:</strong> {{ mascota.summary }}</p>
-  <p><strong>Raza:</strong> {{ mascota.isbn }}</p>
-  <p><strong>Fecha De Nacimiento:</strong> {{ mascota.language }}</p>
+  <p><strong>Dueño:</strong> <a href="{{object.dueno.correo}}">{{ object.dueno.correo }}</a></p> <!-- author detail link not yet defined -->
+  <p><strong>Color:</strong> {{ object.color }}</p>
+  <p><strong>Raza:</strong> {{ object.raza }}</p>
+  <p><strong>Fecha De Nacimiento:</strong> {{ object.fecha_nac }}</p>
   <p class="{% if mascota.estado == 'a' %}text-success{% elif mascota.estado == 'e' %}text-danger{% endif %}">{{ mascota.estado }}</p>
-  {% if mascota.estado == 'a' %}<p><strong>Mascota adoptada</strong></p>{% endif %}
+  {% if object.estado == 'a' %}<p><strong>Mascota adoptada</strong></p>{% endif %}
   
 {% endblock %}

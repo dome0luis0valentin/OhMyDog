@@ -12,9 +12,10 @@
         <br> Dueño: {{perro.dueno.apellido}} {{perro.dueno.nombre}}
         <br> Contacto: {{perro.dueno.correo}} 
         <br> Nombre del Perro: {{perro}}
-        <br> Link Detalle: {{perro.get_absolute_url}}
         <br>
         <a href="{{ perro.get_absolute_url }}">Detalle</a>
+        <br>
+        <br>
       </li>
       {% endfor %}
 
