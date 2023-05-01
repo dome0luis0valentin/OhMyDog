@@ -28,7 +28,7 @@ class Usuario(models.Model):
         return reverse('usuario-detalle', args=[str(self.id)])
     
 class Mascota(models.Model):
-    dueño = models.ForeignKey(Usuario, on_delete = models.PROTECT, default = None, related_name="dueño" )
+    dueno = models.ForeignKey(Usuario, on_delete = models.PROTECT, default = None )
     nombre = models.CharField(max_length= 100)
     color = models.CharField(max_length=50)
     raza = models.CharField(max_length=1000)
@@ -39,4 +39,29 @@ class Mascota(models.Model):
         return self.nombre
     
 class Mascota_Adopcion(models.Model):
-    datos = models.ForeignKey(Mascota,on_delete = models.PROTECT, default = None, related_name="datos_mascota")
+    dueno = models.ForeignKey(Usuario, on_delete = models.PROTECT, default = None )
+    nombre = models.CharField(max_length= 100)
+    color = models.CharField(max_length=50)
+    raza = models.CharField(max_length=1000)
+    fecha_nac = models.DateField()
+
+    def __str__(self) -> str:
+        return self.nombre
+    
+class Cliente(models.Model):
+    nombre_usuario =models.CharField(max_length=50)
+    password = models.CharField(max_length=10)
+
+class Turno(models.Model):
+    fecha= models.DateTimeField()
+    asistio = models.BooleanField()
+    motivo= models.CharField(max_length=50)
+    aceptado= models.BooleanField()
+    turnos= models.ForeignKey('Cliente',on_delete=models.CASCADE)
+
+class Campana(models.Model):
+    nombre= models.CharField(max_length=50)
+    motivo = models.CharField(max_length=50)
+    fecha_fin=models.DateTimeField()
+    Total_donado =models.FloatField()
+            
