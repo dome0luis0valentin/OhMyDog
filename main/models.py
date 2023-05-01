@@ -13,8 +13,8 @@ class Usuario(models.Model):
     nombre = models.CharField(max_length=50) 
     apellido = models.CharField(max_length=50)
     dni = models.IntegerField()
-    direccion = models.CharField(max_length=200, unique=True,)
-    correo = models.EmailField()
+    direccion = models.CharField(max_length=200,)
+    correo = models.EmailField( unique=True)
     telefono = models.CharField(max_length=20)
 
 
@@ -28,11 +28,15 @@ class Usuario(models.Model):
         return reverse('usuario-detalle', args=[str(self.id)])
     
 class Mascota(models.Model):
+    dueño = models.ForeignKey(Usuario, on_delete = models.PROTECT, default = None, related_name="dueño" )
     nombre = models.CharField(max_length= 100)
-    color = models.FloatField()
+    color = models.CharField(max_length=50)
     raza = models.CharField(max_length=1000)
-    fecha_nac = models.DateTimeField()
+    fecha_nac = models.DateField()
     foto = models.FileField()
 
     def __str__(self) -> str:
         return self.nombre
+    
+class Mascota_Adopcion(models.Model):
+    datos = models.ForeignKey(Mascota,on_delete = models.PROTECT, default = None, related_name="datos_mascota")

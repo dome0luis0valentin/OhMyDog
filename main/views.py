@@ -16,7 +16,7 @@ def main(request):
 #Informacion sobre la veterinaria
 def about(request):
     return render(request, "about.html")
-
+   
 #Registrarse
 def registro(request):
 
@@ -25,7 +25,7 @@ def registro(request):
         form = UsuarioForm(request.POST)
         if form.is_valid():
             form.save()
-        print("\n-------Datos-------\n")
+        print("\nSe registro a:\n")
         print(form.data["correo"])
     context = {'form':form}
 
@@ -36,18 +36,18 @@ def registro(request):
     #return render(request, "prueba_registro.html")
 
 #Lista de Mascotas
-def lista_mascotas(request):
+def lista_mascota(request):
     #Forma basica:
-    return render(request, "prueba_lista_mascotas.html")
+    #return render(request, "prueba_lista_mascotas.html")
 
     #Esta seccion es compleja, lo que hace es mostrarte para cada usuario especifico sus 
     #mascotas
-    """
+    #Aca tendría que filtrar todas las mascotas en adopcion
     lista = Mascota.objects.all()
+    num_mascotas = Mascota.objects.all().count()
     main_data = {"lista": lista}
-    return render(request, "lista_mascotas.html", {"lista": main_data})
-    
-    """
+    return render(request, "lista_mascota.html", {"cantidad": num_mascotas, "lista":lista})
+   
     
 
 
@@ -65,3 +65,4 @@ def detalle_mascota(request, pk=None):
     return render(request, "menu_item.html", {"menu_item": menu_item})
     """
     
+

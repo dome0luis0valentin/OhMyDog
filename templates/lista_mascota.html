@@ -5,18 +5,19 @@
 <h1 style="font-family: Arial;">Lista de Mascotas</h1>
 
 <div class="row">
-    {% for item in lista.lista %}
+    Cantidad de masctos en el sistema {{cantidad}}
+    
+    {% for item in lista %}
     <p>   
-        <a href="{% url 'lista_mascota' pk=mascota.pk %}">
-            {{item.nombre}}:
-        </a>
         <br>
         <span class="descripcion-mascota">
-            {{item.raza}}  
+            {{item}}  
         </span>
         <br>
     </p>
     {% endfor %}
+
+   
 </div>
 <br>
 <br>
