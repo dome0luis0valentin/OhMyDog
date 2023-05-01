@@ -14,4 +14,9 @@ urlpatterns = [
     path('lista_mascota/', views.lista_mascota, name="lista_mascota"),
     path('registrar/', views.registro, name="registar"),
     path('detalle_mascota/', views.detalle_mascota, name="ver detalle mascota"),
+
+    path('detalle_mascota_view/<int:id>',views.detalle_mascota, name="detalle_mascota_view"),
+    path('adopcion/<int:pk>', views.AdopcionDetailView.as_view(), name='detalle de mascota'),
+    path('adopcion/', views.AdopcionListView.as_view(), name='adopciones'),
 ]
+

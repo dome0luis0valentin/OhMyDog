@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from .models import Mascota, Usuario
+from .models import Mascota, Usuario, Mascota_Adopcion
 from .form import UsuarioForm
 
 
@@ -66,3 +66,29 @@ def detalle_mascota(request, pk=None):
     """
     
 
+from django.views import generic
+
+class AdopcionListView(generic.ListView):
+    model = Mascota_Adopcion # Modelo al que le va a consultar los datos
+
+    context_object_name = 'lista_mascotas_adopcion'   # your own name for the list as a template variable
+    queryset = Mascota_Adopcion.objects.all() #Metodo que devuelve las mascotas, se puede poner un filter
+    template_name = 'lista_mascotas_adopcion.html'  # Specify your own template name/location
+
+class AdopcionDetailView(generic.DetailView):
+    model = Mascota_Adopcion
+    template_name = 'detalle_mascota.html'  # Specify your own template name/location
+
+    def adopcion_detail_view(request,pk):
+        try:
+            mascota_adopcion_id=Mascota_Adopcion.objects.get(pk=pk)
+        except Mascota_Adopcion.DoesNotExist:
+            raise Http404("Esta mascota no esta registrada")
+
+        #book_id=get_object_or_404(Book, pk=pk)
+
+        return render(
+            request,
+            'main/detalle_mascota.html',
+            context={'mascota':mascota_adopcion_id,}
+        )

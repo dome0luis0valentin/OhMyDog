@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Lista de Perros en Adopcion</h1>
+
+    {% if object_list %}
+    <ul>
+
+      {% for perro in object_list %}
+      <li>
+        <a href="{{ perro.get_absolute_url }}">{{ perro }}</a> 
+        <br> Dueño: {{perro.dueno.apellido}} {{perro.dueno.nombre}}
+        <br> Contacto: {{perro.dueno.correo}} 
+        <br> Nombre del Perro: {{perro}}
+        <br> Link Detalle: {{perro.get_absolute_url}}
+        <br>
+        <a href="{{ perro.get_absolute_url }}">Detalle</a>
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>Todavia no hay perros en adopcion, regrese más tarde</p>
+    {% endif %}
+{% endblock %}
