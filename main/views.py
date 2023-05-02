@@ -9,6 +9,10 @@ from .form import UsuarioForm
 
 #Responde esto cuando quiere ver el:
 
+# iniciar Sesion
+def inisio_Sesion(request):
+    return render(request,"inisio_Sesion.html")
+
 # Menu principal
 def main(request):
     return render(request, "index.html")
