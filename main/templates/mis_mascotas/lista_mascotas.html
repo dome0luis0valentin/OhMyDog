@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Mi Lista de Perros</h1>
+
+    {% if object_list %}
+    <ul>
+
+      {% for perro in object_list %}
+      <li>
+        <a href="{{ perro.get_absolute_url }}">{{ perro }}</a> 
+        <br>
+        <br> Nombre del Perro: {{perro}}
+        <br>
+        <a href="{{ perro.get_absolute_url }}">Detalle</a>
+        <br>
+        <br>
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>Todavia no hay perros registrados</p>
+      <form style="display: inline-block; width: 100px;" action="http://127.0.0.1:8000/registrar_mascota/">
+        <input type="submit" value="Registrar Mascota(No tocar!!!)" />
+    </form>
+    {% endif %}
+{% endblock %}

@@ -9,30 +9,20 @@ from django.urls import reverse #Used to generate URLs by reversing the URL patt
 #ACA FALTAN TODOS LO MODELOS DE LAS BASE DE DATOS
 
 #Este modelo lo uso para el FormModel
-class Usuario(models.Model):
-    id = models.AutoField(primary_key=True)
+class Persona(models.Model):
     nombre = models.CharField(max_length=50) 
     apellido = models.CharField(max_length=50)
     dni = models.IntegerField()
     direccion = models.CharField(max_length=200,)
     correo = models.EmailField( unique=True)
     telefono = models.CharField(max_length=20)
-    mascotas = models.ManyToManyField('Mascota', blank=True)    
-    mascotas_adopcion = models.ManyToManyField('Mascota_Adopcion', blank=True)
-
 
     def __str__(self) -> str:
         return self.apellido
     
-    def get_absolute_url(self):
-        """
-        Devuelve el URL a una instancia particular de Book
-        """
-        return reverse('usuario-detalle', args=[str(self.id)])
-    
 class Mascota(models.Model):
     id = models.AutoField(primary_key=True)
-    dueno = models.ForeignKey(Usuario, on_delete = models.PROTECT)
+    dueno = models.ForeignKey('Cliente', on_delete = models.PROTECT)
     nombre = models.CharField(max_length= 100)
     color = models.CharField(max_length=50)
     raza = models.CharField(max_length=1000)
@@ -42,9 +32,15 @@ class Mascota(models.Model):
     def __str__(self) -> str:
         return self.nombre
     
+    def get_absolute_url(self):
+        """
+        Devuelve la url para acceder a una instancia particular del modelo.
+        """
+        return "http://127.0.0.1:8000/ver_mis_mascotas/"+str(self.id)
+    
 class Mascota_Adopcion(models.Model):
     id = models.AutoField(primary_key=True)
-    dueno = models.ForeignKey(Usuario, on_delete = models.PROTECT)
+    dueno = models.ForeignKey('Cliente', on_delete = models.PROTECT)
     nombre = models.CharField(max_length= 100)
     color = models.CharField(max_length=50)
     raza = models.CharField(max_length=1000)
@@ -69,6 +65,9 @@ class Cliente(models.Model):
     id = models.AutoField(primary_key=True)
     nombre_usuario =models.CharField(max_length=50)
     password = models.CharField(max_length=10)
+    datos = models.ForeignKey(Persona, on_delete=models.PROTECT)
+    mascotas = models.ManyToManyField('Mascota', blank=True)    
+    mascotas_adopcion = models.ManyToManyField('Mascota_Adopcion', blank=True)
 
     def __str__(self) -> str:
         return self.nombre_usuario
@@ -94,3 +93,21 @@ class Campana(models.Model):
     def __str__(self) -> str:
         return self.nombre
             
+
+class Prestador_Servicios(models.Model):
+    datos = models.ForeignKey(Persona, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.datos.nombre
+    
+    TIPO_SERVICIO = (
+        ('p', 'Paseador'),
+        ('c', 'Cuidador'),
+    )
+
+    tipo = models.CharField(max_length=1, choices=TIPO_SERVICIO,  default='p', help_text='Tipo de servicio que presta la persona')
+
+class Red_Social(models.Model):
+    nombre = models.CharField(max_length=50)
+    usuario = models.CharField(max_length=70)
+    dueno = models.ForeignKey(Prestador_Servicios, on_delete=models.PROTECT)

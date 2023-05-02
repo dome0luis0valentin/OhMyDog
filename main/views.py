@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from .models import Mascota, Usuario, Mascota_Adopcion
+from .models import Mascota, Cliente, Mascota_Adopcion
 from .form import UsuarioForm, MascotaAdopcionForm
 
 
@@ -69,7 +69,7 @@ def detalle_mascota(request, pk=None):
     return render(request, "menu_item.html", {"menu_item": menu_item})
     """
     
-
+#SECCION DE LISTAS
 from django.views import generic
 
 class AdopcionListView(generic.ListView):
@@ -77,11 +77,21 @@ class AdopcionListView(generic.ListView):
 
     context_object_name = 'lista_mascotas_adopcion'   # your own name for the list as a template variable
     queryset = Mascota_Adopcion.objects.all() #Metodo que devuelve las mascotas, se puede poner un filter
-    template_name = 'lista_mascotas_adopcion.html'  # Specify your own template name/location
+    template_name = 'adopcion/lista_mascotas_adopcion.html'  # Specify your own template name/location
+
+class MascotaListView(generic.ListView):
+    model = Mascota # Modelo al que le va a consultar los datos
+
+    context_object_name = 'lista_mascotas'   # your own name for the list as a template variable
+    queryset = Mascota.objects.all() #Metodo que devuelve las mascotas del usuario 1 solamente
+    template_name = 'mis_mascotas/lista_mascotas.html'  # Specify your own template name/location
+
+
+#SECCION DE LISTAS DE DETALLES
 
 class AdopcionDetailView(generic.DetailView):
     model = Mascota_Adopcion
-    template_name = 'detalle_mascota.html'  # Specify your own template name/location
+    template_name = 'adopcion/detalle_mascota.html'  # Specify your own template name/location
 
     def adopcion_detail_view(request,pk):
         try:
@@ -93,8 +103,26 @@ class AdopcionDetailView(generic.DetailView):
 
         return render(
             request,
-            'main/templates/detalle_mascota.html',
-            context={'mascota':mascota_adopcion_id,}
+            'main/templates/adopcion/detalle_mascota.html',
+            context={'mascota':mascota_adopcion_id}
+        )
+    
+class MascotaDetailView(generic.DetailView):
+    model = Mascota
+    template_name = 'mis_mascotas/detalle_mascota.html'  # Specify your own template name/location
+
+    def mascota_detail_view(request,pk):
+        try:
+            mascota_id=Mascota.objects.get(pk=pk)
+        except Mascota.DoesNotExist:
+            raise Http404("Esta mascota no esta registrada")
+
+        #book_id=get_object_or_404(Book, pk=pk)
+
+        return render(
+            request,
+            'main/templates/mis_mascotas/detalle_mascota.html',
+            context={'mascota':mascota_id}
         )
     
 
@@ -106,7 +134,7 @@ def registrar_adopcion(request):
 
             mi_objeto = form.save(commit=False)
             #Por ahora se los asignos al usuario 1
-            mi_objeto.dueno = Usuario.objects.filter(pk=1)[0] # asignar el valor adicional al campo correspondiente
+            mi_objeto.dueno = Cliente.objects.filter(pk=1)[0] # asignar el valor adicional al campo correspondiente
             # guardar el objeto en la base de datos
 
             #AGREGAR A FORM LOS DATOS DEL USUARIO

@@ -9,8 +9,8 @@
       {% for perro in object_list %}
       <li>
         <a href="{{ perro.get_absolute_url }}">{{ perro }}</a> 
-        <br> Dueño: {{perro.dueno.apellido}} {{perro.dueno.nombre}}
-        <br> Contacto: {{perro.dueno.correo}} 
+        <br> Dueño: {{perro.dueno.datos.apellido}} {{perro.dueno.datos.nombre}}
+        <br> Contacto: {{perro.dueno.datos.correo}} 
         <br> Nombre del Perro: {{perro}}
         <br>
         <a href="{{ perro.get_absolute_url }}">Detalle</a>

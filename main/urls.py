@@ -22,5 +22,9 @@ urlpatterns = [
     path('adopcion/', views.AdopcionListView.as_view(), name='adopciones'),
 
     path('registrar_adopcion/', views.registrar_adopcion, name='registrar adopcion'),
+
+    path('ver_mis_mascotas/', views.MascotaListView.as_view(), name='Ver mis Mascotas'),
+    path('ver_mis_mascotas/<int:pk>', views.MascotaDetailView.as_view(), name='detalle de mis mascota'),
+    
 ]
 

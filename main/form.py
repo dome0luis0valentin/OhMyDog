@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Usuario, Mascota_Adopcion
+from .models import Cliente, Mascota_Adopcion
 
 class UsuarioForm(forms.ModelForm):
 
@@ -9,7 +9,7 @@ class UsuarioForm(forms.ModelForm):
     #https://runebook.dev/es/docs/django/ref/forms/validation
     
     class Meta: 
-        model = Usuario  #Busco el modelo, para cada campo del modelo, hará una entrada al formularion
+        model = Cliente  #Busco el modelo, para cada campo del modelo, hará una entrada al formularion
         fields = '__all__'  #Todos los campos del modelo
 
 class MascotaAdopcionForm(forms.ModelForm):
