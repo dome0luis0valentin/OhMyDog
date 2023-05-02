@@ -8,9 +8,9 @@ from . import views
 
 
 urlpatterns = [
-    #path('insio_Sesion/', views.inisio_Sesion, name="inisio_Sesion"),
     
-    path('', views.inisio_Sesion, name="inisio_Sesion"),
+    path('', views.main, name="main"),
+    path('inisio_Sesion/', views.inisio_Sesion, name="inisio_Sesion"),
     path('menu_principal/', views.main, name="menu"),
     path('about/', views.about, name="about"),
     path('lista_mascota/', views.lista_mascota, name="lista_mascota"),
