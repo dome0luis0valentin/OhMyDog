@@ -27,7 +27,7 @@ class Mascota(models.Model):
     color = models.CharField(max_length=50)
     raza = models.CharField(max_length=1000)
     fecha_nac = models.DateField()
-    foto = models.FileField(blank=True)
+    foto = models.FileField(blank=True, upload_to='imaganes/')
 
     def __str__(self) -> str:
         return self.nombre
