@@ -1,3 +1,5 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Mascota, Cliente, Mascota_Adopcion
@@ -87,13 +89,17 @@ class AdopcionListView(generic.ListView):
     queryset = Mascota_Adopcion.objects.all() #Metodo que devuelve las mascotas, se puede poner un filter
     template_name = 'adopcion/lista_mascotas_adopcion.html'  # Specify your own template name/location
 
-class MascotaListView(generic.ListView):
+class MascotaListView(LoginRequiredMixin, generic.ListView):
     model = Mascota # Modelo al que le va a consultar los datos
 
     context_object_name = 'lista_mascotas'   # your own name for the list as a template variable
     queryset = Mascota.objects.all() #Metodo que devuelve las mascotas del usuario 1 solamente
     template_name = 'mis_mascotas/lista_mascotas.html'  # Specify your own template name/location
+    paginate_by = 5
 
+    def get_queryset(self):
+        #return Mascota.objects.filter(dueno__correo=self.request.user).order_by('nombre')
+        return Mascota.objects.filter(dueno__datos__nombre=self.request.user)
 
 #SECCION DE LISTAS DE DETALLES
 

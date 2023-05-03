@@ -2,6 +2,8 @@ from django.db import models
 
 from django.urls import reverse #Used to generate URLs by reversing the URL patterns
 
+from django.contrib.auth.models import User
+
 #https://developer.mozilla.org/es/docs/Learn/Server-side/Django/Models
 
 # Create your models here.
@@ -60,6 +62,12 @@ class Mascota_Adopcion(models.Model):
         Devuelve la url para acceder a una instancia particular del modelo.
         """
         return "http://127.0.0.1:8000/adopcion/"+str(self.id)
+    
+    @property
+    def is_adoptado(self):
+        if self.estado == 'a':
+            return True
+        return False
     
 class Cliente(models.Model):
     id = models.AutoField(primary_key=True)

@@ -4,10 +4,14 @@
             <ul class="sidebar-nav">
             
                {% if user.is_authenticated %}
-                 <li>User: {{ user.get_username }}</li>
-                 <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
+                 <li>Usuario: {{ user.get_username }}</li>
+                <form style="display: inline-block;" action="http://127.0.0.1:8000/accounts/logout/">
+                    <input type="submit" value="Cerrar Sesion" />
+                </form>
                {% else %}
-                 <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
+                <form style="display: inline-block;" action="http://127.0.0.1:8000/accounts/login/">
+                    <input type="submit" value="Iniciar Sesion" />
+                </form>
                {% endif %}
             </ul>
             
@@ -21,21 +25,21 @@
                 <input type="submit" value="Ver Mascotas en Adopción" />
             </form>
 
-            <form style="display: inline-block; border: teal;" action="http://127.0.0.1:8000/registrar_adopcion/">
-                <input type="submit" value="Registrar Mascotas Adopción (esto mover)" />
-            </form>
-
-            <form style="display: inline-block;" action="http://127.0.0.1:8000/accounts/login/">
-                <input type="submit" value="Iniciar Sesion" />
-            </form>
-
-            <form style="display: inline-block;" action="http://127.0.0.1:8000/accounts/logout/">
-                <input type="submit" value="Cerrar Sesion" />
+            <!--ACA VA LO DEL CLIENTE SOLAMENTE-->
+            {% if user.is_authenticated %}
+            <form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/registrar_adopcion/">
+                <input type="submit" value="Registrar Mascotas Adopción" />
             </form>
 
             <form style="display: inline-block;" action="http://127.0.0.1:8000/ver_mis_mascotas/">
                 <input type="submit" value="Ver Mis Mascotas" />
             </form>
+            {% endif %}
+            
+
+            
+
+
         </ul>
     </nav>
 </footer>
