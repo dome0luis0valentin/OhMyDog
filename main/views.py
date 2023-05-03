@@ -1,7 +1,10 @@
 from django.shortcuts import render
-
+from django.contrib.auth.decorators import login_required
 from .models import Mascota, Cliente, Mascota_Adopcion
 from .form import UsuarioForm, MascotaAdopcionForm
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 
 
@@ -72,7 +75,12 @@ def detalle_mascota(request, pk=None):
 #SECCION DE LISTAS
 from django.views import generic
 
+#LoginRequiredMixin, 
+
+#login_url = '/accounts/login/'
+#redirect_field_name = 'redirect_to'
 class AdopcionListView(generic.ListView):
+    
     model = Mascota_Adopcion # Modelo al que le va a consultar los datos
 
     context_object_name = 'lista_mascotas_adopcion'   # your own name for the list as a template variable
@@ -125,7 +133,7 @@ class MascotaDetailView(generic.DetailView):
             context={'mascota':mascota_id}
         )
     
-
+@login_required
 def registrar_adopcion(request):
     form = MascotaAdopcionForm()
     if request.method == "POST":
@@ -148,3 +156,4 @@ def registrar_adopcion(request):
     context = {'form':form, 'titulo': "Registro de Adopcion"}
 
     return render(request, "registro.html", context)
+

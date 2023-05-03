@@ -1,6 +1,16 @@
 <footer style="background-color: gray; height: 100px; border-width: 2px; border-style:double;">
     <nav>
         <ul>
+            <ul class="sidebar-nav">
+            
+               {% if user.is_authenticated %}
+                 <li>User: {{ user.get_username }}</li>
+                 <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
+               {% else %}
+                 <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
+               {% endif %}
+            </ul>
+            
             <form style="display: inline-block; " action="http://127.0.0.1:8000/menu_principal/">
                 <input type="submit" value="Menu Principal" />
             </form>
@@ -15,8 +25,12 @@
                 <input type="submit" value="Registrar Mascotas Adopción (esto mover)" />
             </form>
 
-            <form style="display: inline-block;" action="http://127.0.0.1:8000/inisio_Sesion/">
+            <form style="display: inline-block;" action="http://127.0.0.1:8000/accounts/login/">
                 <input type="submit" value="Iniciar Sesion" />
+            </form>
+
+            <form style="display: inline-block;" action="http://127.0.0.1:8000/accounts/logout/">
+                <input type="submit" value="Cerrar Sesion" />
             </form>
 
             <form style="display: inline-block;" action="http://127.0.0.1:8000/ver_mis_mascotas/">
