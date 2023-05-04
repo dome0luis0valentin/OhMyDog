@@ -3,7 +3,7 @@ from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Mascota, Cliente, Mascota_Adopcion
-from .form import UsuarioForm, MascotaAdopcionForm
+from .form import UsuarioForm, MascotaAdopcionForm, MascotaForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -185,13 +185,15 @@ class MascotaListView(LoginRequiredMixin, generic.ListView):
     model = Mascota # Modelo al que le va a consultar los datos
 
     context_object_name = 'lista_mascotas'   # your own name for the list as a template variable
-    queryset = Mascota.objects.all() #Metodo que devuelve las mascotas del usuario 1 solamente
-    template_name = 'mis_mascotas/lista_mascotas.html'  # Specify your own template name/location
-    paginate_by = 5
 
     def get_queryset(self):
         #return Mascota.objects.filter(dueno__correo=self.request.user).order_by('nombre')
-        return Mascota.objects.filter(dueno__datos__nombre=self.request.user)
+        return Mascota.objects.filter(dueno__usuario__email=self.request.user.email)
+    queryset = get_queryset
+    template_name = 'mis_mascotas/lista_mascotas.html'  # Specify your own template name/location
+    paginate_by = 5
+
+    
 
 #SECCION DE LISTAS DE DETALLES
 
@@ -252,6 +254,31 @@ def registrar_adopcion(request):
         print("\nSe registro a:\n")
         print()
     context = {'form':form, 'titulo': "Registro de Adopcion"}
+
+    return render(request, "registro.html", context)
+
+@login_required
+def registrar_mascota(request):
+    form = MascotaForm()
+    if request.method == "POST":
+        form = MascotaForm(request.POST)
+        if form.is_valid():
+
+            mascota = form.save(commit=False)
+
+            #Aca obtengo el dueño al que pertenece el usuarioi
+            mascota.dueno = Cliente.objects.filter(datos__correo=request.user.email)[0] # asignar el valor adicional al campo correspondiente
+
+            # guardar el objeto en la base de datos
+
+            #AGREGAR A FORM LOS DATOS DEL USUARIO
+            mascota.save()
+            print("\nSe registro la mascota")
+            #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
+        
+        return redirect("main")
+        
+    context = {'form':form, 'titulo': "Registro de Mascota"}
 
     return render(request, "registro.html", context)
 

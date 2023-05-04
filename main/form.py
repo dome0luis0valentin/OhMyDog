@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Cliente, Persona, Mascota_Adopcion
+from .models import Cliente, Persona, Mascota_Adopcion, Mascota
 
 from django.contrib.auth.forms import UserCreationForm
 
@@ -13,6 +13,20 @@ class UsuarioForm(forms.ModelForm):
     class Meta: 
         model = Cliente  #Busco el modelo, para cada campo del modelo, hará una entrada al formularion
         fields = '__all__'  #Todos los campos del modelo
+
+class MascotaForm(forms.ModelForm):
+    class Meta:
+        model = Mascota
+        fields = ('nombre', 'color', 'raza', 'fecha_nac', 'foto')
+
+    def __init__(self, *args, **kwargs):
+        super(MascotaForm, self).__init__(*args, **kwargs)
+        self.fields['nombre'].required = True
+        self.fields['color'].required = True
+        self.fields['raza'].required = True
+        self.fields['fecha_nac'].required = True
+        self.fields['foto'].required = False
+
 
 
 class MascotaAdopcionForm(forms.ModelForm):

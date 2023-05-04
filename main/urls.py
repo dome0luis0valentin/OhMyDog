@@ -16,9 +16,10 @@ urlpatterns = [
 
     path('menu_principal/', views.main, name="menu"),
     path('about/', views.about, name="about"),
+
+    path('registrar_mascota/', views.registrar_mascota, name='registrar mascota'),
     path('lista_mascota/', views.lista_mascota, name="lista_mascota"),
-    path('registrar/', views.registro, name="registar"),
-    path('detalle_mascota/', views.detalle_mascota, name="ver detalle mascota"),
+    path('mascotas/<int:pk>', views.MascotaDetailView.as_view(), name='detalle de mascota'),
 
     path('detalle_mascota_view/<int:id>',views.detalle_mascota, name="detalle_mascota_view"),
     path('adopcion/<int:pk>', views.AdopcionDetailView.as_view(), name='detalle de mascota'),

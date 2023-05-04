@@ -37,7 +37,7 @@ class Cliente(models.Model):
         return True
 
     def __str__(self) -> str:
-        return self.nombre_usuario
+        return self.usuario.first_name
 
 class Mascota(models.Model):
     id = models.AutoField(primary_key=True)
