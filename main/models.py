@@ -4,6 +4,8 @@ from django.urls import reverse #Used to generate URLs by reversing the URL patt
 
 from django.contrib.auth.models import User
 
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+
 #https://developer.mozilla.org/es/docs/Learn/Server-side/Django/Models
 
 # Create your models here.
@@ -22,6 +24,21 @@ class Persona(models.Model):
     def __str__(self) -> str:
         return self.apellido
     
+class Cliente(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.PROTECT)
+    datos = models.ForeignKey(Persona, on_delete=models.PROTECT)
+    mascotas = models.ManyToManyField('Mascota', blank=True)    
+    mascotas_adopcion = models.ManyToManyField('Mascota_Adopcion', blank=True)
+    
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True
+
+    def __str__(self) -> str:
+        return self.nombre_usuario
+
 class Mascota(models.Model):
     id = models.AutoField(primary_key=True)
     dueno = models.ForeignKey('Cliente', on_delete = models.PROTECT)
@@ -68,17 +85,6 @@ class Mascota_Adopcion(models.Model):
         if self.estado == 'a':
             return True
         return False
-    
-class Cliente(models.Model):
-    id = models.AutoField(primary_key=True)
-    nombre_usuario =models.CharField(max_length=50)
-    password = models.CharField(max_length=10)
-    datos = models.ForeignKey(Persona, on_delete=models.PROTECT)
-    mascotas = models.ManyToManyField('Mascota', blank=True)    
-    mascotas_adopcion = models.ManyToManyField('Mascota_Adopcion', blank=True)
-
-    def __str__(self) -> str:
-        return self.nombre_usuario
 
 class Turno(models.Model):
     id = models.AutoField(primary_key=True)

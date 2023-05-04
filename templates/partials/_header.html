@@ -5,11 +5,11 @@
             
                {% if user.is_authenticated %}
                  <li>Usuario: {{ user.get_username }}</li>
-                <form style="display: inline-block;" action="http://127.0.0.1:8000/accounts/logout/">
+                <form style="display: inline-block;" action="http://127.0.0.1:8000/cerrar_sesion/">
                     <input type="submit" value="Cerrar Sesion" />
                 </form>
                {% else %}
-                <form style="display: inline-block;" action="http://127.0.0.1:8000/accounts/login/">
+                <form style="display: inline-block;" action="http://127.0.0.1:8000/inicio_sesion/">
                     <input type="submit" value="Iniciar Sesion" />
                 </form>
                {% endif %}

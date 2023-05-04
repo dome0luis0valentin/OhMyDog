@@ -4,19 +4,94 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Mascota, Cliente, Mascota_Adopcion
 from .form import UsuarioForm, MascotaAdopcionForm
-
+from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User, auth
+
+
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
 
 
 
-# Create your views here.
+from django.shortcuts import redirect
+#from .form import RegistroForm
+from .models import Persona
 
 #Responde esto cuando quiere ver el:
 
 # iniciar Sesion
-def inisio_Sesion(request):
-    return render(request,"inisio_Sesion.html")
+def registro(request):
+    if request.method == 'POST':
+        nombre = request.POST['nombre']
+        apellido = request.POST['apellido']
+        nombre_usuario = request.POST['nombre_usuario']
+        correo = request.POST['correo']
+        contraseña = request.POST['contraseña']
+        contraseña_confir = request.POST['contraseña_confir']
+        dni = request.POST['dni']
+        direccion = request.POST['direccion']
+        telefono = request.POST['telefono']
+
+        if contraseña==contraseña_confir:
+            if User.objects.filter(username=nombre_usuario).exists():
+                messages.info(request, 'El usuario ya existe, prueba otro')
+                return redirect(registro)
+            elif User.objects.filter(email=correo).exists():
+                messages.info(request, 'Este correo ya esta registrado')
+                return redirect(registro)
+            else:
+                user = User.objects.create_user(username=nombre_usuario, password=contraseña, 
+                                        email=correo, first_name=nombre, last_name=apellido)
+                user.save()
+                persona = Persona.objects.create(nombre = nombre,
+                                                      apellido = apellido,
+                                                      dni = dni,
+                                                      direccion = direccion,
+                                                      correo = correo,
+                                                      telefono= telefono)
+                cliente =Cliente.objects.create(usuario = user,
+                                                datos = persona)
+                
+                return redirect('main')
+
+
+        else:
+            messages.info(request, 'Las contraseñas no son las mismas')
+            return redirect(registro)
+            
+
+    else:
+        return render(request, 'registro/registro.html')
+    
+
+def inicio_sesion(request):
+    if request.method == 'POST':
+        nombre_usuario = request.POST['nombre_usuario']
+        password = request.POST['password']
+
+        user = auth.authenticate(username=nombre_usuario, password=password)
+
+        if user is not None:
+            auth.login(request, user)
+            return redirect('main')
+        else:
+            messages.info(request, 'Contraseña invalida o usuario incorrecto')
+            return redirect('inicio_sesion')
+
+
+
+    else:
+        return render(request, 'registro/login.html')
+
+def cerrar_sesion(request):
+    auth.logout(request)
+    return redirect('main')
+
 
 # Menu principal
 def main(request):
@@ -25,7 +100,7 @@ def main(request):
 #Informacion sobre la veterinaria
 def about(request):
     return render(request, "about.html")
-   
+"""
 #Registrarse
 def registro(request):
 
@@ -43,6 +118,23 @@ def registro(request):
     
 
     #return render(request, "prueba_registro.html")
+
+""" 
+
+
+def registro1(request):
+    if request.method == 'POST':
+        form = RegistroForm(request.POST)
+        if form.is_valid():
+            form.save()
+            print("se guardo")
+            return render(request, 'index.html')
+        else:
+            print("NO se guardo")
+    else:
+        form = RegistroForm()
+    return render(request, 'registro.html', {'form': form})
+
 
 #Lista de Mascotas
 def lista_mascota(request):
@@ -78,9 +170,9 @@ def detalle_mascota(request, pk=None):
 from django.views import generic
 
 #LoginRequiredMixin, 
-
 #login_url = '/accounts/login/'
 #redirect_field_name = 'redirect_to'
+
 class AdopcionListView(generic.ListView):
     
     model = Mascota_Adopcion # Modelo al que le va a consultar los datos

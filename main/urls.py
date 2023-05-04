@@ -10,7 +10,10 @@ from . import views
 urlpatterns = [
     
     path('', views.main, name="main"),
-    path('inisio_Sesion/', views.inisio_Sesion, name="inisio_Sesion"),
+    path('registro/', views.registro, name='registro'),
+    path('cerrar_sesion/', views.cerrar_sesion, name='registro'),
+    path('inicio_sesion/', views.inicio_sesion, name='registro'),
+
     path('menu_principal/', views.main, name="menu"),
     path('about/', views.about, name="about"),
     path('lista_mascota/', views.lista_mascota, name="lista_mascota"),
@@ -26,9 +29,4 @@ urlpatterns = [
     path('ver_mis_mascotas/', views.MascotaListView.as_view(), name='Ver mis Mascotas'),
     path('ver_mis_mascotas/<int:pk>', views.MascotaDetailView.as_view(), name='detalle de mis mascota'),
     
-]
-
-#Add Django site authentication urls (for login, logout, password management)
-urlpatterns += [
-    path('accounts/', include('django.contrib.auth.urls')),
 ]
