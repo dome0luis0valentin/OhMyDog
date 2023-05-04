@@ -13,6 +13,8 @@ urlpatterns = [
     path('registro/', views.registro, name='registro'),
     path('cerrar_sesion/', views.cerrar_sesion, name='registro'),
     path('inicio_sesion/', views.inicio_sesion, name='registro'),
+    path('perfil/', views.perfil, name='perfil'),
+
 
     path('menu_principal/', views.main, name="menu"),
     path('about/', views.about, name="about"),

@@ -1,4 +1,4 @@
-<footer style="background-color: gray; height: 100px; border-width: 2px; border-style:double;">
+<footer style=" height: 100px; border-width: 1px; border-style:double; background-color: khaki;">
     <nav>
         <ul>
             <ul class="sidebar-nav">
@@ -12,10 +12,14 @@
                 <form style="display: inline-block;" action="http://127.0.0.1:8000/inicio_sesion/">
                     <input type="submit" value="Iniciar Sesion" />
                 </form>
+                
+               {% endif %}
+
+               {%if user.is_admin%}
                 <form style="display: inline-block;" action="http://127.0.0.1:8000/registro/">
                     <input type="submit" value="Registrar" />
                 </form>
-               {% endif %}
+                {%endif%}
             </ul>
             
             <form style="display: inline-block; " action="http://127.0.0.1:8000/menu_principal/">
@@ -33,9 +37,15 @@
             <form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/registrar_adopcion/">
                 <input type="submit" value="Registrar Mascotas Adopción" />
             </form>
+            <form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/registrar_mascota">
+                <input type="submit" value="Registrar Mascotas" />
+            </form>
 
             <form style="display: inline-block;" action="http://127.0.0.1:8000/ver_mis_mascotas/">
                 <input type="submit" value="Ver Mis Mascotas" />
+            </form>
+            <form style="display: inline-block;" action="http://127.0.0.1:8000/perfil/">
+                <input type="submit" value="Ver Perfil" />
             </form>
             {% endif %}
             

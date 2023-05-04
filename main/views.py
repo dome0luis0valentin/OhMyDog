@@ -92,6 +92,11 @@ def cerrar_sesion(request):
     auth.logout(request)
     return redirect('main')
 
+#Mi perfil
+def perfil(request):
+
+    cliente = Cliente.objects.filter(usuario__email=request.user.email)
+    return (request, "perfil.html", {'cliente': cliente})
 
 # Menu principal
 def main(request):
