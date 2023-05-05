@@ -1,11 +1,11 @@
 from typing import Any
-
+from django.views import generic
 from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from .models import Mascota, Cliente, Mascota_Adopcion
-from .form import UsuarioForm, MascotaAdopcionForm, MascotaForm
+from .models import Mascota, Cliente, Mascota_Adopcion, Turno
+from .form import UsuarioForm, MascotaAdopcionForm, MascotaForm, TurnoForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -194,10 +194,13 @@ def detalle_mascota(request, pk=None):
         menu_item = ""
     return render(request, "menu_item.html", {"menu_item": menu_item})
     """
-    
-#SECCION DE LISTAS
-from django.views import generic
 
+
+
+
+
+
+#SECCION DE LISTAS
 #LoginRequiredMixin, 
 #login_url = '/accounts/login/'
 #redirect_field_name = 'redirect_to'
@@ -222,7 +225,39 @@ class MascotaListView(LoginRequiredMixin, generic.ListView):
     template_name = 'mis_mascotas/lista_mascotas.html'  # Specify your own template name/location
     paginate_by = 5
 
+class MisAdopcionesListView(generic.ListView):
     
+    model = Mascota_Adopcion # Modelo al que le va a consultar los datos
+
+    context_object_name = 'mi_lista_mascotas_adopcion'   # your own name for the list as a template variable
+
+    #Metodo que devuelve las mascotas
+    def get_queryset(self):
+        #return Mascota.objects.filter(dueno__correo=self.request.user).order_by('nombre')
+        return Mascota_Adopcion.objects.filter(dueno__usuario__email=self.request.user.email)
+    queryset = get_queryset
+
+    template_name = 'mis_adopciones/lista_mis_adopciones.html'  # Specify your own template name/location
+
+class TurnosListView(generic.ListView):
+
+    # Modelo al que le va a consultar los datos
+    model = Turno 
+
+    #Tu propio nombre para el template
+    context_object_name = 'lista_de_turnos_pendientes'   
+
+    #Metodo que devuelve los turnos sin confirmar
+    def get_queryset(self):
+        return Turno.objects.all()
+    
+    queryset = get_queryset
+
+    #Especifica el lugar del template
+    template_name = 'turnos/lista_de_turnos_pendientes.html' 
+
+
+
 
 #SECCION DE LISTAS DE DETALLES
 
@@ -260,6 +295,24 @@ class MascotaDetailView(generic.DetailView):
             request,
             'main/templates/mis_mascotas/detalle_mascota.html',
             context={'mascota':mascota_id}
+        )
+    
+class TurnoDetailView(generic.DetailView):
+    model = Turno
+    template_name = 'turnos/detalle.html'  # Specify your own template name/location
+
+    def turno_detail_view(request,pk):
+        try:
+            turno_id=Turno.objects.get(pk=pk)
+        except Turno.DoesNotExist:
+            raise Http404("Esta mascota no esta registrada")
+
+        #book_id=get_object_or_404(Book, pk=pk)
+
+        return render(
+            request,
+            'main/templates/turnos/detalle.html',
+            context={'mascota':turno_id}
         )
     
 @login_required
@@ -308,6 +361,38 @@ def registrar_mascota(request):
         return redirect("main")
         
     context = {'form':form, 'titulo': "Registro de Mascota"}
+
+    return render(request, "registro.html", context)
+
+@login_required
+def solicitar_turno(request):
+    form = TurnoForm()
+    if request.method == "POST":
+        form = TurnoForm(request.POST)
+        if form.is_valid():
+
+            turno = form.save(commit=False)
+
+            #Aca obtengo el dueño al que pertenece el usuario
+            turno.cliente = Cliente.objects.filter(usuario__email=request.user.email)[0] # asignar el valor adicional al campo correspondiente
+            
+            turno.asistio = False
+           
+            turno.aceptado = False
+            # guardar el objeto en la base de datos
+
+            #AGREGAR A FORM LOS DATOS DEL USUARIO
+            turno.save()
+            print("\nSe registro el turno")
+            #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
+        
+            return redirect("main")
+        else:
+            print("\nNo se registro el turno")
+            messages.info(request, 'Algo salio mal')
+            return redirect('solicitar turno')
+        
+    context = {'form':form, 'titulo': "Solicitud de Turno"}
 
     return render(request, "registro.html", context)
 
