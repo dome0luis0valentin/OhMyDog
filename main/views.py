@@ -45,14 +45,14 @@ def registro(request):
         telefono = request.POST['telefono']
 
         if contraseña==contraseña_confir:
-            if User.objects.filter(username=nombre_usuario).exists():
+            if User.objects.filter(username=correo).exists():
                 messages.info(request, 'El usuario ya existe, prueba otro')
                 return redirect(registro)
             elif User.objects.filter(email=correo).exists():
                 messages.info(request, 'Este correo ya esta registrado')
                 return redirect(registro)
             else:
-                user = User.objects.create_user(username=nombre_usuario, password=contraseña, 
+                user = User.objects.create_user(username=correo, password=contraseña, 
                                         email=correo, first_name=nombre, last_name=apellido)
                 user.save()
                 persona = Persona.objects.create(nombre = nombre,
