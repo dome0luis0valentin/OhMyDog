@@ -10,12 +10,18 @@ from . import views
 urlpatterns = [
     
     path('', views.main, name="main"),
-    path('inisio_Sesion/', views.inisio_Sesion, name="inisio_Sesion"),
+    path('registro/', views.registro, name='registro'),
+    path('cerrar_sesion/', views.cerrar_sesion, name='registro'),
+    path('inicio_sesion/', views.inicio_sesion, name='registro'),
+    path('perfil/', views.perfil, name='perfil'),
+
+
     path('menu_principal/', views.main, name="menu"),
     path('about/', views.about, name="about"),
+
+    path('registrar_mascota/', views.registrar_mascota, name='registrar mascota'),
     path('lista_mascota/', views.lista_mascota, name="lista_mascota"),
-    path('registrar/', views.registro, name="registar"),
-    path('detalle_mascota/', views.detalle_mascota, name="ver detalle mascota"),
+    path('mascotas/<int:pk>', views.MascotaDetailView.as_view(), name='detalle de mascota'),
 
     path('detalle_mascota_view/<int:id>',views.detalle_mascota, name="detalle_mascota_view"),
     path('adopcion/<int:pk>', views.AdopcionDetailView.as_view(), name='detalle de mascota'),
@@ -26,9 +32,4 @@ urlpatterns = [
     path('ver_mis_mascotas/', views.MascotaListView.as_view(), name='Ver mis Mascotas'),
     path('ver_mis_mascotas/<int:pk>', views.MascotaDetailView.as_view(), name='detalle de mis mascota'),
     
-]
-
-#Add Django site authentication urls (for login, logout, password management)
-urlpatterns += [
-    path('accounts/', include('django.contrib.auth.urls')),
 ]

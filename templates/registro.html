@@ -1,31 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block content %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{titulo}}</title>
-</head>
-<body>
-    <h1>{{titulo}}</h1>
-    <br>
-    <br>
-    <form action = "" method = "post", style="background-color: rgb(63, 63, 168);">
-        {% csrf_token  %}
-        {{form.as_p}}
-            <input type="submit" value="Registar">
-        <br>
-        <br>
-        <br>
-    
-    </form>
-    <form style="display: inline-block; width: 100px; background-color:red;" action="http://127.0.0.1:8000/">
-        <input type="submit" value="Cancelar" />
-    </form>
-</body>
-</html>
+
+{% block content %}
+  <h2>Registro</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Registrarse</button>
+  </form>
 {% endblock %}

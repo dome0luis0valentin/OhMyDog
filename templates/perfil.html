@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">Perfil de {{ cliente.usuario.first_name }}</div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Nombre:</strong> {{ cliente.datos.nombre }}</p>
+                            <p><strong>Apellido:</strong> {{ cliente.datos.apellido }}</p>
+                            <p><strong>DNI:</strong> {{ cliente.datos.dni }}</p>
+                            <p><strong>Correo electrónico:</strong> {{ cliente.datos.correo }}</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p><strong>Dirección:</strong> {{ cliente.datos.direccion }}</p>
+                            <p><strong>Teléfono:</strong> {{ cliente.datos.telefono }}</p>
+                            <p><strong>Mascotas:</strong></p>
+                            {% if cliente.mascotas.all %}
+                                <ul>
+                                    {% for mascota in cliente.mascotas.all %}
+                                        <li>{{ mascota.nombre }} ({{ mascota.raza }})</li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p>No tienes mascotas registradas.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
