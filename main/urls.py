@@ -12,7 +12,7 @@ urlpatterns = [
     path('', views.main, name="main"),
     path('registro/', views.registro, name='registro'),
     path('cerrar_sesion/', views.cerrar_sesion, name='registro'),
-    path('inicio_sesion/', views.inicio_sesion, name='registro'),
+    path('inicio_sesion/', views.inicio_sesion, name='inicio de sesion'),
     path('perfil/', views.perfil, name='perfil'),
 
 

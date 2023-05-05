@@ -2,21 +2,25 @@
     <nav>
         <ul>
             <ul class="sidebar-nav">
-            
-               {% if user.is_authenticated %}
-<<<<<<< HEAD
+            <!--
+
+                {% if user.is_authenticated %}
                     {% if user_type == 'vet' %}
                         <h2>Funciones para Veterinarios</h2>
+            -->
                         <!-- Código HTML para las funciones de los Veterinarios -->
+            <!--
                     {% elif user_type == 'client' %}
                         <h2>Funciones para Clientes</h2>
+            -->
                         <!-- Código HTML para las funciones de los Clientes -->
+             <!--
                     {% endif %}
-                {% else %}
-                    <form style="display: inline-block;" action="http://127.0.0.1:8000/accounts/login/">
-                        <input type="submit" value="Iniciar Sesion" />
-                    </form>
-                {% endif %}
+
+                {%endif%}
+             -->
+            
+               
 
             </ul>
 
@@ -32,12 +36,7 @@
                 <form style="display: inline-block;" action="http://127.0.0.1:8000/ver_mis_mascotas/">
                     <input type="submit" value="Ver Mis Mascotas" />
                 </form>
-
-                <form style="display: inline-block;" action="http://127.0.0.1:8000/accounts/logout/">
-                    <input type="submit" value="Cerrar Sesion" />
-                </form>
-=======
-                 <li>Usuario: {{ user.get_username }}</li>
+                
                 <form style="display: inline-block;" action="http://127.0.0.1:8000/cerrar_sesion/">
                     <input type="submit" value="Cerrar Sesion" />
                 </form>
@@ -54,10 +53,8 @@
                 </form>
                 {%endif%}
             </ul>
->>>>>>> c0f242bfa03de7b4ce5f0dde4290d38187ecd122
             
-            {% endif %}
-
+          
             <form style="display: inline-block; " action="http://127.0.0.1:8000/menu_principal/">
                 <input type="submit" value="Menu Principal" />
             </form>
@@ -67,8 +64,6 @@
             <form style="display: inline-block; border: teal;" action="http://127.0.0.1:8000/adopcion/">
                 <input type="submit" value="Ver Mascotas en Adopción" />
             </form>
-<<<<<<< HEAD
-=======
 
             <!--ACA VA LO DEL CLIENTE SOLAMENTE-->
             {% if user.is_authenticated %}
@@ -86,7 +81,6 @@
                 <input type="submit" value="Ver Perfil" />
             </form>
             {% endif %}
->>>>>>> c0f242bfa03de7b4ce5f0dde4290d38187ecd122
             
 
             

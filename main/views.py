@@ -83,7 +83,8 @@ def inicio_sesion(request):
             return redirect('main')
         else:
             messages.info(request, 'Contraseña invalida o usuario incorrecto')
-            return redirect('inicio_sesion')
+            return redirect('inicio de sesion')
+
 
 
 
