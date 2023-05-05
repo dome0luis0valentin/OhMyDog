@@ -204,6 +204,20 @@ class MascotaListView(LoginRequiredMixin, generic.ListView):
     template_name = 'mis_mascotas/lista_mascotas.html'  # Specify your own template name/location
     paginate_by = 5
 
+class MisAdopcionesListView(generic.ListView):
+    
+    model = Mascota_Adopcion # Modelo al que le va a consultar los datos
+
+    context_object_name = 'mi_lista_mascotas_adopcion'   # your own name for the list as a template variable
+
+    #Metodo que devuelve las mascotas
+    def get_queryset(self):
+        #return Mascota.objects.filter(dueno__correo=self.request.user).order_by('nombre')
+        return Mascota_Adopcion.objects.filter(dueno__usuario__email=self.request.user.email)
+    queryset = get_queryset
+
+    template_name = 'mis_adopciones/lista_mis_adopciones.html'  # Specify your own template name/location
+
     
 
 #SECCION DE LISTAS DE DETALLES

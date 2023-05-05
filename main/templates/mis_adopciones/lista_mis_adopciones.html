@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Mi lista de perros en adopción</h1>
+
+    {% if object_list %}
+    <ul>
+
+      {% for perro in object_list %}
+      <li>
+        <a href="{{ perro.get_absolute_url }}">{{ perro }}</a> 
+        <br> Nombre del Perro: {{perro}}
+
+        <!--ARREGLAR, debe tener algo como if (perro.estado == 'e') entonces muestro tal cosa-->
+        <hr>
+        <p class="{% if perro.estado == 'a' %}text-success{% elif perro.estado == 'a' %}text-danger{% else %}text-warning{% endif %}">{{ perro.get_estado_diplay }}</p>
+        {% if perro.estado != 'a' %}<p><strong>Esperando</strong> {{...}}</p>{% endif %}
+        <form style="display:inline-block;">
+            <input type="submit" value="Marcar como Adoptado" />
+        </form>
+        <br>
+        <a href="{{ perro.get_absolute_url }}">Detalle</a>
+        <br>
+        <br>
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>Todavia no hay perros en adopcion, regrese más tarde</p>
+    {% endif %}
+{% endblock %}

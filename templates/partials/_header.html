@@ -24,7 +24,7 @@
 
             </ul>
 
-            <!--ACA VAN LAS FUNCIONALIDADES EN COMUN DEL CLIENTE Y VETERINARIO  SOLAMENTE-->
+            <!--ACA VAN LAS FUNCIONALIDADES EN COMUN DEL CLIENTE  SOLAMENTE-->
             {% if user.is_authenticated %}
                 
                 <li>Usuario: {{ user.get_username }}</li>
@@ -33,10 +33,14 @@
                     <input type="submit" value="Registrar Mascotas Adopción" />
                 </form>
 
+                <form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/ver_mis_adopciones/">
+                    <input type="submit" value="Ver mis publicaciones de adopción" />
+                </form>
+
                 <form style="display: inline-block;" action="http://127.0.0.1:8000/ver_mis_mascotas/">
                     <input type="submit" value="Ver Mis Mascotas" />
                 </form>
-                
+
                 <form style="display: inline-block;" action="http://127.0.0.1:8000/cerrar_sesion/">
                     <input type="submit" value="Cerrar Sesion" />
                 </form>
@@ -47,6 +51,9 @@
                 
                {% endif %}
 
+
+
+               
                {%if user.is_admin%}
                 <form style="display: inline-block;" action="http://127.0.0.1:8000/registro/">
                     <input type="submit" value="Registrar" />
@@ -54,6 +61,8 @@
                 {%endif%}
             </ul>
             
+            <!--FUNCIONALIDAD EN COMUN-->
+
           
             <form style="display: inline-block; " action="http://127.0.0.1:8000/menu_principal/">
                 <input type="submit" value="Menu Principal" />
@@ -64,23 +73,6 @@
             <form style="display: inline-block; border: teal;" action="http://127.0.0.1:8000/adopcion/">
                 <input type="submit" value="Ver Mascotas en Adopción" />
             </form>
-
-            <!--ACA VA LO DEL CLIENTE SOLAMENTE-->
-            {% if user.is_authenticated %}
-            <form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/registrar_adopcion/">
-                <input type="submit" value="Registrar Mascotas Adopción" />
-            </form>
-            <form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/registrar_mascota">
-                <input type="submit" value="Registrar Mascotas" />
-            </form>
-
-            <form style="display: inline-block;" action="http://127.0.0.1:8000/ver_mis_mascotas/">
-                <input type="submit" value="Ver Mis Mascotas" />
-            </form>
-            <form style="display: inline-block;" action="http://127.0.0.1:8000/perfil/">
-                <input type="submit" value="Ver Perfil" />
-            </form>
-            {% endif %}
             
 
             
