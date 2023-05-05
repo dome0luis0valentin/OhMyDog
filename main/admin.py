@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Mascota ,Persona, Cliente, Campana, Turno, Mascota_Adopcion, Red_Social, Prestador_Servicios
+
 # Register your models here.
 admin.site.register(Cliente)
 admin.site.register(Turno)

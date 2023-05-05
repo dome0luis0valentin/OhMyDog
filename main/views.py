@@ -1,7 +1,9 @@
 from typing import Any
+
 from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+
 from .models import Mascota, Cliente, Mascota_Adopcion
 from .form import UsuarioForm, MascotaAdopcionForm
 
@@ -20,7 +22,10 @@ def inisio_Sesion(request):
 
 # Menu principal
 def main(request):
-    return render(request, "index.html")
+    """ Hay tres tipos de usuarios visitor , vet y client"""
+    user = "visitor"
+    context = {'user_type':user}
+    return render(request, "index.html" , context)
 
 #Informacion sobre la veterinaria
 def about(request):

@@ -7,7 +7,7 @@
     <title>Oh My Dog!</title>
 </head>
 <body style="font-family: Arial;">
-{% include 'partials/_header.html' %}
+{% include 'partials/_header.html' with user_type=user_type %}
     <main>
         {% block content%}
 
