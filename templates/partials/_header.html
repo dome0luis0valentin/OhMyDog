@@ -41,6 +41,10 @@
                     <input type="submit" value="Ver Mis Mascotas" />
                 </form>
 
+                <form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/solicitar_turno/">
+                    <input type="submit" value="Solicitar Turno" />
+                </form>
+
                 <form style="display: inline-block;" action="http://127.0.0.1:8000/cerrar_sesion/">
                     <input type="submit" value="Cerrar Sesion" />
                 </form>
@@ -54,12 +58,19 @@
 
 
                
-               {%if user.is_admin%}
-                <form style="display: inline-block;" action="http://127.0.0.1:8000/registro/">
-                    <input type="submit" value="Registrar" />
-                </form>
-                {%endif%}
+                    <form style="display: inline-block;" action="http://127.0.0.1:8000/confirmar_turnos/">
+                        <input type="submit" value="Confirmar Turnos" />
+                    </form>
+
+                    <form style="display: inline-block;" action="http://127.0.0.1:8000/registro/">
+                        <input type="submit" value="Registrar" />
+                    </form>
+                    
+               
+
             </ul>
+
+            
             
             <!--FUNCIONALIDAD EN COMUN-->
 

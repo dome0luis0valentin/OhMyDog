@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Fecha: {{ object }}</h1>
+
+  <p><strong>Cliente:</strong> {{ object.cliente.usuario.email }}</p>
+  <br>
+  <p><strong>Motivo:</strong> {{ object.motivo }}</p>
+  <p><strong>Fecha:</strong> {{ object.fecha }}</p>
+  <p><strong>Banda Horaria: </strong>{{ object.banda_horaria }}</p><br>
+  
+  <form style="display: inline-block;" action="http://127.0.0.1:8000/confirmar_turnos/">
+    <input type="submit" value="Confirmar" />
+  </form>
+    <form style="display: inline-block;" action="http://127.0.0.1:8000/confirmar_turnos/">
+    <input type="submit" value="Rechazar" />
+    </form>
+{% endblock %}

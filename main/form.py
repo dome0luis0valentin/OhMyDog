@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Cliente, Persona, Mascota_Adopcion, Mascota
+from .models import Cliente, Persona, Mascota_Adopcion, Mascota, Turno
 
 from django.contrib.auth.forms import UserCreationForm
 
@@ -27,6 +27,17 @@ class MascotaForm(forms.ModelForm):
         self.fields['fecha_nac'].required = True
         self.fields['foto'].required = False
 
+class TurnoForm(forms.ModelForm):
+    class Meta:
+        model = Turno
+        fields = ('fecha', 'banda_horaria', 'motivo')
+
+    def __init__(self, *args, **kwargs):
+        super(TurnoForm, self).__init__(*args, **kwargs)
+        self.fields['fecha'].required = True
+        self.fields['banda_horaria'].required = True
+        self.fields['motivo'].required = True
+        
 
 
 class MascotaAdopcionForm(forms.ModelForm):

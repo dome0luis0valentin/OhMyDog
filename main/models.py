@@ -92,10 +92,24 @@ class Turno(models.Model):
     asistio = models.BooleanField()
     motivo= models.CharField(max_length=50)
     aceptado= models.BooleanField()
-    turnos= models.ForeignKey(Cliente,on_delete=models.CASCADE)
+    cliente= models.ForeignKey(Cliente,on_delete=models.CASCADE)
+
+    BANDA_HORARIA = (
+        ('M', 'Mañana'),
+        ('T', 'Tarde'),
+    )
+
+    banda_horaria = models.CharField(max_length=1, choices=BANDA_HORARIA, default='M', help_text='Horario en el que puede ir a la veterinaria mañana(7 AM - 12 PM) o tarde (12 PM a 6 PM')
+
 
     def __str__(self) -> str:
-        return self.fecha
+        return str(self.fecha.day)+"/"+str(self.fecha.month)
+    
+    def get_absolute_url(self):
+        """
+        Devuelve la url para acceder a una instancia particular del modelo.
+        """
+        return "http://127.0.0.1:8000/confirmar_turnos/"+str(self.id)
 
 class Campana(models.Model):
     id = models.AutoField(primary_key=True)
