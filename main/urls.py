@@ -14,6 +14,7 @@ urlpatterns = [
     path('cerrar_sesion/', views.cerrar_sesion, name='registro'),
     path('inicio_sesion/', views.inicio_sesion, name='inicio de sesion'),
     path('perfil/', views.perfil, name='perfil'),
+    path('cambiar_contraseña/', views.cambiar_contraseña, name='cambiar contraseña'),
 
 
     path('menu_principal/', views.main, name="menu"),

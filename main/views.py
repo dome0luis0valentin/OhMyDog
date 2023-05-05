@@ -18,6 +18,11 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.shortcuts import render, redirect
+
 
 
 from django.shortcuts import redirect
@@ -90,6 +95,19 @@ def inicio_sesion(request):
 
     else:
         return render(request, 'registro/login.html')
+
+
+def cambiar_contraseña(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Actualiza la sesión del usuario.
+            return redirect('main')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'cambiar_contrasenia.html', {'form': form})
+
 
 def cerrar_sesion(request):
     auth.logout(request)
