@@ -1,5 +1,17 @@
-.sidebar-nav {
-    margin-top: 20px;
-    padding: 0;
-    list-style: none;
-}
+
+@keyframes blink {
+    100% {
+      color: red;
+    }
+    100% {
+      color: blue;
+    }
+    100% {
+      color: green;
+    }
+  }
+  
+  .blinking {
+    animation: blink 1s linear infinite;
+  }
+  

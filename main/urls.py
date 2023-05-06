@@ -30,6 +30,7 @@ urlpatterns = [
     path('adopcion/<int:pk>', views.AdopcionDetailView.as_view(), name='detalle de mascota'),
     path('adopcion/', views.AdopcionListView.as_view(), name='adopciones'),
     path('ver_mis_adopciones/', views.MisAdopcionesListView.as_view(), name='ver mis adopciones'),
+    path('marcar_adopcion/<int:pk>/', views.marcar_adopcion, name='marcar_adopcion'),
     path('registrar_adopcion/', views.registrar_adopcion, name='registrar adopcion'),
 
     path('solicitar_turno/', views.solicitar_turno, name='solicitar turno'),

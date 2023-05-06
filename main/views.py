@@ -23,6 +23,9 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import render, redirect
 
+from django.shortcuts import redirect, get_object_or_404
+from django.views.decorators.http import require_POST
+
 
 
 from django.shortcuts import redirect
@@ -107,7 +110,6 @@ def cambiar_contraseña(request):
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'cambiar_contrasenia.html', {'form': form})
-
 
 def cerrar_sesion(request):
     auth.logout(request)
@@ -238,6 +240,12 @@ class MisAdopcionesListView(generic.ListView):
     queryset = get_queryset
 
     template_name = 'mis_adopciones/lista_mis_adopciones.html'  # Specify your own template name/location
+
+def marcar_adopcion(request, pk):
+    perro = get_object_or_404(Mascota_Adopcion, pk=pk)
+    perro.estado = 'a'
+    perro.save()
+    return redirect('ver mis adopciones')
 
 class TurnosListView(generic.ListView):
 
