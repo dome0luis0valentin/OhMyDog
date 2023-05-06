@@ -180,8 +180,6 @@ def lista_mascota(request):
     main_data = {"lista": lista}
     return render(request, "lista_mascota.html", {"cantidad": num_mascotas, "lista":lista})
    
-    
-
 
 #Mostar detalle de mascota
 def detalle_mascota(request, pk=None):
@@ -226,6 +224,11 @@ class MascotaListView(LoginRequiredMixin, generic.ListView):
     queryset = get_queryset
     template_name = 'mis_mascotas/lista_mascotas.html'  # Specify your own template name/location
     paginate_by = 5
+    
+def eliminar_mascota(request, mascota_id):
+    mascota = get_object_or_404(Mascota, id=mascota_id)
+    mascota.delete()
+    return redirect('Ver mis Mascotas')    
 
 class MisAdopcionesListView(generic.ListView):
     

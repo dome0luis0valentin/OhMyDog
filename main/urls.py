@@ -25,6 +25,7 @@ urlpatterns = [
     path('mascotas/<int:pk>', views.MascotaDetailView.as_view(), name='detalle de mascota'),
     path('detalle_mascota_view/<int:id>',views.detalle_mascota, name="detalle_mascota_view"),
     path('ver_mis_mascotas/', views.MascotaListView.as_view(), name='Ver mis Mascotas'),
+    path('eliminar_mascota/<int:mascota_id>/', views.eliminar_mascota, name='eliminar_mascota'),
     path('ver_mis_mascotas/<int:pk>', views.MascotaDetailView.as_view(), name='detalle de mis mascota'),
 
     path('adopcion/<int:pk>', views.AdopcionDetailView.as_view(), name='detalle de mascota'),
