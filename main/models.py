@@ -88,7 +88,7 @@ class Mascota_Adopcion(models.Model):
 
 class Turno(models.Model):
     id = models.AutoField(primary_key=True)
-    fecha= models.DateTimeField()
+    fecha= models.DateField()
     asistio = models.BooleanField()
     motivo= models.CharField(max_length=50)
     aceptado= models.BooleanField()
