@@ -16,6 +16,9 @@
         <a href="{{ perro.get_absolute_url }}">Detalle</a>
         <br>
         <br>
+        <form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/formulario_adopcion/">
+          <input type="submit" value="Adoptar Mascota" />
+        </form>
       </li>
       {% endfor %}
 

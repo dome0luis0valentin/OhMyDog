@@ -26,7 +26,9 @@ from django.shortcuts import render, redirect
 from django.shortcuts import redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 
-
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 from django.shortcuts import redirect
 #from .form import RegistroForm
@@ -249,6 +251,40 @@ def marcar_adopcion(request, pk):
     perro.estado = 'a'
     perro.save()
     return redirect('ver mis adopciones')
+
+
+def formulario_adopcion(request):
+    return render(request,"formulario_adopcion.html")
+
+
+def enviar_formulario_adopcion(request):
+    if request.method == 'POST':
+        # Obtener datos del formulario
+        nombre = request.POST.get('nombre')
+        apellido = request.POST.get('apellido')
+        dni = request.POST.get('dni')
+        correo = request.POST.get('correo')
+        telefono = request.POST.get('telefono')
+        motivo = request.POST.get('motivo')
+
+        # Renderizar la plantilla de correo electrónico
+        html_message = render_to_string('email_template.html', {'nombre': nombre, 'apellido': apellido, 'dni': dni, 'correo': correo, 'telefono': telefono, 'motivo': motivo})
+        plain_message = strip_tags(html_message)
+
+        # Enviar el correo electrónico
+        send_mail(
+            'Formulario de adopción',
+            plain_message,
+            'grupo21ing2@gmail.com',
+            # tendriamos que agregar el gmail del usuario que publico la adopcion mejor dicho el dueño del perro
+            ['josuecarrera788@gmail.com'],
+            html_message=html_message,
+        )
+
+        # Redireccionar a una página de éxito
+        return redirect('adopciones')
+    else:
+        return render(request, 'formulario_adopcion.html') 
 
 class TurnosListView(generic.ListView):
 
