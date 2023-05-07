@@ -4,8 +4,8 @@ from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from .models import Mascota, Cliente, Mascota_Adopcion, Turno
-from .form import UsuarioForm, MascotaAdopcionForm, MascotaForm, TurnoForm
+from .models import Mascota, Cliente, Mascota_Adopcion, Red_Social, Turno, Prestador_Servicios
+from .form import UsuarioForm, MascotaAdopcionForm,Red_SocialForm , MascotaForm, TurnoForm, ServicioForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -23,7 +23,12 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import render, redirect
 
+from django.shortcuts import redirect, get_object_or_404
+from django.views.decorators.http import require_POST
 
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 from django.shortcuts import redirect
 #from .form import RegistroForm
@@ -61,8 +66,10 @@ def registro(request):
                                                       direccion = direccion,
                                                       correo = correo,
                                                       telefono= telefono)
+                persona.save()
                 cliente =Cliente.objects.create(usuario = user,
                                                 datos = persona)
+                cliente.save()
                 
                 return redirect('main')
 
@@ -107,7 +114,6 @@ def cambiar_contraseña(request):
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'cambiar_contrasenia.html', {'form': form})
-
 
 def cerrar_sesion(request):
     auth.logout(request)
@@ -178,8 +184,6 @@ def lista_mascota(request):
     main_data = {"lista": lista}
     return render(request, "lista_mascota.html", {"cantidad": num_mascotas, "lista":lista})
    
-    
-
 
 #Mostar detalle de mascota
 def detalle_mascota(request, pk=None):
@@ -195,15 +199,58 @@ def detalle_mascota(request, pk=None):
     return render(request, "menu_item.html", {"menu_item": menu_item})
     """
 
+def eliminar_mascota(request, mascota_id):
+    mascota = get_object_or_404(Mascota, id=mascota_id)
+    mascota.delete()
+    return redirect('Ver mis Mascotas')    
+
+def marcar_adopcion(request, pk):
+    perro = get_object_or_404(Mascota_Adopcion, pk=pk)
+    perro.estado = 'a'
+    perro.save()
+    return redirect('ver mis adopciones')
+
+
+def formulario_adopcion(request):
+    return render(request,"formulario_adopcion.html")
+
+
+def enviar_formulario_adopcion(request):
+    if request.method == 'POST':
+        # Obtener datos del formulario
+        nombre = request.POST.get('nombre')
+        apellido = request.POST.get('apellido')
+        dni = request.POST.get('dni')
+        correo = request.POST.get('correo')
+        telefono = request.POST.get('telefono')
+        motivo = request.POST.get('motivo')
+
+        # Renderizar la plantilla de correo electrónico
+        html_message = render_to_string('email_template.html', {'nombre': nombre, 'apellido': apellido, 'dni': dni, 'correo': correo, 'telefono': telefono, 'motivo': motivo})
+        plain_message = strip_tags(html_message)
+
+        # Enviar el correo electrónico
+        send_mail(
+            'Formulario de adopción',
+            plain_message,
+            'grupo21ing2@gmail.com',
+            # tendriamos que agregar el gmail del usuario que publico la adopcion mejor dicho el dueño del perro
+            ['josuecarrera788@gmail.com'],
+            html_message=html_message,
+        )
+
+        # Redireccionar a una página de éxito
+        return redirect('adopciones')
+    else:
+        return render(request, 'formulario_adopcion.html') 
 
 
 
 
 
-#SECCION DE LISTAS
-#LoginRequiredMixin, 
-#login_url = '/accounts/login/'
-#redirect_field_name = 'redirect_to'
+
+#-----------------------------SECCION DE LISTAS-------------------------------------
+
 
 class AdopcionListView(generic.ListView):
     
@@ -224,6 +271,7 @@ class MascotaListView(LoginRequiredMixin, generic.ListView):
     queryset = get_queryset
     template_name = 'mis_mascotas/lista_mascotas.html'  # Specify your own template name/location
     paginate_by = 5
+    
 
 class MisAdopcionesListView(generic.ListView):
     
@@ -238,6 +286,7 @@ class MisAdopcionesListView(generic.ListView):
     queryset = get_queryset
 
     template_name = 'mis_adopciones/lista_mis_adopciones.html'  # Specify your own template name/location
+
 
 class TurnosListView(generic.ListView):
 
@@ -256,10 +305,26 @@ class TurnosListView(generic.ListView):
     #Especifica el lugar del template
     template_name = 'turnos/lista_de_turnos_pendientes.html' 
 
+class ServiciosListView(generic.ListView):
+    # Modelo al que le va a consultar los datos
+    model = Prestador_Servicios 
+
+    #Tu propio nombre para el template
+    context_object_name = 'lista_de_servicios'   
+
+    #Metodo que devuelve los turnos sin confirmar
+    def get_queryset(self):
+        return Prestador_Servicios.objects.all()
+    
+    queryset = get_queryset
+
+    #Especifica el lugar del template
+    template_name = 'servicios/lista_de_servicios.html' 
 
 
 
-#SECCION DE LISTAS DE DETALLES
+
+#-----------------SECCION DE LISTAS DE DETALLES----------------------
 
 class AdopcionDetailView(generic.DetailView):
     model = Mascota_Adopcion
@@ -315,6 +380,24 @@ class TurnoDetailView(generic.DetailView):
             context={'mascota':turno_id}
         )
     
+class ServicioDetailView(generic.DetailView):
+    model = Prestador_Servicios
+    template_name = 'servicios/detalle.html'  # Specify your own template name/location
+
+    def servicio_detail_view(request,pk):
+        try:
+            servicio_id=Prestador_Servicios.objects.get(pk=pk)
+        except Prestador_Servicios.DoesNotExist:
+            raise Http404("Esta mascota no esta registrada")
+
+        #book_id=get_object_or_404(Book, pk=pk)
+
+        return render(
+            request,
+            'main/templates/servicios/detalle.html',
+            context={'servicio':servicio_id}
+        )
+    
 @login_required
 def registrar_adopcion(request):
     form = MascotaAdopcionForm()
@@ -338,6 +421,56 @@ def registrar_adopcion(request):
     context = {'form':form, 'titulo': "Registro de Adopcion"}
 
     return render(request, "registro.html", context)
+
+@login_required
+def registrar_servicio(request):
+
+    form = ServicioForm()
+    red_form = Red_SocialForm()
+
+
+    if request.method == "POST":
+        form = ServicioForm(request.POST)
+        red_form = Red_SocialForm(request.POST) 
+
+
+        if form.is_valid() and red_form.is_valid():
+            nombre = request.POST['nombre']
+            apellido = request.POST['apellido']
+            tipo = request.POST['tipo']
+            correo = request.POST['correo']
+            dni = request.POST['dni']
+            direccion = request.POST['direccion']
+            telefono = request.POST['telefono']
+            
+            red = red_form.save(commit=False)
+
+            persona = Persona.objects.create(nombre = nombre,
+                                            apellido = apellido,
+                                            dni = dni,
+                                            direccion = direccion,
+                                            correo = correo,
+                                            telefono= telefono)
+            persona.save()
+            
+            prestador_de_servicios = Prestador_Servicios.objects.create(datos = persona,
+                                                tipo = tipo)
+            prestador_de_servicios.save()
+            
+            red.dueno = prestador_de_servicios
+            
+            
+            
+
+            print("\nSe registro un servicio")
+            #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
+            
+        return redirect("main")
+    else:
+        print("\n Algo salio mal")
+    context = {'form':form,'red_form': red_form, 'titulo': "Registro de Servicios de Terceros"}
+
+    return render(request, "registro_servicio.html", context)
 
 @login_required
 def registrar_mascota(request):

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Cliente, Persona, Mascota_Adopcion, Mascota, Turno
+from .models import Cliente, Persona, Red_Social, Mascota_Adopcion, Mascota, Turno, Prestador_Servicios
 
 from django.contrib.auth.forms import UserCreationForm
 
@@ -26,6 +26,24 @@ class MascotaForm(forms.ModelForm):
         self.fields['raza'].required = True
         self.fields['fecha_nac'].required = True
         self.fields['foto'].required = False
+class Red_SocialForm(forms.ModelForm):
+    
+    class Meta:
+        model = Red_Social
+        fields = ['usuario','nombre']
+
+class ServicioForm(forms.ModelForm):
+    nombre = forms.CharField(max_length=50) 
+    apellido = forms.CharField(max_length=50)
+    dni = forms.IntegerField()
+    direccion = forms.CharField(max_length=200,)
+    correo = forms.EmailField()
+    telefono = forms.CharField(max_length=20)
+    red = Red_SocialForm
+
+    class Meta:
+        model = Prestador_Servicios
+        fields = ['tipo']
 
 class TurnoForm(forms.ModelForm):
     class Meta:

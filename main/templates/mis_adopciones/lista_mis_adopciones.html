@@ -11,15 +11,18 @@
         <a href="{{ perro.get_absolute_url }}">{{ perro }}</a> 
         <br> Nombre del Perro: {{perro}}
 
-        <!--ARREGLAR, debe tener algo como if (perro.estado == 'e') entonces muestro tal cosa-->
         <hr>
-        <p class="{% if perro.estado == 'a' %}text-success{% elif perro.estado == 'a' %}text-danger{% else %}text-warning{% endif %}">{{ perro.get_estado_diplay }}</p>
-        {% if perro.estado != 'a' %}<p><strong>Esperando</strong> {{...}}</p>{% endif %}
-        <form style="display:inline-block;">
-            <input type="submit" value="Marcar como Adoptado" />
+
+        {% if perro.estado == "a"%}
+          <p><strong>Adoptado</strong></p>
+        {% endif %}
+
+        <form action="{% url 'marcar_adopcion' pk=perro.pk %}" method="post" style="display:inline-block;">
+          {% csrf_token %}  
+          <button type="submit" {% if perro.estado == "a" %}disabled{% endif %}>Marcar como Adoptado</button>
         </form>
         <br>
-        <a href="{{ perro.get_absolute_url }}">Detalle</a>
+        <a href="{{ perro.get_absolute_url }}"> Detalle </a>
         <br>
         <br>
       </li>

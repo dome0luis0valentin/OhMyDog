@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Servicios de Terceros de la veterinaria</h1>
+
+    {% if object_list %}
+    <ul>
+
+      {% for servicio in object_list %}
+      <li>
+        <a href="{{ servicio.get_absolute_url }}">{{ servicio }}</a> 
+        <br>
+        <br> Nombre de la persona: {{servicio}}
+        <br>
+        <a href="{{ servicio.get_absolute_url }}">Detalle</a>
+        <br>
+        <br>
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>Todavia no hay servicios registrados</p>
+      
+    {% endif %}
+{% endblock %}
+

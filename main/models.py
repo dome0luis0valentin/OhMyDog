@@ -128,6 +128,12 @@ class Prestador_Servicios(models.Model):
     def __str__(self) -> str:
         return self.datos.nombre
     
+    def get_absolute_url(self):
+        """
+        Devuelve la url para acceder a una instancia particular del modelo.
+        """
+        return "http://127.0.0.1:8000/ver_servicios/"+str(self.id)
+    
     TIPO_SERVICIO = (
         ('p', 'Paseador'),
         ('c', 'Cuidador'),

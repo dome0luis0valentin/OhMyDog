@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+  <h2>Registro</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <strong>Informacion de la Red Social</strong><br>
+    {{ red_form.as_p}}
+    <button type="submit">Registrarse</button>
+  </form>
+{% endblock %}
