@@ -8,11 +8,23 @@
 </head>
 <body style="font-family: Arial;">
 {% include 'partials/_header.html' with user_type=user_type %}
+
+<div>
+    <aside>
+        <!-- Menú lateral -->
+        Menu
+    </aside>
     <main>
         {% block content%}
 
         {% endblock%}
     </main>
+
+</div>
+   
+    
+    
 {% include 'partials/_footer.html' %}
+
 </body>
 </html>
