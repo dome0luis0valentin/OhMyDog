@@ -110,7 +110,10 @@ def inicio_sesion(request):
             else:
                 messages.info(request, 'Usuario bloqueado, revise su email para desbloquearlo')
                 return redirect('usuario bloqueado')
-            return redirect('main')
+            clientes=Cliente.objects.filter(usuario__email=nombre_usuario)
+            cliente=clientes[0]
+            context = {'veterinario':cliente.veterinario}
+            return render(request, "index.html" , context)
         
         else:
             if (intento.cantidad < 3):
@@ -154,7 +157,6 @@ def perfil(request):
 
 # Menu principal
 def main(request):
-    """ Hay tres tipos de usuarios visitor , vet y client"""
     user = "visitor"
     context = {'user_type':user}
     return render(request, "index.html" , context)

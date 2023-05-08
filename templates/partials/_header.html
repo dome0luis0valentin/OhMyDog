@@ -1,28 +1,6 @@
 <footer style=" height: 100px; border-width: 1px; border-style:double; background-color: khaki;">
     <nav>
         <ul>
-            <ul class="sidebar-nav">
-            <!--
-
-                {% if user.is_authenticated %}
-                    {% if user_type == 'vet' %}
-                        <h2>Funciones para Veterinarios</h2>
-            -->
-                        <!-- Código HTML para las funciones de los Veterinarios -->
-            <!--
-                    {% elif user_type == 'client' %}
-                        <h2>Funciones para Clientes</h2>
-            -->
-                        <!-- Código HTML para las funciones de los Clientes -->
-             <!--
-                    {% endif %}
-
-                {%endif%}
-             -->
-            
-               
-
-            </ul>
 
             <!--ACA VAN LAS FUNCIONALIDADES EN COMUN DEL CLIENTE  SOLAMENTE-->
             {% if user.is_authenticated %}
@@ -57,29 +35,37 @@
                     <input type="submit" value="Cerrar Sesion" />
                 </form>
 
-                <form style="display: inline-block;" action="http://127.0.0.1:8000/confirmar_turnos/">
-                    <input type="submit" value="Confirmar Turnos" />
-                </form>
-
-                <form style="display: inline-block;" action="http://127.0.0.1:8000/registrar_servicio/">
-                    <input type="submit" value="Registrar Servicio de Terceros" />
-                </form>
-
                 <form style="display: inline-block;" action="http://127.0.0.1:8000/ver_servicios/">
                     <input type="submit" value="Ver Servicio de Terceros" />
                 </form>
 
-                <form style="display: inline-block;" action="http://127.0.0.1:8000/registrar_urgencia/">
-                    <input type="submit" value="Registrar Urgencia" />
-                </form>
+                <!--veterinario-->
+
+                {% if veterinario %}
+
+                    <form style="display: inline-block;" action="http://127.0.0.1:8000/confirmar_turnos/">
+                        <input type="submit" value="Confirmar Turnos" />
+                    </form>
+
+                    <form style="display: inline-block;" action="http://127.0.0.1:8000/registrar_servicio/">
+                        <input type="submit" value="Registrar Servicio de Terceros" />
+                    </form>
+
+                    <form style="display: inline-block;" action="http://127.0.0.1:8000/registrar_urgencia/">
+                        <input type="submit" value="Registrar Urgencia" />
+                    </form>
+
+                    <form style="display: inline-block;" action="http://127.0.0.1:8000/registro/">
+                        <input type="submit" value="Registrar" />
+                    </form>
+                {% endif %}
 
                {% else %}
+
                 <form style="display: inline-block;" action="http://127.0.0.1:8000/inicio_sesion/">
                     <input type="submit" value="Iniciar Sesion" />
                 </form>
-                <form style="display: inline-block;" action="http://127.0.0.1:8000/registro/">
-                    <input type="submit" value="Registrar" />
-                </form>
+
                 
                {% endif %}
 

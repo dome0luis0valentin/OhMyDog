@@ -27,6 +27,7 @@ class Persona(models.Model):
 class Cliente(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)
     datos = models.ForeignKey(Persona, on_delete=models.PROTECT)
+    veterinario = models.BooleanField()
     mascotas = models.ManyToManyField('Mascota', blank=True)    
     mascotas_adopcion = models.ManyToManyField('Mascota_Adopcion', blank=True)
     
