@@ -145,6 +145,9 @@ def cambiar_contraseña(request):
         form = PasswordChangeForm(request.user)
     return render(request, 'cambiar_contrasenia.html', {'form': form})
 
+def confirmar_cambiar_contraseña(request):
+    return render(request, 'confirmar.html', {'accion': "cambiar contraseña", 'direccion': "cambiar_contraseña"})
+
 def cerrar_sesion(request):   
     if request.method == 'POST' and request.POST.get('confirmar') == '1':
         auth.logout(request)
@@ -153,7 +156,8 @@ def cerrar_sesion(request):
         return redirect('main')
 
 def confirmar_cerrar_sesion(request):
-    return render(request, 'confirmar_cerrar_sesion.html',)
+    return render(request, 'confirmar.html',{'accion': "cerrar secion", 'direccion': "cerrar_sesion"})
+
 #Mi perfil
 def perfil(request):
     cliente = Cliente.objects.filter(usuario__email=request.user.email)[0]
@@ -214,7 +218,7 @@ def lista_mascota(request):
     #mascotas
     #Aca tendría que filtrar todas las mascotas en adopcion
     lista = Mascota.objects.all()
-    num_mascotas = Mascota.objects.all().count()
+    num_mascotas = Mascota.objects.filter(dueno__usuario__email = auth.user.email)
     main_data = {"lista": lista}
     return render(request, "lista_mascota.html", {"cantidad": num_mascotas, "lista":lista})
    
@@ -607,7 +611,7 @@ def solicitar_turno(request):
             return redirect("main")
         else:
             print("\nNo se registro el turno")
-            messages.info(request, 'Algo salio mal')
+            messages.info(request, 'Verifique que la fecha tenga el formato AAAA-MM-DD')
             return redirect('solicitar turno')
         
     context = {'form':form, 'titulo': "Solicitud de Turno"}

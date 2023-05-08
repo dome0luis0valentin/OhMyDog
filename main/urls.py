@@ -15,7 +15,8 @@ urlpatterns = [
     path('usuario_bloqueado/', views.usuario_bloqueado, name='usuario bloqueado'),
     
     path('perfil/', views.perfil, name='perfil'),
-    path('cambiar_contraseña/', views.cambiar_contraseña, name='cambiar contraseña'),
+    path('cambiar_contraseña/', views.cambiar_contraseña, name='cambiar_contraseña'),
+    path('confirmar_cambiar_contraseña/', views.confirmar_cambiar_contraseña, name='confirmar_cambiar_contraseña'),
 
 
     path('menu_principal/', views.main, name="menu"),
