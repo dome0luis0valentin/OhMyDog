@@ -1,7 +1,5 @@
 from django.urls import path, include
-
-
-
+from django.views.generic import RedirectView
 from . import views
 
 #Estos van a ser las secciones  de la pagina
@@ -13,6 +11,8 @@ urlpatterns = [
     path('registro/', views.registro, name='registro'),
     path('cerrar_sesion/', views.cerrar_sesion, name='registro'),
     path('inicio_sesion/', views.inicio_sesion, name='inicio de sesion'),
+    path('usuario_bloqueado/', views.usuario_bloqueado, name='usuario bloqueado'),
+    
     path('perfil/', views.perfil, name='perfil'),
     path('cambiar_contraseña/', views.cambiar_contraseña, name='cambiar contraseña'),
 
@@ -41,7 +41,9 @@ urlpatterns = [
 
     path('registrar_servicio/', views.registrar_servicio, name='registrar servicio'),
     path('ver_servicios/', views.ServiciosListView.as_view(), name='ver servicio'),
-    path('ver_servicios/<int:pk>',views.ServicioDetailView.as_view(), name="detalle servicio"),
-    
-    
+    path('ver_servicios/<int:pk>',views.ServicioDetailView.as_view(), name="detalle servicio"), 
+    path('favicon.ico', RedirectView.as_view(url='/main/static/img/favicon.ico')),
+
+    path('registrar_urgencia/', views.registrar_urgencia, name = 'registrar urgencia'),
+
 ]

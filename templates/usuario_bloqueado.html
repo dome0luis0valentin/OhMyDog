@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+  <h1>El usuario fue bloquedo</h1>
+  <form method="post">
+    {% csrf_token %}
+    <h5>Para poder desbloquear el usuario, revise su correo electronico, en él encontrara un instructivo para poder desbloquarlo</h5>
+    
+    <p>Recuerde que el correo puede estar en la seccion de Spam</p>
+    
+  </form>
+{% endblock %}

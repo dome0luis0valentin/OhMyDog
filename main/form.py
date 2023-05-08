@@ -55,7 +55,6 @@ class TurnoForm(forms.ModelForm):
         self.fields['fecha'].required = True
         self.fields['banda_horaria'].required = True
         self.fields['motivo'].required = True
-        
 
 
 class MascotaAdopcionForm(forms.ModelForm):

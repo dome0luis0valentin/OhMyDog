@@ -145,3 +145,13 @@ class Red_Social(models.Model):
     nombre = models.CharField(max_length=50)
     usuario = models.CharField(max_length=70)
     dueno = models.ForeignKey(Prestador_Servicios, on_delete=models.PROTECT)
+
+class Intentos(models.Model):
+    usuario = models.CharField(max_length=50)
+    cantidad = models.IntegerField(default=0)
+    ESTADO_USUARIO = (
+        ('b', 'bloqueado'),
+        ('n', 'no bloqueado'),
+    )
+
+    estado = models.CharField(max_length=1, choices=ESTADO_USUARIO, default='n')

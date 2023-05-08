@@ -4,7 +4,7 @@ from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from .models import Mascota, Cliente, Mascota_Adopcion, Red_Social, Turno, Prestador_Servicios
+from .models import Mascota,Intentos, Cliente, Mascota_Adopcion, Red_Social, Turno, Prestador_Servicios
 from .form import UsuarioForm, MascotaAdopcionForm,Red_SocialForm , MascotaForm, TurnoForm, ServicioForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -90,19 +90,45 @@ def inicio_sesion(request):
 
         user = auth.authenticate(username=nombre_usuario, password=password)
 
-        if user is not None:
-            auth.login(request, user)
-            return redirect('main')
+#Validar si el usuario no esta bloqueado
+        intentos=Intentos.objects.filter(usuario=nombre_usuario)
+        if(len(intentos) == 0):
+            intento = Intentos.objects.create(usuario = nombre_usuario,
+                                                  cantidad = 0,
+                                                  estado = 'n')
         else:
+            intento = intentos[0]
+
+        if user is not None:
+
+            if (intento.estado != 'b'):
+                auth.login(request, user)
+                intento.cantidad=0
+                intento.save()
+                
+            else:
+                messages.info(request, 'Usuario bloqueado, revise su email para desbloquearlo')
+                return redirect('usuario bloqueado')
+            return redirect('main')
+        
+        else:
+            if (intento.cantidad < 3):
+                intento.cantidad = intento.cantidad +1
+            else:
+                intento.estado = 'b'
+                messages.info(request, 'Usuario bloqueado, revise su email para desbloquearlo')
+                intento.save()
+                return redirect('usuario bloqueado')
+
+            intento.save()
+          
             messages.info(request, 'Contraseña invalida o usuario incorrecto')
             return redirect('inicio de sesion')
-
-
-
-
     else:
         return render(request, 'registro/login.html')
 
+def usuario_bloqueado(request):
+    return render(request, 'usuario_bloqueado.html')
 
 def cambiar_contraseña(request):
     if request.method == 'POST':
@@ -471,6 +497,46 @@ def registrar_servicio(request):
     context = {'form':form,'red_form': red_form, 'titulo': "Registro de Servicios de Terceros"}
 
     return render(request, "registro_servicio.html", context)
+
+
+@login_required
+def registrar_urgencia(request):
+
+    form = TurnoForm()
+   
+    if request.method == "POST":
+        form = TurnoForm(request.POST) 
+
+
+        if form.is_valid():
+            banda_horaria = request.POST['banda_horaria']
+            fecha = request.POST['fecha']
+            motivo = request.POST['motivo']
+            correo_cliente = request.POST['correo_cliente']
+            
+            urgencia = form.save(commit=False)
+
+            cliente = Cliente.objects.filter(usuario__email==correo_cliente)[0]
+
+            urgencia = Turno.objects.create(fecha = fecha,
+                                            banda_horaria = banda_horaria,
+                                            motivo = motivo,
+                                            asistio = True,
+                                            aceptado = True,)
+
+            urgencia.cliente = cliente
+            urgencia.save()
+
+            print("\nSe registro la urgencia")
+            #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
+            
+        return redirect("main")
+    else:
+        print("\n Algo salio mal")
+    context = {'form':form, 'titulo': "Registro de Servicios de Urgencias"}
+
+    return render(request, "registro.html", context)
+
 
 @login_required
 def registrar_mascota(request):

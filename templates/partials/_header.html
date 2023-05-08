@@ -30,7 +30,11 @@
                 <li>Usuario: {{ user.get_username }}</li>
                 
                 <form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/registrar_adopcion/">
-                    <input type="submit" value="Registrar Mascotas Adopción" />
+                    <input type="submit" value="Registrar Mascotas Para Adopción" />
+                </form>
+
+                <form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/registrar_mascota/">
+                    <input type="submit" value="Registrar Mascotas" />
                 </form>
 
                 <form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/ver_mis_adopciones/">
@@ -63,6 +67,10 @@
 
                 <form style="display: inline-block;" action="http://127.0.0.1:8000/ver_servicios/">
                     <input type="submit" value="Ver Servicio de Terceros" />
+                </form>
+
+                <form style="display: inline-block;" action="http://127.0.0.1:8000/registrar_urgencia/">
+                    <input type="submit" value="Registrar Urgencia" />
                 </form>
                {% else %}
                 <form style="display: inline-block;" action="http://127.0.0.1:8000/inicio_sesion/">
