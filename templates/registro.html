@@ -3,10 +3,13 @@
 
 
 {% block content %}
-  <h2>Registro</h2>
+  <h2>{{titulo}}</h2>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Registrarse</button>
   </form>
+  <form style="display: inline-block; " action="http://127.0.0.1:8000/menu_principal/">
+    <input type="submit" value="Cancelar" />
+</form>
 {% endblock %}

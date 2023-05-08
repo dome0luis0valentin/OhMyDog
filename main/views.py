@@ -3,6 +3,7 @@ from django.views import generic
 from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 
 from .models import Mascota,Intentos, Cliente, Mascota_Adopcion, Red_Social, Turno, Prestador_Servicios
 from .form import UsuarioForm, MascotaAdopcionForm,Red_SocialForm , MascotaForm, TurnoForm, ServicioForm
@@ -469,31 +470,38 @@ def registrar_servicio(request):
             direccion = request.POST['direccion']
             telefono = request.POST['telefono']
             
-            red = red_form.save(commit=False)
+            
+            
+            
+            if not(Prestador_Servicios.objects.filter(datos__correo=correo).exists()):
+                red = red_form.save(commit=False)
 
-            persona = Persona.objects.create(nombre = nombre,
-                                            apellido = apellido,
-                                            dni = dni,
-                                            direccion = direccion,
-                                            correo = correo,
-                                            telefono= telefono)
-            persona.save()
-            
-            prestador_de_servicios = Prestador_Servicios.objects.create(datos = persona,
-                                                tipo = tipo)
-            prestador_de_servicios.save()
-            
-            red.dueno = prestador_de_servicios
-            
-            
-            
+                persona = Persona.objects.create(nombre = nombre,
+                                                apellido = apellido,
+                                                dni = dni,
+                                                direccion = direccion,
+                                                correo = correo,
+                                                telefono= telefono)
+                persona.save()
+                
+                prestador_de_servicios = Prestador_Servicios.objects.create(datos = persona,
+                                                    tipo = tipo)
+                prestador_de_servicios.save()
+                
+                red.dueno = prestador_de_servicios
+                messages.success(request,"Se registro el servicio")
+                return redirect('main')
 
-            print("\nSe registro un servicio")
+                print("\nSe registro un servicio")
+            else:
+                messages.error(request,"El usuario ya existe prueba otro")
+                return redirect('registrar servicio')
+
+            
             #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
             
-        return redirect("main")
-    else:
-        print("\n Algo salio mal")
+        else:
+            print("\n Algo salio mal")
     context = {'form':form,'red_form': red_form, 'titulo': "Registro de Servicios de Terceros"}
 
     return render(request, "registro_servicio.html", context)
@@ -544,20 +552,22 @@ def registrar_mascota(request):
     if request.method == "POST":
         form = MascotaForm(request.POST)
         if form.is_valid():
-
+            
             mascota = form.save(commit=False)
 
+            mascota.fecha_nac = request.POST['fecha_nac']
             #Aca obtengo el dueño al que pertenece el usuarioi
             mascota.dueno = Cliente.objects.filter(datos__correo=request.user.email)[0] # asignar el valor adicional al campo correspondiente
 
-            # guardar el objeto en la base de datos
+                # guardar el objeto en la base de datos
 
-            #AGREGAR A FORM LOS DATOS DEL USUARIO
+                #AGREGAR A FORM LOS DATOS DEL USUARIO
             mascota.save()
             print("\nSe registro la mascota")
-            #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
-        
-        return redirect("main")
+                #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
+            
+            #Si todo salio bien vuelve al menu principal
+            return redirect("main")    
         
     context = {'form':form, 'titulo': "Registro de Mascota"}
 

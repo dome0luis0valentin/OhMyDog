@@ -1,5 +1,7 @@
 from django import forms
 
+from django.core.validators import FileExtensionValidator
+
 from .models import Cliente, Persona, Red_Social, Mascota_Adopcion, Mascota, Turno, Prestador_Servicios
 
 from django.contrib.auth.forms import UserCreationForm
@@ -15,9 +17,17 @@ class UsuarioForm(forms.ModelForm):
         fields = '__all__'  #Todos los campos del modelo
 
 class MascotaForm(forms.ModelForm):
+
+    fecha_nac = forms.DateField(error_messages={
+        'invalid': 'El formato de fecha es inválido. Use el formato AAAA-MM-DD.'
+    })
+
+    foto = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['jpg', 'png'])], required=False)
+
+
     class Meta:
         model = Mascota
-        fields = ('nombre', 'color', 'raza', 'fecha_nac', 'foto')
+        fields = ('nombre', 'color', 'raza')
 
     def __init__(self, *args, **kwargs):
         super(MascotaForm, self).__init__(*args, **kwargs)
@@ -26,6 +36,7 @@ class MascotaForm(forms.ModelForm):
         self.fields['raza'].required = True
         self.fields['fecha_nac'].required = True
         self.fields['foto'].required = False
+
 class Red_SocialForm(forms.ModelForm):
     
     class Meta:
