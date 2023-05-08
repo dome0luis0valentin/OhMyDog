@@ -9,12 +9,14 @@ urlpatterns = [
     
     path('', views.main, name="main"),
     path('registro/', views.registro, name='registro'),
-    path('cerrar_sesion/', views.cerrar_sesion, name='registro'),
+    path('confirmar_cerrar_sesion/', views.confirmar_cerrar_sesion, name='confirmar_cerrar_sesion'),
+    path('cerrar_sesion/', views.cerrar_sesion, name='cerrar_sesion'),
     path('inicio_sesion/', views.inicio_sesion, name='inicio de sesion'),
     path('usuario_bloqueado/', views.usuario_bloqueado, name='usuario bloqueado'),
     
     path('perfil/', views.perfil, name='perfil'),
-    path('cambiar_contraseña/', views.cambiar_contraseña, name='cambiar contraseña'),
+    path('cambiar_contraseña/', views.cambiar_contraseña, name='cambiar_contraseña'),
+    path('confirmar_cambiar_contraseña/', views.confirmar_cambiar_contraseña, name='confirmar_cambiar_contraseña'),
 
 
     path('menu_principal/', views.main, name="menu"),

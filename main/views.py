@@ -5,6 +5,9 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 
+from django.core.paginator import Paginator
+
+
 from .models import Mascota,Intentos, Cliente, Mascota_Adopcion, Red_Social, Turno, Prestador_Servicios
 from .form import UsuarioForm, MascotaAdopcionForm,Red_SocialForm , MascotaForm, TurnoForm, ServicioForm
 from django.contrib.auth.views import LoginView
@@ -145,15 +148,23 @@ def cambiar_contraseña(request):
         form = PasswordChangeForm(request.user)
     return render(request, 'cambiar_contrasenia.html', {'form': form})
 
-def cerrar_sesion(request):
-    auth.logout(request)
-    return redirect('main')
+def confirmar_cambiar_contraseña(request):
+    return render(request, 'confirmar.html', {'accion': "cambiar contraseña", 'direccion': "cambiar_contraseña"})
+
+def cerrar_sesion(request):   
+    if request.method == 'POST' and request.POST.get('confirmar') == '1':
+        auth.logout(request)
+        return redirect('main')
+    else:
+        return redirect('main')
+
+def confirmar_cerrar_sesion(request):
+    return render(request, 'confirmar.html',{'accion': "cerrar secion", 'direccion': "cerrar_sesion"})
 
 #Mi perfil
 def perfil(request):
-
-    cliente = Cliente.objects.filter(usuario__email=request.user.email)
-    return (request, "perfil.html", {'cliente': cliente})
+    cliente = Cliente.objects.filter(usuario__email=request.user.email)[0]
+    return render(request, "perfil.html", {'cliente': cliente})
 
 # Menu principal
 def main(request):
@@ -209,7 +220,7 @@ def lista_mascota(request):
     #mascotas
     #Aca tendría que filtrar todas las mascotas en adopcion
     lista = Mascota.objects.all()
-    num_mascotas = Mascota.objects.all().count()
+    num_mascotas = Mascota.objects.filter(dueno__usuario__email = auth.user.email)
     main_data = {"lista": lista}
     return render(request, "lista_mascota.html", {"cantidad": num_mascotas, "lista":lista})
    
@@ -374,6 +385,8 @@ class AdopcionDetailView(generic.DetailView):
         )
     
 class MascotaDetailView(generic.DetailView):
+
+    paginate_by = 3
     model = Mascota
     template_name = 'mis_mascotas/detalle_mascota.html'  # Specify your own template name/location
 
@@ -600,7 +613,7 @@ def solicitar_turno(request):
             return redirect("main")
         else:
             print("\nNo se registro el turno")
-            messages.info(request, 'Algo salio mal')
+            messages.info(request, 'Verifique que la fecha tenga el formato AAAA-MM-DD')
             return redirect('solicitar turno')
         
     context = {'form':form, 'titulo': "Solicitud de Turno"}
