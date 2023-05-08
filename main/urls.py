@@ -9,7 +9,8 @@ urlpatterns = [
     
     path('', views.main, name="main"),
     path('registro/', views.registro, name='registro'),
-    path('cerrar_sesion/', views.cerrar_sesion, name='registro'),
+    path('confirmar_cerrar_sesion/', views.confirmar_cerrar_sesion, name='confirmar_cerrar_sesion'),
+    path('cerrar_sesion/', views.cerrar_sesion, name='cerrar_sesion'),
     path('inicio_sesion/', views.inicio_sesion, name='inicio de sesion'),
     path('usuario_bloqueado/', views.usuario_bloqueado, name='usuario bloqueado'),
     

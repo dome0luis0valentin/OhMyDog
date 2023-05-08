@@ -5,6 +5,9 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 
+from django.core.paginator import Paginator
+
+
 from .models import Mascota,Intentos, Cliente, Mascota_Adopcion, Red_Social, Turno, Prestador_Servicios
 from .form import UsuarioForm, MascotaAdopcionForm,Red_SocialForm , MascotaForm, TurnoForm, ServicioForm
 from django.contrib.auth.views import LoginView
@@ -142,15 +145,19 @@ def cambiar_contraseña(request):
         form = PasswordChangeForm(request.user)
     return render(request, 'cambiar_contrasenia.html', {'form': form})
 
-def cerrar_sesion(request):
-    auth.logout(request)
-    return redirect('main')
+def cerrar_sesion(request):   
+    if request.method == 'POST' and request.POST.get('confirmar') == '1':
+        auth.logout(request)
+        return redirect('main')
+    else:
+        return redirect('main')
 
+def confirmar_cerrar_sesion(request):
+    return render(request, 'confirmar_cerrar_sesion.html',)
 #Mi perfil
 def perfil(request):
-
-    cliente = Cliente.objects.filter(usuario__email=request.user.email)
-    return (request, "perfil.html", {'cliente': cliente})
+    cliente = Cliente.objects.filter(usuario__email=request.user.email)[0]
+    return render(request, "perfil.html", {'cliente': cliente})
 
 # Menu principal
 def main(request):
@@ -372,6 +379,8 @@ class AdopcionDetailView(generic.DetailView):
         )
     
 class MascotaDetailView(generic.DetailView):
+
+    paginate_by = 3
     model = Mascota
     template_name = 'mis_mascotas/detalle_mascota.html'  # Specify your own template name/location
 

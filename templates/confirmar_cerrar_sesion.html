@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>¿Estás seguro de que quieres cerrar sesión?</h2>
+  <form action="{% url 'cerrar_sesion' %}" method="post">
+    {% csrf_token %}
+    <button type="submit" name="confirmar" value="1">Aceptar</button>
+    <button type="submit" name="confirmar" value="0">Cancelar</button>
+  </form>
+{% endblock %}
