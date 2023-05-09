@@ -93,6 +93,12 @@ def inicio_sesion(request):
         password = request.POST['password']
 
         user = auth.authenticate(username=nombre_usuario, password=password)
+        
+        existe = Cliente.objects.filter(usuario__email=nombre_usuario).exists()
+        
+        if user is  None:
+            messages.info(request, 'Contraseña invalida o usuario incorrecto')
+            return redirect('inicio de sesion') 
 
 #Validar si el usuario no esta bloqueado
         intentos=Intentos.objects.filter(usuario=nombre_usuario)
