@@ -121,10 +121,15 @@ def inicio_sesion(request):
                 messages.info(request, 'Usuario bloqueado, revise su email para desbloquearlo')
                 return redirect('usuario bloqueado')
             clientes=Cliente.objects.filter(usuario__email=nombre_usuario)
-            cliente=clientes[0]
-            context = {'veterinario':cliente.veterinario}
-            return render(request, "index.html" , context)
-        
+            if len(clientes)> 0:
+                cliente=clientes[0]
+            
+                context = {'veterinario':cliente.veterinario}
+                return render(request, "index.html" , context)
+            else:
+                messages.info(request, 'Usuario o contraseña incorrecto')
+                
+                return redirect('inicio de sesion')
         else:
             if (intento.cantidad < 3):
                 intento.cantidad = intento.cantidad +1
