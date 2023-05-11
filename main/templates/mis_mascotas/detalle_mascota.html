@@ -7,7 +7,8 @@
   <p><strong>Raza:</strong> {{ object.raza }}</p>
   <p><strong>Fecha De Nacimiento:</strong> {{ object.fecha_nac }}</p>
   <p><strong>Foto: </strong></p><br>
-  {%if object.foto%}
-    <img src="{{ object.foto.url }}" alt="{{ object }}">
+  /media/imagenes/{{ object.foto}}
+  {%if object.foto %}
+    <img src="/media/imagenes/{{ object.foto }}" alt="{{ object }}">
   {%endif%}
 {% endblock %}

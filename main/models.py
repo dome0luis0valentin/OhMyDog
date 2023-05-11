@@ -90,17 +90,24 @@ class Turno(models.Model):
     id = models.AutoField(primary_key=True)
     fecha= models.DateField()
     asistio = models.BooleanField()
-    motivo= models.CharField(max_length=50)
     aceptado= models.BooleanField()
     cliente= models.ForeignKey(Cliente,on_delete=models.CASCADE)
 
+    MOTIVO = (
+        ('C','Consulta'),
+        ('U','Urgencia'),
+        ('S','Castración'),
+        ('A','Vacunación de tipo A'),
+        ('B','Vacunación de tipo B'),
+        ('D','Desparasitación')
+    )
     BANDA_HORARIA = (
         ('M', 'Mañana'),
         ('T', 'Tarde'),
     )
 
     banda_horaria = models.CharField(max_length=1, choices=BANDA_HORARIA, default='M', help_text='Horario en el que puede ir a la veterinaria mañana(7 AM - 12 PM) o tarde (12 PM a 6 PM')
-
+    motivo= models.CharField(max_length=1, choices=MOTIVO, default='C')
 
     def __str__(self) -> str:
         return str(self.fecha.day)+"/"+str(self.fecha.month)

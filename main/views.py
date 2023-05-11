@@ -7,6 +7,7 @@ from datetime import datetime
 
 from django.core.paginator import Paginator
 
+from datetime import datetime
 
 from .models import Mascota,Intentos, Cliente, Mascota_Adopcion, Red_Social, Turno, Prestador_Servicios
 from .form import UsuarioForm, MascotaAdopcionForm,Red_SocialForm , MascotaForm, TurnoForm, ServicioForm
@@ -586,12 +587,22 @@ def registrar_mascota(request):
 
     return render(request, "registro.html", context)
 
+
+def fecha_is_valid(fecha):
+    hoy = datetime.now().date()
+    fecha_ingresada = datetime.strptime(fecha, "%Y-%m-%d").date()
+    return fecha_ingresada >= hoy
+
 @login_required
 def solicitar_turno(request):
     form = TurnoForm()
     if request.method == "POST":
         form = TurnoForm(request.POST)
-        if form.is_valid():
+
+        fecha = request.POST["fecha"]
+
+        #Python no valida todo el condicional, si el form no es valido no valida la fecha
+        if form.is_valid() and fecha_is_valid(fecha):
 
             turno = form.save(commit=False)
 
@@ -611,7 +622,7 @@ def solicitar_turno(request):
             return redirect("main")
         else:
             print("\nNo se registro el turno")
-            messages.info(request, 'Verifique que la fecha tenga el formato AAAA-MM-DD')
+            messages.info(request, 'Verifique que la fecha tenga el formato AAAA-MM-DD y que sea un dia valido')
             return redirect('solicitar turno')
         
     context = {'form':form, 'titulo': "Solicitud de Turno"}
