@@ -96,7 +96,7 @@ def inicio_sesion(request):
         user = auth.authenticate(username=nombre_usuario, password=password)
         
         existe = Cliente.objects.filter(usuario__email=nombre_usuario).exists()
-        
+        print("################################################",existe)
         if user is  None:
             messages.info(request, 'Contraseña invalida o usuario incorrecto')
             return redirect('inicio de sesion') 
@@ -121,15 +121,9 @@ def inicio_sesion(request):
                 messages.info(request, 'Usuario bloqueado, revise su email para desbloquearlo')
                 return redirect('usuario bloqueado')
             clientes=Cliente.objects.filter(usuario__email=nombre_usuario)
-            if len(clientes)> 0:
-                cliente=clientes[0]
-            
-                context = {'veterinario':cliente.veterinario}
-                return render(request, "index.html" , context)
-            else:
-                messages.info(request, 'Usuario o contraseña incorrecto')
-                
-                return redirect('inicio de sesion')
+            cliente=clientes[0]
+            context = {'veterinario':cliente.veterinario}
+            return render(request, "index.html" , context)
         else:
             if (intento.cantidad < 3):
                 intento.cantidad = intento.cantidad +1
@@ -297,6 +291,13 @@ def enviar_formulario_adopcion(request):
         return render(request, 'formulario_adopcion.html') 
 
 
+def decidir(request):
+    if request.method == 'POST':
+        if ():
+            #confirmar
+        else:
+            #rechazar
+        #eliminar  
 
 
 
