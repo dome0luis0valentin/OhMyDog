@@ -40,6 +40,8 @@ urlpatterns = [
     path('solicitar_turno/', views.solicitar_turno, name='solicitar turno'),
     path('confirmar_turnos/', views.TurnosListView.as_view(), name='confirmar turnos'),
     path('confirmar_turnos/<int:pk>', views.TurnoDetailView.as_view(), name='detalle de turno'),
+    path('aceptar_turno/<int:turno_id>', views.aceptar_turno, name='aceptar turno'),
+    path('rechazar_turno/<int:turno_id>', views.rechazar_turno, name='rechazar turno'),
 
     path('registrar_servicio/', views.registrar_servicio, name='registrar servicio'),
     path('ver_servicios/', views.ServiciosListView.as_view(), name='ver servicio'),

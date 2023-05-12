@@ -289,16 +289,25 @@ def enviar_formulario_adopcion(request):
         return redirect('adopciones')
     else:
         return render(request, 'formulario_adopcion.html') 
-
-
-def decidir(request):
+    
+def rechazar_turno(request, turno_id):
     if request.method == 'POST':
-        if ():
-            #confirmar
-        else:
-            #rechazar
-        #eliminar  
+        #rechazar
+        turno = Turno.objects.filter(id = turno_id)[0]
+        turno.estado='A'
+        turno.save()
 
+        return redirect('confirmar turnos')
+        
+
+def aceptar_turno(request, turno_id):
+    if request.method == 'POST':
+        #aceptar
+        turno = Turno.objects.filter(id = turno_id)[0]
+        turno.estado='R'
+        turno.save()
+
+        return redirect('confirmar turnos')
 
 
 
@@ -351,7 +360,7 @@ class TurnosListView(generic.ListView):
 
     #Metodo que devuelve los turnos sin confirmar
     def get_queryset(self):
-        return Turno.objects.all()
+        return Turno.objects.filter(estado='E')
     
     queryset = get_queryset
 
