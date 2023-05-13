@@ -143,3 +143,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'grupo21ing2@gmail.com'
 EMAIL_HOST_PASSWORD = 'bpbmacqwuarzafmh'
+
+
+AUTH_USER_MODEL = 'main.User'

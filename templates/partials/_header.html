@@ -11,6 +11,10 @@
                 <input type="submit" class="m-2 btn btn-outline-success" value="Más Infomación" />
             </form>
 
+            <form style="display: inline-block;" action="http://127.0.0.1:8000/adopcion/">
+                <input type="submit" class="m-2 btn btn-outline-success" value="Mascotas en Adopción" />
+            </form>
+            
             <!--ACA VAN LAS FUNCIONALIDADES EN COMUN DEL CLIENTE  SOLAMENTE-->
             {% if user.is_authenticated %}
 
@@ -33,6 +37,8 @@
 
                     <li><a class="m-2 btn btn-outline-success dropdown-item"
                             href="http://127.0.0.1:8000/ver_mis_mascotas/">Mis Mascotas</a></li>
+                    <li><a class="m-2 btn btn-outline-success dropdown-item"
+                            href="http://127.0.0.1:8000/registrar_mascota/">Registrar Mascota</a></li>
                     <li><a class="m-2 btn btn-outline-success dropdown-item"
                             href="http://127.0.0.1:8000/registrar_adopcion/">Registrar Mascotas Para Adopción</a></li>
                     <li><a class="m-2 btn btn-outline-success dropdown-item"
@@ -59,7 +65,7 @@
 
             <!--veterinario-->
 
-            {% if veterinario %}
+            {% if user.is_veterinario %}
 
             <div class="dropdown" style="display: inline-block;">
                 <button class="btn btn-outline-success m-2 dropdown-toggle" type="button" id="dropdownMenuButton1"

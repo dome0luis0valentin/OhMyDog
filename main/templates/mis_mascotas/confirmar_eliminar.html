@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>¿Estás seguro de que quieres {{accion}}?</h2>
+    <form style="display: inline-block;" action="{% url 'eliminar_mascota' id %}">
+        <input type="submit" class="m-2 btn btn-outline-success" value="Eliminar Mascota" />
+    </form>
+    <form style="display: inline-block;" action="http://127.0.0.1:8000/ver_mis_mascotas/">
+        <input type="submit" class="m-2 btn btn-outline-success" value="Cancelar" />
+    </form>
+{% endblock %}

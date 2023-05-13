@@ -1,7 +1,8 @@
 from django.urls import path, include
 from django.views.generic import RedirectView
 from . import views
-
+from OhMyDog import settings
+from django.conf.urls.static import static
 #Estos van a ser las secciones  de la pagina
 
 
@@ -28,6 +29,7 @@ urlpatterns = [
     path('detalle_mascota_view/<int:id>',views.detalle_mascota, name="detalle_mascota_view"),
     path('ver_mis_mascotas/', views.MascotaListView.as_view(), name='Ver mis Mascotas'),
     path('eliminar_mascota/<int:mascota_id>/', views.eliminar_mascota, name='eliminar_mascota'),
+    path('confirmar_eliminar_mascota/<int:mascota_id>/', views.confirmar_eliminar_mascota, name='confirmar_eliminar_mascota'),
     path('ver_mis_mascotas/<int:pk>', views.MascotaDetailView.as_view(), name='detalle de mis mascota'),
 
     path('adopcion/<int:pk>', views.AdopcionDetailView.as_view(), name='detalle de mascota'),
@@ -51,3 +53,6 @@ urlpatterns = [
     path('registrar_urgencia/', views.registrar_urgencia, name = 'registrar urgencia'),
 
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

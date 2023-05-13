@@ -2,9 +2,10 @@ from django.db import models
 
 from django.urls import reverse #Used to generate URLs by reversing the URL patterns
 
-from django.contrib.auth.models import User
+#from django.contrib.auth.models import User
+#Usuario nuevo
 
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser
 
 #https://developer.mozilla.org/es/docs/Learn/Server-side/Django/Models
 
@@ -12,7 +13,9 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 #ACA FALTAN TODOS LO MODELOS DE LAS BASE DE DATOS
 
-#Este modelo lo uso para el FormModel
+class User(AbstractUser):
+    is_veterinario = models.BooleanField(null=True, default=False)
+
 class Persona(models.Model):
     nombre = models.CharField(max_length=50) 
     apellido = models.CharField(max_length=50)
@@ -27,7 +30,6 @@ class Persona(models.Model):
 class Cliente(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.PROTECT)
     datos = models.ForeignKey(Persona, on_delete=models.PROTECT)
-    veterinario = models.BooleanField()
     mascotas = models.ManyToManyField('Mascota', blank=True)    
     mascotas_adopcion = models.ManyToManyField('Mascota_Adopcion', blank=True)
     
@@ -47,7 +49,9 @@ class Mascota(models.Model):
     color = models.CharField(max_length=50)
     raza = models.CharField(max_length=1000)
     fecha_nac = models.DateField()
-    foto = models.FileField(blank=True, upload_to='imaganes/')
+    foto = models.ImageField(blank=True, upload_to='imagenes/', error_messages={
+            'invalid': 'El archivo debe ser una imagen'
+        })
 
     def __str__(self) -> str:
         return self.nombre
@@ -89,7 +93,9 @@ class Mascota_Adopcion(models.Model):
 
 class Turno(models.Model):
     id = models.AutoField(primary_key=True)
-    fecha= models.DateField()
+    fecha= models.DateField(error_messages={
+            'invalid': 'Fecha incorrecta. Use el formato AAAA-MM-DD'
+        })
     asistio = models.BooleanField()
     cliente= models.ForeignKey(Cliente,on_delete=models.CASCADE)
 

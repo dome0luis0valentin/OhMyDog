@@ -10,18 +10,22 @@ from django.core.paginator import Paginator
 from datetime import datetime
 
 from .models import Mascota,Intentos, Cliente, Mascota_Adopcion, Red_Social, Turno, Prestador_Servicios
-from .form import UsuarioForm, MascotaAdopcionForm,Red_SocialForm , MascotaForm, TurnoForm, ServicioForm
+from .form import UrgenciaForm,UsuarioForm, MascotaAdopcionForm,Red_SocialForm , MascotaForm, TurnoForm, ServicioForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User, auth
+
+#Usuario viejo de Django
+#from django.contrib.auth.models import User
+from django.contrib.auth.models import auth
+#Usuario nuevo personalizado
+from main.models import User
 
 
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
@@ -39,8 +43,36 @@ from django.shortcuts import redirect
 #from .form import RegistroForm
 from .models import Persona
 
-#Responde esto cuando quiere ver el:
 
+def dni_is_valid(dni):
+    try:
+        dni = int(dni)
+        return True
+    except:
+        return False
+    
+def fecha_is_valid(fecha):
+    try:
+        hoy = datetime.now().date()
+        fecha_ingresada = datetime.strptime(fecha, "%Y-%m-%d").date()
+        return fecha_ingresada >= hoy
+    except:
+        # El usuario no existe en la base de datos
+        return False
+    
+
+def usuario_is_valid(username):
+    try:
+        user = User.objects.get(email=username)
+        # El usuario existe en la base de datos
+        return True
+    except User.DoesNotExist:
+        # El usuario no existe en la base de datos
+        return False
+
+
+MENSAJE_FECHA_INVALIDA = 'Verifique que la fecha tenga el formato AAAA-MM-DD y que sea un dia valido.'
+MENSAJE_USUARIO_INVALIDO = 'Usuario incorrecto, revise que el email sea correcto y que el cliente este registrado'
 # iniciar Sesion
 def registro(request):
     if request.method == 'POST':
@@ -53,6 +85,13 @@ def registro(request):
         dni = request.POST['dni']
         direccion = request.POST['direccion']
         telefono = request.POST['telefono']
+        is_veterinario = request.POST.get('is_veterinario')
+
+        print(is_veterinario)
+        if (is_veterinario=='on'):
+            is_veterinario=True
+        else:
+            is_veterinario=False
 
         if contraseña==contraseña_confir:
             if User.objects.filter(username=correo).exists():
@@ -62,8 +101,12 @@ def registro(request):
                 messages.info(request, 'Este correo ya esta registrado')
                 return redirect(registro)
             else:
-                user = User.objects.create_user(username=correo, password=contraseña, 
-                                        email=correo, first_name=nombre, last_name=apellido)
+                user = User.objects.create_user(username=correo,
+                                                password=contraseña, 
+                                                email=correo,
+                                                first_name=nombre,
+                                                last_name=apellido,
+                                                is_veterinario = is_veterinario)
                 user.save()
                 persona = Persona.objects.create(nombre = nombre,
                                                       apellido = apellido,
@@ -96,7 +139,7 @@ def inicio_sesion(request):
         user = auth.authenticate(username=nombre_usuario, password=password)
         
         existe = Cliente.objects.filter(usuario__email=nombre_usuario).exists()
-        print("################################################",existe)
+
         if user is  None:
             messages.info(request, 'Contraseña invalida o usuario incorrecto')
             return redirect('inicio de sesion') 
@@ -122,8 +165,7 @@ def inicio_sesion(request):
                 return redirect('usuario bloqueado')
             clientes=Cliente.objects.filter(usuario__email=nombre_usuario)
             cliente=clientes[0]
-            context = {'veterinario':cliente.veterinario}
-            return render(request, "index.html" , context)
+            return render(request, "index.html")
         else:
             if (intento.cantidad < 3):
                 intento.cantidad = intento.cantidad +1
@@ -181,41 +223,6 @@ def main(request):
 #Informacion sobre la veterinaria
 def about(request):
     return render(request, "about.html")
-"""
-#Registrarse
-def registro(request):
-
-    form = UsuarioForm()
-    if request.method == "POST":
-        form = UsuarioForm(request.POST)
-        if form.is_valid():
-            form.save()
-        print("\nSe registro a:\n")
-        print(form.data["correo"])
-    context = {'form':form, 'titulo': "Registro de Usuario"}
-
-    return render(request, "registro.html", context)
-
-    
-
-    #return render(request, "prueba_registro.html")
-
-""" 
-
-
-def registro1(request):
-    if request.method == 'POST':
-        form = RegistroForm(request.POST)
-        if form.is_valid():
-            form.save()
-            print("se guardo")
-            return render(request, 'index.html')
-        else:
-            print("NO se guardo")
-    else:
-        form = RegistroForm()
-    return render(request, 'registro.html', {'form': form})
-
 
 #Lista de Mascotas
 def lista_mascota(request):
@@ -245,6 +252,9 @@ def detalle_mascota(request, pk=None):
     return render(request, "menu_item.html", {"menu_item": menu_item})
     """
 
+def confirmar_eliminar_mascota(request, mascota_id):
+    return render(request,'mis_mascotas/confirmar_eliminar.html', {'id': mascota_id, 'accion': "eliminar mascota"})
+
 def eliminar_mascota(request, mascota_id):
     mascota = get_object_or_404(Mascota, id=mascota_id)
     mascota.delete()
@@ -271,23 +281,28 @@ def enviar_formulario_adopcion(request):
         telefono = request.POST.get('telefono')
         motivo = request.POST.get('motivo')
 
-        # Renderizar la plantilla de correo electrónico
-        html_message = render_to_string('email_template.html', {'nombre': nombre, 'apellido': apellido, 'dni': dni, 'correo': correo, 'telefono': telefono, 'motivo': motivo})
-        plain_message = strip_tags(html_message)
+        if (dni_is_valid(dni)):
+            # Renderizar la plantilla de correo electrónico
+            html_message = render_to_string('email_template.html', {'nombre': nombre, 'apellido': apellido, 'dni': dni, 'correo': correo, 'telefono': telefono, 'motivo': motivo})
+            plain_message = strip_tags(html_message)
 
-        # Enviar el correo electrónico
-        send_mail(
-            'Formulario de adopción',
-            plain_message,
-            'grupo21ing2@gmail.com',
-            # tendriamos que agregar el gmail del usuario que publico la adopcion mejor dicho el dueño del perro
-            ['josuecarrera788@gmail.com'],
-            html_message=html_message,
-        )
+            # Enviar el correo electrónico
+            send_mail(
+                'Formulario de adopción',
+                plain_message,
+                'grupo21ing2@gmail.com',
+                # tendriamos que agregar el gmail del usuario que publico la adopcion mejor dicho el dueño del perro
+                ['josuecarrera788@gmail.com'],
+                html_message=html_message,
+            )
 
-        # Redireccionar a una página de éxito
-        return redirect('adopciones')
+            # Redireccionar a una página de éxito
+            return redirect('adopciones')
+        else:
+            messages.error(request,"DNI invalido, solo ingrese numeos, sin puntos ni espacios ")
+            return redirect('adopciones')
     else:
+        
         return render(request, 'formulario_adopcion.html') 
     
 def rechazar_turno(request, turno_id):
@@ -470,8 +485,8 @@ def registrar_adopcion(request):
         if form.is_valid():
 
             mi_objeto = form.save(commit=False)
-            #Por ahora se los asignos al usuario 1
-            mi_objeto.dueno = Cliente.objects.filter(pk=1)[0] # asignar el valor adicional al campo correspondiente
+            
+            mi_objeto.dueno = Cliente.objects.filter(usuario__email=request.user.email)[0]
             # guardar el objeto en la base de datos
 
             #AGREGAR A FORM LOS DATOS DEL USUARIO
@@ -546,38 +561,42 @@ def registrar_servicio(request):
 
 @login_required
 def registrar_urgencia(request):
-
-    form = TurnoForm()
+    form = UrgenciaForm()
    
     if request.method == "POST":
-        form = TurnoForm(request.POST) 
+        form = UrgenciaForm(request.POST) 
 
+        banda_horaria = request.POST['banda_horaria']
+        fecha = request.POST['fecha']
+        motivo = request.POST['motivo']
+        correo_cliente = request.POST['cliente']
 
-        if form.is_valid():
-            banda_horaria = request.POST['banda_horaria']
-            fecha = request.POST['fecha']
-            motivo = request.POST['motivo']
-            correo_cliente = request.POST['correo_cliente']
+        if form.is_valid() and fecha_is_valid(fecha) and usuario_is_valid(correo_cliente):
             
             urgencia = form.save(commit=False)
 
-            cliente = Cliente.objects.filter(usuario__email==correo_cliente)[0]
+            cliente= Cliente.objects.filter(usuario__email=correo_cliente)[0]
 
-            urgencia = Turno.objects.create(fecha = fecha,
-                                            banda_horaria = banda_horaria,
-                                            motivo = motivo,
-                                            asistio = True,
-                                            aceptado = True,)
-
-            urgencia.cliente = cliente
+            urgencia = Turno.objects.create(cliente = cliente,
+                                                fecha = fecha,
+                                                banda_horaria = banda_horaria,
+                                                motivo = motivo,
+                                                asistio = True,
+                                                estado = 'A')
             urgencia.save()
 
             print("\nSe registro la urgencia")
-            #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
+                #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
             
-        return redirect("main")
-    else:
-        print("\n Algo salio mal")
+            return redirect("main")
+        else:
+            if 'fecha' in form.errors or not (fecha_is_valid(fecha)):
+                messages.info(request, MENSAJE_FECHA_INVALIDA)
+            if not (usuario_is_valid(correo_cliente)):
+                messages.info(request, MENSAJE_USUARIO_INVALIDO)
+            print("\n NO Se registro la urgencia")
+            return redirect('registrar urgencia')
+
     context = {'form':form, 'titulo': "Registro de Servicios de Urgencias"}
 
     return render(request, "registro.html", context)
@@ -587,7 +606,7 @@ def registrar_urgencia(request):
 def registrar_mascota(request):
     form = MascotaForm()
     if request.method == "POST":
-        form = MascotaForm(request.POST)
+        form = MascotaForm(request.POST, request.FILES)
         if form.is_valid():
             
             mascota = form.save(commit=False)
@@ -611,14 +630,11 @@ def registrar_mascota(request):
     return render(request, "registro.html", context)
 
 
-def fecha_is_valid(fecha):
-    hoy = datetime.now().date()
-    fecha_ingresada = datetime.strptime(fecha, "%Y-%m-%d").date()
-    return fecha_ingresada >= hoy
 
 @login_required
 def solicitar_turno(request):
     form = TurnoForm()
+
     if request.method == "POST":
         form = TurnoForm(request.POST)
 
@@ -634,7 +650,7 @@ def solicitar_turno(request):
             
             turno.asistio = False
            
-            turno.aceptado = False
+            turno.estado = 'E'
             # guardar el objeto en la base de datos
 
             #AGREGAR A FORM LOS DATOS DEL USUARIO
@@ -645,7 +661,8 @@ def solicitar_turno(request):
             return redirect("main")
         else:
             print("\nNo se registro el turno")
-            messages.info(request, 'Verifique que la fecha tenga el formato AAAA-MM-DD y que sea un dia valido')
+           
+            messages.info(request, MENSAJE_FECHA_INVALIDA)
             return redirect('solicitar turno')
         
     context = {'form':form, 'titulo': "Solicitud de Turno"}
