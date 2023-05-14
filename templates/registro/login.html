@@ -1,37 +1,54 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="" style="height: 390px;">
   <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-6 col-sm-12">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="text-center">Inicio de sesión</h3>
-          </div>
-          <div class="card-body">
-            {% if messages %}
-              {% for message in messages %}
-                <div class="alert alert-danger">{{ message }}</div>
-              {% endfor %}
-            {% endif %}
-            <form method="POST">
-              {% csrf_token %}
-              <div class="form-group">
-                <label for="nombre_usuario">Nombre de usuario (correo electronico con el que se registro)</label>
-                <input type="text" class="form-control" id="nombre_usuario" name="nombre_usuario" required>
+    <div class="container col-md-12 row text-center p-5">
+      <div class="col-md-6">
+        <img style="height: 300px;" src="https://media.discordapp.net/attachments/1083387546689605692/1090727675313795235/Logo1.png">
+      </div>
+      <div class="col-md-6">
+          <div class="container">
+            <div class="row justify-content-center">
+              <div class="">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="text-center">Inicio de sesión</h3>
+                  </div>
+                  <div class="card-body">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                    {% endfor %}
+                    {% endif %}
+                    <form method="POST">
+                      {% csrf_token %}
+                      <div class="form-group">
+                        <label for="nombre_usuario">Nombre de usuario (correo electronico con el que se registró)</label>
+                        <input type="text" class="form-control" id="nombre_usuario" name="nombre_usuario" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                      </div>
+                      <p class="mt-2 text-center">
+                        <button type="submit" class="btn btn-success btn-block">Ingresar</button>
+                        <form style="display: inline-block; " action="http://127.0.0.1:8000/menu_principal/">
+                          <input type="submit" class="btn btn-danger" value="Cancelar" />
+                        </form>
+                      </p>
+                    </form>
+                  </div>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="password">Contraseña</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-              </div>
-              <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
-            </form>
+            </div>
           </div>
-        </div>
       </div>
     </div>
   </div>
-  <form style="display: inline-block; " action="http://127.0.0.1:8000/menu_principal/">
-    <input type="submit" value="Cancelar" />
-</form>
+  <div class="text-center">
+    <p>Oh My Dog! está abierta de lunes a viernes de 7:00 a 18:00 hs.</p>
+  </div>
+</div>
+
 {% endblock %}
