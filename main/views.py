@@ -683,7 +683,7 @@ def registrar_mascota(request):
             
             mascota = form.save(commit=False)
 
-            if (request.FILES['foto']):
+            if 'foto' in request.FILES:
                 mascota.foto = request.FILES['foto']
             mascota.fecha_nac =fecha
             #Aca obtengo el dueño al que pertenece el usuario
