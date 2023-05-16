@@ -6,6 +6,17 @@ from .models import Cliente, Persona, Red_Social, Mascota_Adopcion, Mascota, Tur
 
 from django.contrib.auth.forms import UserCreationForm
 
+
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+
+def validate_image(file):
+    if not file.name.endswith('.jpg') and not file.name.endswith('.jpeg') and not file.name.endswith('.png'):
+        raise ValidationError(
+            _('El archivo subido no es una imagen válida.')
+        )
+    
+
 class UsuarioForm(forms.ModelForm):
 
     #Para validar los datos en el formulario falta implementar esto:
@@ -21,15 +32,11 @@ class MascotaForm(forms.ModelForm):
     fecha_nac = forms.DateField(error_messages={
         'invalid': 'El formato de fecha es inválido. Use el formato AAAA-MM-DD.'
     })
-
-    foto = forms.ImageField(error_messages={
-        'invalid': 'Archivo no valido'
-    })
-
+    foto = forms.ImageField(validators=[validate_image])
 
     class Meta:
         model = Mascota
-        fields = ('nombre', 'color', 'raza', 'foto')
+        fields = ('nombre', 'color', 'raza')
 
     def __init__(self, *args, **kwargs):
         super(MascotaForm, self).__init__(*args, **kwargs)
@@ -43,7 +50,7 @@ class Red_SocialForm(forms.ModelForm):
     
     class Meta:
         model = Red_Social
-        fields = ['usuario','nombre']
+        fields = ['usuario_red','nombre_red']
 
 class ServicioForm(forms.ModelForm):
     nombre = forms.CharField(max_length=50) 

@@ -43,6 +43,31 @@ from django.shortcuts import redirect
 #from .form import RegistroForm
 from .models import Persona
 
+import re
+
+def cadena_is_valid(cadena):
+    if not re.match("^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$", cadena):
+        return False
+    return True
+
+def numero_is_valid(numero):
+    try:
+        num = int(numero)
+        return num>0
+    except:
+        return False
+
+def todos_numeros(*cadenas):
+    for cadena in cadenas:
+        if not cadena.isdigit():
+            return False
+    return True
+
+def todos_cadenas(*cadenas):
+    for cadena in cadenas:
+        if not re.match("^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$", cadena):
+            return False
+    return True
 
 def dni_is_valid(dni):
     try:
@@ -60,6 +85,15 @@ def fecha_is_valid(fecha):
         # El usuario no existe en la base de datos
         return False
     
+def fecha_anterior_is_valid(fecha):
+    try:
+        hoy = datetime.now().date()
+        fecha_ingresada = datetime.strptime(fecha, "%Y-%m-%d").date()
+        return fecha_ingresada <= hoy
+    except:
+        # El usuario no existe en la base de datos
+        return False
+    
 
 def usuario_is_valid(username):
     try:
@@ -71,8 +105,10 @@ def usuario_is_valid(username):
         return False
 
 
-MENSAJE_FECHA_INVALIDA = 'Verifique que la fecha tenga el formato AAAA-MM-DD y que sea un dia valido.'
+MENSAJE_FECHA_INVALIDA = 'Verifique que la fecha tenga el formato AAAA-MM-DD y que sea un dia valido. Ejemplo: 2023-01-01'
 MENSAJE_USUARIO_INVALIDO = 'Usuario incorrecto, revise que el email sea correcto y que el cliente este registrado'
+MENSAJE_SOLO_LETRAS = 'Solo se permiten letras, no ingrese numeros, ni simbolos como #,$,/, etc.'
+MENSAJE_SOLO_NUMEROS = "Solo se permiten números, no ingrese simbolos como .,-, /, etc."
 # iniciar Sesion
 def registro(request):
     if request.method == 'POST':
@@ -482,7 +518,14 @@ def registrar_adopcion(request):
     form = MascotaAdopcionForm()
     if request.method == "POST":
         form = MascotaAdopcionForm(request.POST)
-        if form.is_valid():
+
+        fecha = request.POST['fecha_nac']
+        nombre = request.POST['nombre']
+        color = request.POST['color']
+        raza = request.POST['raza']
+        ingreso_solo_letras = todos_cadenas(nombre, color, raza)
+        fecha_es_anterior_a_hoy = fecha_anterior_is_valid(fecha)
+        if form.is_valid() and fecha_es_anterior_a_hoy  and ingreso_solo_letras:
 
             mi_objeto = form.save(commit=False)
             
@@ -493,10 +536,23 @@ def registrar_adopcion(request):
             print(mi_objeto.save())
             #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
             #form.save()
-        
-        return render(request, "index.html")
-        print("\nSe registro a:\n")
-        print()
+            messages.info(request, "Mascota registrada")
+            return render(request, "index.html")
+        else:
+            # Verificar errores y mostrar mensajes personalizados
+
+            if not fecha_es_anterior_a_hoy:
+                form.errors['fecha_nac'] = [MENSAJE_FECHA_INVALIDA]
+
+            if not cadena_is_valid(nombre):
+                form.errors['nombre'] = [MENSAJE_SOLO_LETRAS]
+
+            if not cadena_is_valid(raza):
+                form.errors['raza'] = [MENSAJE_SOLO_LETRAS]
+            
+            if not cadena_is_valid(color):
+                form.errors['color'] = [MENSAJE_SOLO_LETRAS]
+
     context = {'form':form, 'titulo': "Registro de Adopcion"}
 
     return render(request, "registro.html", context)
@@ -512,19 +568,19 @@ def registrar_servicio(request):
         form = ServicioForm(request.POST)
         red_form = Red_SocialForm(request.POST) 
 
+        nombre = request.POST['nombre']
+        apellido = request.POST['apellido']
+        tipo = request.POST['tipo']
+        correo = request.POST['correo']
+        dni = request.POST['dni']
+        direccion = request.POST['direccion']
+        telefono = request.POST['telefono']
 
-        if form.is_valid() and red_form.is_valid():
-            nombre = request.POST['nombre']
-            apellido = request.POST['apellido']
-            tipo = request.POST['tipo']
-            correo = request.POST['correo']
-            dni = request.POST['dni']
-            direccion = request.POST['direccion']
-            telefono = request.POST['telefono']
-            
-            
-            
-            
+        son_todos_cadenas = todos_cadenas(nombre, apellido)
+        son_todos_numeros = todos_numeros(telefono, dni)
+
+        if form.is_valid() and red_form.is_valid() and son_todos_cadenas and son_todos_numeros:
+        
             if not(Prestador_Servicios.objects.filter(datos__correo=correo).exists()):
                 red = red_form.save(commit=False)
 
@@ -546,14 +602,22 @@ def registrar_servicio(request):
 
                 print("\nSe registro un servicio")
             else:
-                messages.error(request,"El usuario ya existe prueba otro")
-                return redirect('registrar servicio')
-
-            
-            #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
-            
+                form.errors['correo'] = ["El usuario ya existe"]
         else:
-            print("\n Algo salio mal")
+             # Verificar errores y mostrar mensajes personalizados
+
+            if not cadena_is_valid(nombre):
+                form.errors['nombre'] = [MENSAJE_SOLO_LETRAS]
+            
+            if not cadena_is_valid(apellido):
+                form.errors['apellido'] = [MENSAJE_SOLO_LETRAS]
+
+            if not numero_is_valid(dni):
+                form.errors['dni'] = [MENSAJE_SOLO_NUMEROS]
+            
+            if not numero_is_valid(telefono):
+                form.errors['telefono'] = [MENSAJE_SOLO_NUMEROS]
+
     context = {'form':form,'red_form': red_form, 'titulo': "Registro de Servicios de Terceros"}
 
     return render(request, "registro_servicio.html", context)
@@ -607,26 +671,48 @@ def registrar_mascota(request):
     form = MascotaForm()
     if request.method == "POST":
         form = MascotaForm(request.POST, request.FILES)
-        if form.is_valid():
+
+        fecha = request.POST['fecha_nac']
+        nombre = request.POST['nombre']
+        color = request.POST['color']
+        raza = request.POST['raza']
+
+        ingreso_solo_letras = todos_cadenas(nombre, color, raza)
+        fecha_es_anterior_a_hoy = fecha_anterior_is_valid(fecha)
+        if form.is_valid() and fecha_es_anterior_a_hoy  and ingreso_solo_letras:
             
             mascota = form.save(commit=False)
 
-            mascota.fecha_nac = request.POST['fecha_nac']
-            #Aca obtengo el dueño al que pertenece el usuarioi
+            if (request.FILES['foto']):
+                mascota.foto = request.FILES['foto']
+            mascota.fecha_nac =fecha
+            #Aca obtengo el dueño al que pertenece el usuario
             mascota.dueno = Cliente.objects.filter(datos__correo=request.user.email)[0] # asignar el valor adicional al campo correspondiente
 
-                # guardar el objeto en la base de datos
-
-                #AGREGAR A FORM LOS DATOS DEL USUARIO
             mascota.save()
-            print("\nSe registro la mascota")
-                #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
-            
             #Si todo salio bien vuelve al menu principal
-            return redirect("main")    
-        
-    context = {'form':form, 'titulo': "Registro de Mascota"}
+            return redirect("main")  
 
+        # Verificar errores y mostrar mensajes personalizados
+
+        if not fecha_es_anterior_a_hoy:
+            form.errors['fecha_nac'] = [MENSAJE_FECHA_INVALIDA]
+
+        if not cadena_is_valid(nombre):
+            form.errors['nombre'] = [MENSAJE_SOLO_LETRAS]
+
+        if not cadena_is_valid(raza):
+            form.errors['raza'] = [MENSAJE_SOLO_LETRAS]
+        
+        if not cadena_is_valid(color):
+            form.errors['color'] = [MENSAJE_SOLO_LETRAS]
+
+        if form.errors:
+            for field_name, errors in form.errors.items():
+                if (field_name == 'foto'):
+                    form.errors['foto'] = ["Imagen invalida, verifique que el archivo sea de tipo .jpg, .png o jpeg"]
+                    
+    context = {'form':form, 'titulo': "Registro de Mascota"}
     return render(request, "registro.html", context)
 
 

@@ -20,8 +20,8 @@ class Persona(models.Model):
     nombre = models.CharField(max_length=50) 
     apellido = models.CharField(max_length=50)
     dni = models.IntegerField()
-    direccion = models.CharField(max_length=200,)
-    correo = models.EmailField( unique=True)
+    direccion = models.CharField(max_length=200)
+    correo = models.EmailField()
     telefono = models.CharField(max_length=20)
 
     def __str__(self) -> str:
@@ -163,8 +163,8 @@ class Prestador_Servicios(models.Model):
     tipo = models.CharField(max_length=1, choices=TIPO_SERVICIO,  default='p', help_text='Tipo de servicio que presta la persona')
 
 class Red_Social(models.Model):
-    nombre = models.CharField(max_length=50)
-    usuario = models.CharField(max_length=70)
+    nombre_red = models.CharField(max_length=50)
+    usuario_red = models.CharField(max_length=70)
     dueno = models.ForeignKey(Prestador_Servicios, on_delete=models.PROTECT)
 
 class Intentos(models.Model):
