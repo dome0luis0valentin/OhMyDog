@@ -192,7 +192,8 @@ def confirmar_cerrar_sesion(request):
 #Mi perfil
 def perfil(request):
     cliente = Cliente.objects.filter(usuario__email=request.user.email)[0]
-    return render(request, "perfil.html", {'cliente': cliente})
+    mascotas = Mascota.objects.filter(dueno__usuario__email =request.user.email)
+    return render(request, "perfil.html", {'cliente': cliente, 'mascotas': mascotas})
 
 # Menu principal
 def main(request):

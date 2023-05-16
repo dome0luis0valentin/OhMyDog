@@ -22,9 +22,9 @@
                             <p><strong>Dirección:</strong> {{ cliente.datos.direccion }}</p>
                             <p><strong>Teléfono:</strong> {{ cliente.datos.telefono }}</p>
                             <p><strong>Mascotas:</strong></p>
-                            {% if cliente.mascotas.all %}
+                            {% if cliente.mascotas %}
                                 <ul>
-                                    {% for mascota in cliente.mascotas.all %}
+                                    {% for mascota in mascotas %}
                                         <li>{{ mascota.nombre }} ({{ mascota.raza }})</li>
                                     {% endfor %}
                                 </ul>
