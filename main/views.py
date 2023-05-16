@@ -110,62 +110,6 @@ MENSAJE_USUARIO_INVALIDO = 'Usuario incorrecto, revise que el email sea correcto
 MENSAJE_SOLO_LETRAS = 'Solo se permiten letras, no ingrese numeros, ni simbolos como #,$,/, etc.'
 MENSAJE_SOLO_NUMEROS = "Solo se permiten números, no ingrese simbolos como .,-, /, etc."
 # iniciar Sesion
-def registro(request):
-    if request.method == 'POST':
-        nombre = request.POST['nombre']
-        apellido = request.POST['apellido']
-        nombre_usuario = request.POST['nombre_usuario']
-        correo = request.POST['correo']
-        contraseña = request.POST['contraseña']
-        contraseña_confir = request.POST['contraseña_confir']
-        dni = request.POST['dni']
-        direccion = request.POST['direccion']
-        telefono = request.POST['telefono']
-        is_veterinario = request.POST.get('is_veterinario')
-
-        print(is_veterinario)
-        if (is_veterinario=='on'):
-            is_veterinario=True
-        else:
-            is_veterinario=False
-
-        if contraseña==contraseña_confir:
-            if User.objects.filter(username=correo).exists():
-                messages.info(request, 'El usuario ya existe, prueba otro')
-                return redirect(registro)
-            elif User.objects.filter(email=correo).exists():
-                messages.info(request, 'Este correo ya esta registrado')
-                return redirect(registro)
-            else:
-                user = User.objects.create_user(username=correo,
-                                                password=contraseña, 
-                                                email=correo,
-                                                first_name=nombre,
-                                                last_name=apellido,
-                                                is_veterinario = is_veterinario)
-                user.save()
-                persona = Persona.objects.create(nombre = nombre,
-                                                      apellido = apellido,
-                                                      dni = dni,
-                                                      direccion = direccion,
-                                                      correo = correo,
-                                                      telefono= telefono)
-                persona.save()
-                cliente =Cliente.objects.create(usuario = user,
-                                                datos = persona)
-                cliente.save()
-                
-                return redirect('main')
-
-
-        else:
-            messages.info(request, 'Las contraseñas no son las mismas')
-            return redirect(registro)
-            
-
-    else:
-        return render(request, 'registro/registro.html')
-    
 
 def inicio_sesion(request):
     if request.method == 'POST':
@@ -716,7 +660,6 @@ def registrar_mascota(request):
     return render(request, "registro.html", context)
 
 
-
 @login_required
 def solicitar_turno(request):
     form = TurnoForm()
@@ -755,3 +698,112 @@ def solicitar_turno(request):
 
     return render(request, "registro.html", context)
 
+def registro(request):
+    if request.method == 'POST':
+        nombre = request.POST['nombre']
+        apellido = request.POST['apellido']
+        correo = request.POST['correo']
+        contraseña = request.POST['contraseña']
+        contraseña_confir = request.POST['contraseña_confir']
+        dni = request.POST['dni']
+        direccion = request.POST['direccion']
+        telefono = request.POST['telefono']
+        is_veterinario = request.POST.get('is_veterinario')
+
+        is_veterinario = (is_veterinario=='on')
+
+        son_todos_letras = todos_cadenas(nombre, apellido)
+        son_todos_numeros = todos_numeros(telefono, dni)
+
+        if contraseña==contraseña_confir and son_todos_numeros and son_todos_letras:
+            if User.objects.filter(username=correo).exists():
+                messages.info(request, 'El usuario ya existe, prueba otro')
+                return redirect(registro)
+            elif User.objects.filter(email=correo).exists():
+                messages.info(request, 'Este correo ya esta registrado')
+                return redirect(registro)
+            else:
+                user = User.objects.create_user(username=correo,
+                                                password=contraseña, 
+                                                email=correo,
+                                                first_name=nombre,
+                                                last_name=apellido,
+                                                is_veterinario = is_veterinario)
+                user.save()
+                persona = Persona.objects.create(nombre = nombre,
+                                                      apellido = apellido,
+                                                      dni = dni,
+                                                      direccion = direccion,
+                                                      correo = correo,
+                                                      telefono= telefono)
+                persona.save()
+                cliente =Cliente.objects.create(usuario = user,
+                                                datos = persona)
+                cliente.save()
+                
+                return redirect('registrar_primera_mascota', correo)
+                return render(request, 'registro/registrar_primer_mascota.html', {'titulo': "Registrar Mascota", 'dueno': cliente.pk, 'form':form} )
+        else:
+            if not son_todos_letras:
+                messages.info(request, MENSAJE_SOLO_LETRAS)
+            if not son_todos_numeros:
+                messages.info(request, MENSAJE_SOLO_NUMEROS)
+            if contraseña !=contraseña_confir:
+                messages.info(request, 'Las contraseñas no son las mismas')
+            return redirect(registro)
+            
+
+    else:
+        return render(request, 'registro/registro.html')
+
+@login_required   
+def registrar_primera_mascota(request, email_de_cliente):
+    form = MascotaForm()
+    if request.method == "POST":
+        form = MascotaForm(request.POST, request.FILES)
+
+        email_de_cliente = request.POST.get('email_de_cliente')
+
+        fecha = request.POST['fecha_nac']
+        nombre = request.POST['nombre']
+        color = request.POST['color']
+        raza = request.POST['raza']
+
+        ingreso_solo_letras = todos_cadenas(nombre, color, raza)
+        fecha_es_anterior_a_hoy = fecha_anterior_is_valid(fecha)
+        if form.is_valid() and fecha_es_anterior_a_hoy  and ingreso_solo_letras:
+            
+            mascota = form.save(commit=False)
+
+            if 'foto' in request.FILES:
+                mascota.foto = request.FILES['foto']
+            mascota.fecha_nac =fecha
+            #Aca obtengo el dueño al que pertenece el usuario
+            mascota.dueno = Cliente.objects.filter(datos__correo=email_de_cliente)[0] # asignar el valor adicional al campo correspondiente
+
+            mascota.save()
+            #Si todo salio bien vuelve al menu principal
+            messages.info(request, "Mascota registrada")
+            return redirect("main")  
+
+        # Verificar errores y mostrar mensajes personalizados
+
+        if not fecha_es_anterior_a_hoy:
+            form.errors['fecha_nac'] = [MENSAJE_FECHA_INVALIDA]
+
+        if not cadena_is_valid(nombre):
+            form.errors['nombre'] = [MENSAJE_SOLO_LETRAS]
+
+        if not cadena_is_valid(raza):
+            form.errors['raza'] = [MENSAJE_SOLO_LETRAS]
+        
+        if not cadena_is_valid(color):
+            form.errors['color'] = [MENSAJE_SOLO_LETRAS]
+
+        if form.errors:
+            for field_name, errors in form.errors.items():
+                if (field_name == 'foto'):
+                    form.errors['foto'] = ["Imagen invalida, verifique que el archivo sea de tipo .jpg, .png o jpeg"]
+                    
+    context = {'form':form, 'titulo': "Registro de Mascota", 'email_de_cliente':email_de_cliente}
+    return render(request, "registro/registrar_primer_mascota.html", context)

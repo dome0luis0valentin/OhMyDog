@@ -8,9 +8,9 @@
 
       {% for perro in object_list %}
       <li>
-        <a href="{{ perro.get_absolute_url }}">{{ perro }}</a> 
+        <strong> {{ perro }}</strong>
         <br>
-        <br> Nombre del Perro: {{perro}}
+        <br>
         <br>
         <a href="{{ perro.get_absolute_url }}">Detalle</a>
         <br>

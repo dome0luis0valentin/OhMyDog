@@ -19,6 +19,12 @@
     <button type="submit">Eliminar Mascota</button>
 </form>
 
+<form method="post" action="{% url 'main' %}">
+  {% csrf_token %}
+  <input type="hidden" name="" value="">
+  <button type="submit">Volver</button>
+</form>
+
 <button type="button" onclick="return false;">Ver historial de turnos</button>
 <button type="button" onclick="return false;">Ver historial de visitas</button>
 

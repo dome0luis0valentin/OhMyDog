@@ -10,6 +10,7 @@ urlpatterns = [
     
     path('', views.main, name="main"),
     path('registro/', views.registro, name='registro'),
+    path('registrar_primera_mascota/<str:email_de_cliente>', views.registrar_primera_mascota, name='registrar_primera_mascota'),
     path('confirmar_cerrar_sesion/', views.confirmar_cerrar_sesion, name='confirmar_cerrar_sesion'),
     path('cerrar_sesion/', views.cerrar_sesion, name='cerrar_sesion'),
     path('inicio_sesion/', views.inicio_sesion, name='inicio de sesion'),

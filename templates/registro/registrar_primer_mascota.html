@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+  <h2>{{titulo}}</h2>
+  <form method="post"  enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" name="email_de_cliente" value="{{email_de_cliente}}">Aceptar</button>
+  </form>
+  <form style="display: inline-block; " action="http://127.0.0.1:8000/menu_principal/">
+    <input type="submit" value="Cancelar" />
+</form>
+{% endblock %}
