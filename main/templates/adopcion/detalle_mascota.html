@@ -1,11 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Nombre: {{ object }}</h1>
-  <p><strong>Color:</strong> {{ object.color }}</p>
-  <p><strong>Raza:</strong> {{ object.raza }}</p>
-  <p><strong>Fecha De Nacimiento:</strong> {{ object.fecha_nac }}</p>
-  <p class="{% if mascota.estado == 'a' %}text-success{% elif mascota.estado == 'e' %}text-danger{% endif %}">{{ mascota.estado }}</p>
-  {% if object.estado == 'a' %}<p><strong>Mascota adoptada</strong></p>{% endif %}
+<div class="card col-5">
+  <div class="card-header">
+    <h1>Nombre: {{ object }}</h1>
+  </div>
+  <div class="card-body">
+    <p><strong>Raza:</strong> {{ object.raza }}</p>
+    <p><strong>Color:</strong> {{ object.color }}</p>
+    <p><strong>Fecha De Nacimiento:</strong> {{ object.fecha_nac }}</p>
+    <p class="{% if mascota.estado == 'a' %}text-success{% elif mascota.estado == 'e' %}text-danger{% endif %}">{{ mascota.estado }}</p>
+    {% if object.estado == 'a' %}<p><strong>Mascota adoptada</strong></p>{% endif %}
+  </div>
+</div>
+<div class="text-center">
+  <a href="http://127.0.0.1:8000/adopcion/" class="btn btn-primary">Volver</a>
+</div>
   
 {% endblock %}
