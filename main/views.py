@@ -329,7 +329,7 @@ class MascotaListView(LoginRequiredMixin, generic.ListView):
         return Mascota.objects.filter(dueno__usuario__email=self.request.user.email)
     queryset = get_queryset
     template_name = 'mis_mascotas/lista_mascotas.html'  # Specify your own template name/location
-    paginate_by = 5
+    paginate_by = 6
     
 
 class MisAdopcionesListView(generic.ListView):
