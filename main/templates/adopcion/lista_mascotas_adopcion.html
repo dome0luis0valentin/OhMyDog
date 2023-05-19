@@ -1,33 +1,51 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Lista de Perros en Adopcion</h1>
-
-    {% if object_list %}
-    <ul>
-
-      {% for perro in object_list %}
-      <li>
-        <a href="{{ perro.get_absolute_url }}">{{ perro }}</a> 
-        <br> Dueño: {{perro.dueno.datos.apellido}} {{perro.dueno.datos.nombre}}
-        <br> Contacto: {{perro.dueno.datos.correo}} 
-        <br> Nombre del Perro: {{perro}}
-        <br>
-        <a href="{{ perro.get_absolute_url }}">Detalle</a>
-        <br>
-        <br>
-        <form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/formulario_adopcion/">
-          <input type="submit" value="Adoptar Mascota" />
+<div class="container">
+  {% if object_list %}
+  <p class="text-center">
+    <img class="m-5" style="width: 80px;" src="https://files.cults3d.com/uploaders/14728184/illustration-file/e7344747-32a4-4f27-b460-f34ba9594bf7/PATA-PIES-CORAZON-ALMOHADA.png" alt="" srcset="">
+    <label class="h1">Perros en Adopcion</label>
+    <img class="m-5" style="width: 80px;" src="https://files.cults3d.com/uploaders/14728184/illustration-file/e7344747-32a4-4f27-b460-f34ba9594bf7/PATA-PIES-CORAZON-ALMOHADA.png" alt="" srcset="">
+  </p>
+  <div class="col-md-12 text-center row">
+    {% for perro in object_list %}
+    <div class="col-md-4 mb-4 bg-light">
+      <div class="card">
+        <strong class="h3">
+          {{perro}}
+        </strong>
+        <p>
+          <strong>
+            Dueño:
+          </strong>
+          {{perro.dueno.datos.apellido}} {{perro.dueno.datos.nombre}}
+        </p>
+        <p>
+          <strong>
+            Contacto:
+          </strong>
+          {{perro.dueno.datos.correo}}
+        </p>
+        <a class="mb-2" href="{{ perro.get_absolute_url }}">Detalle</a>
+        <form action="http://127.0.0.1:8000/formulario_adopcion/">
+          <input class="btn btn-success mb-2" type="submit" value="Adoptar Mascota" />
         </form>
-      </li>
-      {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
 
-    </ul>
-    {% else %}
-      <p>Todavia no hay perros en adopcion, regrese más tarde</p>
-      <br>
-      <form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/">
-        <input type="submit" value="Volver al Menu Principal" />
-      </form>
-    {% endif %}
+
+{% else %}
+<p>Todavia no hay perros en adopcion, regrese más tarde</p>
+<br>
+<form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/">
+  <input type="submit" value="Volver al Menu Principal" />
+</form>
+{% endif %}
+<div class="text-center">
+  <a href="http://127.0.0.1:8000/" class="btn btn-primary">Volver</a>
+</div>
 {% endblock %}

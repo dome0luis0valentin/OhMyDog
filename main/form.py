@@ -66,15 +66,19 @@ class ServicioForm(forms.ModelForm):
         fields = ['tipo']
 
 class TurnoForm(forms.ModelForm):
+    
+    mascota = forms.ModelChoiceField(queryset=Mascota.objects.none())
+    
     class Meta:
         model = Turno
-        fields = ('fecha', 'banda_horaria', 'motivo')
+        fields = ('fecha', 'banda_horaria', 'motivo', 'mascota')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, dueño_cliente, *args, **kwargs):
         super(TurnoForm, self).__init__(*args, **kwargs)
         self.fields['fecha'].required = True
         self.fields['banda_horaria'].required = True
         self.fields['motivo'].required = True
+        self.fields['mascota'].queryset = Mascota.objects.filter(dueno_id = dueño_cliente)
 
 class UrgenciaForm(forms.ModelForm):
     cliente = forms.EmailField(max_length=70)

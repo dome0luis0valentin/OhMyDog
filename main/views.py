@@ -3,13 +3,14 @@ from django.views import generic
 from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from datetime import datetime
+from datetime import datetime , timedelta
+from dateutil.relativedelta import relativedelta
 
 from django.core.paginator import Paginator
 
 from datetime import datetime
 
-from .models import Mascota,Intentos, Cliente, Mascota_Adopcion, Red_Social, Turno, Prestador_Servicios
+from .models import Mascota,Intentos, Cliente, Mascota_Adopcion, Red_Social, Turno, Prestador_Servicios, Vacuna_tipoA , Vacuna_tipoB
 from .form import UrgenciaForm,UsuarioForm, MascotaAdopcionForm,Red_SocialForm , MascotaForm, TurnoForm, ServicioForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -328,7 +329,7 @@ class MascotaListView(LoginRequiredMixin, generic.ListView):
         return Mascota.objects.filter(dueno__usuario__email=self.request.user.email)
     queryset = get_queryset
     template_name = 'mis_mascotas/lista_mascotas.html'  # Specify your own template name/location
-    paginate_by = 5
+    paginate_by = 6
     
 
 class MisAdopcionesListView(generic.ListView):
@@ -661,17 +662,56 @@ def registrar_mascota(request):
     return render(request, "registro.html", context)
 
 
+def mascota_cumple(mascota ,fecha, tipo):
+    if tipo == "A" :
+        if Vacuna_tipoA.objects.filter(mascota_id = mascota.id).exists() :
+            fecha_ingresada = datetime.strptime(fecha, "%Y-%m-%d").date()
+            edad_meses = (fecha_ingresada.year - mascota.fecha_nac.year) * 12 + fecha_ingresada.month - mascota.fecha_nac.month
+            vacuna = Vacuna_tipoA.objects.get(mascota_id = mascota.id)           
+            if edad_meses > 2 and edad_meses < 4 :
+                if fecha_ingresada > vacuna.fecha_aplicacion + timedelta(days=21) :
+                    return True  
+            elif edad_meses > 4 :
+                if fecha_ingresada > vacuna.fecha_aplicacion + relativedelta(years=1) :
+                    return True
+            else :
+                return False
+        return True        
+    elif tipo == "B":
+        if Vacuna_tipoB.objects.filter(mascota_id = mascota.id).exists() :
+            fecha_ingresada = datetime.strptime(fecha, "%Y-%m-%d").date()
+            edad_meses = (fecha_ingresada.year - mascota.fecha_nac.year) * 12 + fecha_ingresada.month - mascota.fecha_nac.month
+            vacuna = Vacuna_tipoB.objects.get(mascota_id = mascota.id)           
+            if edad_meses > 4 :
+                if fecha_ingresada > vacuna.fecha_aplicacion + relativedelta(years=1) :
+                    return True
+            else :
+                return False
+        return True
+    return True        
+        
 @login_required
 def solicitar_turno(request):
-    form = TurnoForm()
+    
+    cliente= Cliente.objects.get(usuario=request.user)
+    cliente_dueño = cliente.id 
+    
+    form = TurnoForm(cliente_dueño)
 
     if request.method == "POST":
-        form = TurnoForm(request.POST)
+        
+        form = TurnoForm(cliente_dueño,request.POST)
 
         fecha = request.POST["fecha"]
+        
+        mascota_id = request.POST["mascota"]
+        
+        mascota = get_object_or_404(Mascota, id=mascota_id)
+        
+        motivo = request.POST["motivo"]
 
         #Python no valida todo el condicional, si el form no es valido no valida la fecha
-        if form.is_valid() and fecha_is_valid(fecha):
+        if form.is_valid() and fecha_is_valid(fecha) and mascota_cumple(mascota,fecha,motivo):
 
             turno = form.save(commit=False)
 

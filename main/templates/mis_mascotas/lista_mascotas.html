@@ -1,28 +1,34 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Mi Lista de Perros</h1>
-
-    {% if object_list %}
-    <ul>
-
-      {% for perro in object_list %}
-      <li>
-        <strong> {{ perro }}</strong>
-        <br>
-        <br>
-        <br>
-        <a href="{{ perro.get_absolute_url }}">Detalle</a>
-        <br>
-        <br>
-      </li>
-      {% endfor %}
-
-    </ul>
+<div class="container">
+  <h1 class="text-center mb-4">Mis Perros</h1>
+  {% if object_list %}
+  <div class="col-md-12 text-center row">
+    {% for perro in object_list %}
+    <div class="col-md-4 mb-4">
+      <div class="card p-2 bg-light">
+        <p class="text-center">
+          <img style="width: 80px;" src="https://files.cults3d.com/uploaders/14728184/illustration-file/e7344747-32a4-4f27-b460-f34ba9594bf7/PATA-PIES-CORAZON-ALMOHADA.png" alt="" srcset="">
+        </p>
+        <p>
+          <strong>Nombre:</strong> {{ perro }}
+        </p>
+        <p>
+          <a href="{{ perro.get_absolute_url }}">Detalle</a>
+        </p>
+      </div>
+    </div>
+    {% endfor %}
     {% else %}
-      <p>Todavia no hay perros registrados</p>
-      <form style="display: inline-block; width: 100px;" action="http://127.0.0.1:8000/registrar_mascota/">
-        <input type="submit" value="Registrar Mascota" />
+    <p>Todavia no hay perros registrados</p>
+    <form style="display: inline-block; width: 100px;" action="http://127.0.0.1:8000/registrar_mascota/">
+      <input type="submit" value="Registrar Mascota" />
     </form>
-    {% endif %}
+  </div>
+  {% endif %}
+</div>
+<div class="text-center">
+  <a href="http://127.0.0.1:8000/" class="btn btn-primary">Volver</a>
+</div>
 {% endblock %}

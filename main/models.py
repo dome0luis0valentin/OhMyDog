@@ -122,6 +122,7 @@ class Turno(models.Model):
     motivo= models.CharField(max_length=1, choices=MOTIVO, default='C')
     estado = models.CharField(max_length=1, choices=ESTADO, blank=True, default='E')
    
+    mascota = models.ForeignKey(Mascota, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self) -> str:
         return str(self.fecha.day)+"/"+str(self.fecha.month)
@@ -131,6 +132,16 @@ class Turno(models.Model):
         Devuelve la url para acceder a una instancia particular del modelo.
         """
         return "http://127.0.0.1:8000/confirmar_turnos/"+str(self.id)
+      
+class Vacuna_tipoA(models.Model):
+    id = models.AutoField(primary_key=True)
+    mascota = models.ForeignKey(Mascota, on_delete=models.CASCADE)
+    fecha_aplicacion = models.DateField()
+    
+class Vacuna_tipoB(models.Model):
+    id = models.AutoField(primary_key=True)
+    mascota = models.ForeignKey(Mascota, on_delete=models.CASCADE)
+    fecha_aplicacion = models.DateField()    
 
 class Campana(models.Model):
     id = models.AutoField(primary_key=True)
