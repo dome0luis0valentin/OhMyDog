@@ -6,11 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oh My Dog!</title>
 </head>
+
 <body style="font-family: Arial;">
 {% include 'partials/_header.html' %}
     <main>
         {% block content%}
-
+        {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
         {% endblock%}
     </main>
 {% include 'partials/_footer.html' %}

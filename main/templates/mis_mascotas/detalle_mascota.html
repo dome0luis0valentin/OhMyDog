@@ -16,7 +16,7 @@
   <form method="post" action="{% url 'confirmar_eliminar_mascota' object.id %}">
     {% csrf_token %}
     <input type="hidden" name="mascota_id" value="{{ object.id }}">
-    <button type="submit">Eliminar Mascota</button>
+    <button type="submit">Dar de Baja</button>
 </form>
 
 <form method="post" action="{% url 'main' %}">
