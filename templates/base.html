@@ -14,12 +14,11 @@
 <div class="col-md-12 text-end mt-3" style="">
     <li class="">{{ user.get_username }}</li>
 </div>
+
 {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
+                    {% for message in messages %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                    {% endfor %}
 {% endif %}
 <div>
     <main style="" class="p-5">

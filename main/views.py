@@ -37,6 +37,7 @@ from django.shortcuts import redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 
 from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
@@ -45,6 +46,27 @@ from django.shortcuts import redirect
 from .models import Persona
 
 import re
+
+from validate_email_address import validate_email
+
+import random
+import string
+
+def generar_contrasena():
+    caracteres = string.ascii_letters + string.digits + string.punctuation
+    contrasena = ''.join(random.choice(caracteres) for _ in range(10))
+    return contrasena
+
+
+def enviar_nueva_contraseña(user):
+    remitente = 'grupo21ing2@gmail.com'  # Dirección de correo electrónico del remitente
+    nueva_contraseña = generar_contrasena()
+    mensaje = "Esta es tu nueva contraseña: "+nueva_contraseña  # Contenido del mensaje
+
+    email = EmailMessage("Desbloquear usuario", mensaje, to=[user])
+    email.send()
+
+    return nueva_contraseña
 
 def cadena_is_valid(cadena):
     if not re.match("^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$", cadena):
@@ -118,50 +140,53 @@ def inicio_sesion(request):
         password = request.POST['password']
 
         user = auth.authenticate(username=nombre_usuario, password=password)
+        print(user)
         
         existe = Cliente.objects.filter(usuario__email=nombre_usuario).exists()
 
-        if user is  None:
-            messages.info(request, 'Contraseña invalida o usuario incorrecto')
-            return redirect('inicio de sesion') 
+        if (existe):
+            intentos=Intentos.objects.filter(usuario=nombre_usuario)
 
-#Validar si el usuario no esta bloqueado
-        intentos=Intentos.objects.filter(usuario=nombre_usuario)
-        if(len(intentos) == 0):
-            intento = Intentos.objects.create(usuario = nombre_usuario,
+            #Inicializo los intento si el usuario es nuevo
+            if(len(intentos) == 0):
+                intento = Intentos.objects.create(usuario = nombre_usuario,
                                                   cantidad = 0,
-                                                  estado = 'n')
-        else:
-            intento = intentos[0]
-
-        if user is not None:
-
-            if (intento.estado != 'b'):
-                auth.login(request, user)
-                intento.cantidad=0
-                intento.save()
-                
+                                                  estado = 'n')   
             else:
-                messages.info(request, 'Usuario bloqueado, revise su email para desbloquearlo')
-                return redirect('usuario bloqueado')
-            clientes=Cliente.objects.filter(usuario__email=nombre_usuario)
-            cliente=clientes[0]
-            return render(request, "index.html")
-        else:
-            if (intento.cantidad < 3):
-                intento.cantidad = intento.cantidad +1
-            else:
-                intento.estado = 'b'
-                messages.info(request, 'Usuario bloqueado, revise su email para desbloquearlo')
-                intento.save()
-                return redirect('usuario bloqueado')
+                intento = intentos[0]
 
+        #Si la contraseña o usuario no son validos
+        if user is  None:
+            if not(existe):
+                messages.info(request, 'Contraseña invalida o usuario incorrecto')
+            else:
+                #Si el usuario existe le incremento la cantidad de intentos fallidos.
+                if (intento.cantidad < 3):
+                    intento.cantidad = intento.cantidad +1
+                    intento.save()
+                    messages.info(request, 'Contraseña invalida o usuario incorrecto')
+                    return redirect('inicio de sesion')
+                #Si el usuario esta bloqueado
+                else:
+                    if (intento.estado == 'n'):
+                        usuario = User.objects.get(username=nombre_usuario)
+                        usuario.set_password(enviar_nueva_contraseña(nombre_usuario))
+                        usuario.save()
+                    intento.estado = 'b'
+                    intento.save() 
+                           
+                    messages.info(request, 'Usuario bloqueado, revise su email para desbloquearlo')
+                    
+            return redirect('inicio de sesion')          
+        #si todo esta bien
+        else:
+            auth.login(request, user)
+            intento.cantidad=0
             intento.save()
-          
-            messages.info(request, 'Contraseña invalida o usuario incorrecto')
-            return redirect('inicio de sesion')
-    else:
+            render(request, "index.html")
+    else:            
         return render(request, 'registro/login.html')
+    return redirect('inicio de sesion')
 
 def usuario_bloqueado(request):
     return render(request, 'usuario_bloqueado.html')
@@ -757,7 +782,10 @@ def registro(request):
         son_todos_letras = todos_cadenas(nombre, apellido)
         son_todos_numeros = todos_numeros(telefono, dni)
 
-        if contraseña==contraseña_confir and son_todos_numeros and son_todos_letras:
+        
+        correo_existe = (True == validate_email(correo, verify=True)) 
+
+        if contraseña==contraseña_confir and son_todos_numeros and son_todos_letras and correo_existe:
             if User.objects.filter(username=correo).exists():
                 messages.info(request, 'El usuario ya existe, prueba otro')
                 return redirect(registro)
@@ -792,6 +820,8 @@ def registro(request):
                 messages.info(request, MENSAJE_SOLO_NUMEROS)
             if contraseña !=contraseña_confir:
                 messages.info(request, 'Las contraseñas no son las mismas')
+            if not correo_existe:
+                messages.info(request, 'La direccion de correo electronico no existe')
             return redirect(registro)
             
 
