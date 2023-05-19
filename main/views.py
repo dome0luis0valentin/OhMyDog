@@ -699,6 +699,7 @@ def solicitar_turno(request):
 
     return render(request, "registro.html", context)
 
+@login_required
 def registro(request):
     if request.method == 'POST':
         nombre = request.POST['nombre']
