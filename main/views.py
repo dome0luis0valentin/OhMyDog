@@ -58,12 +58,12 @@ def generar_contrasena():
     return contrasena
 
 
-def enviar_nueva_contraseña(user):
+def enviar_nueva_contraseña(user, asunto):
     remitente = 'grupo21ing2@gmail.com'  # Dirección de correo electrónico del remitente
     nueva_contraseña = generar_contrasena()
     mensaje = "Esta es tu nueva contraseña: "+nueva_contraseña  # Contenido del mensaje
 
-    email = EmailMessage("Desbloquear usuario", mensaje, to=[user])
+    email = EmailMessage(asunto, mensaje, to=[user])
     email.send()
 
     return nueva_contraseña
@@ -170,7 +170,7 @@ def inicio_sesion(request):
                 else:
                     if (intento.estado == 'n'):
                         usuario = User.objects.get(username=nombre_usuario)
-                        usuario.set_password(enviar_nueva_contraseña(nombre_usuario))
+                        usuario.set_password(enviar_nueva_contraseña(nombre_usuario, "Desbloquer usuario"))
                         usuario.save()
                     intento.estado = 'b'
                     intento.save() 
@@ -770,8 +770,6 @@ def registro(request):
         nombre = request.POST['nombre']
         apellido = request.POST['apellido']
         correo = request.POST['correo']
-        contraseña = request.POST['contraseña']
-        contraseña_confir = request.POST['contraseña_confir']
         dni = request.POST['dni']
         direccion = request.POST['direccion']
         telefono = request.POST['telefono']
@@ -785,7 +783,7 @@ def registro(request):
         
         correo_existe = (True == validate_email(correo, verify=True)) 
 
-        if contraseña==contraseña_confir and son_todos_numeros and son_todos_letras and correo_existe:
+        if son_todos_numeros and son_todos_letras and correo_existe:
             if User.objects.filter(username=correo).exists():
                 messages.info(request, 'El usuario ya existe, prueba otro')
                 return redirect(registro)
@@ -793,6 +791,8 @@ def registro(request):
                 messages.info(request, 'Este correo ya esta registrado')
                 return redirect(registro)
             else:
+
+                contraseña = enviar_nueva_contraseña(correo, "Contraseña para OhMyDog!")
                 user = User.objects.create_user(username=correo,
                                                 password=contraseña, 
                                                 email=correo,
@@ -811,8 +811,9 @@ def registro(request):
                                                 datos = persona)
                 cliente.save()
                 
+
+
                 return redirect('registrar_primera_mascota', correo)
-                return render(request, 'registro/registrar_primer_mascota.html', {'titulo': "Registrar Mascota", 'dueno': cliente.pk, 'form':form} )
         else:
             if not son_todos_letras:
                 messages.info(request, MENSAJE_SOLO_LETRAS)
