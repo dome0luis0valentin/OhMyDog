@@ -264,6 +264,7 @@ def confirmar_eliminar_mascota(request, mascota_id):
 
 def eliminar_mascota(request, mascota_id):
     mascota = get_object_or_404(Mascota, id=mascota_id)
+    messages.success(request, f'Se ha dado de baja a : "{mascota.nombre}" ')
     mascota.delete()
     return redirect('Ver mis Mascotas')    
 
