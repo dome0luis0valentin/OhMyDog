@@ -580,13 +580,15 @@ def registrar_servicio(request):
         direccion = request.POST['direccion']
         telefono = request.POST['telefono']
         zona = request.POST['zona']
+        nombre_red = request.POST['nombre_red']
 
-        son_todos_cadenas = todos_cadenas(nombre, apellido)
+        son_todos_cadenas = todos_cadenas(nombre, apellido, nombre_red)
         son_todos_numeros = todos_numeros(telefono, dni)
 
-        
+        correo_existe = (True == validate_email(correo, verify=True)) 
 
-        if form.is_valid() and red_form.is_valid() and son_todos_cadenas and son_todos_numeros:
+
+        if form.is_valid() and red_form.is_valid() and son_todos_cadenas and son_todos_numeros and correo_existe:
         
             if not(Prestador_Servicios.objects.filter(datos__correo=correo).exists()):
                 red = red_form.save(commit=False)
@@ -621,11 +623,18 @@ def registrar_servicio(request):
             if not cadena_is_valid(apellido):
                 form.errors['apellido'] = [MENSAJE_SOLO_LETRAS]
 
+            if not cadena_is_valid(nombre_red):
+                red_form.errors['nombre_red'] = [MENSAJE_SOLO_LETRAS]
+
             if not numero_is_valid(dni):
                 form.errors['dni'] = [MENSAJE_SOLO_NUMEROS]
             
             if not numero_is_valid(telefono):
                 form.errors['telefono'] = [MENSAJE_SOLO_NUMEROS]
+
+            if not numero_is_valid(telefono):
+                form.errors['correo'] = ["El correo ingresado no existe"]
+            
 
     context = {'form':form,'red_form': red_form, 'titulo': "Registro de Servicios de Terceros"}
 
