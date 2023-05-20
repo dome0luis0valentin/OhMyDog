@@ -82,9 +82,14 @@ def numero_is_valid(numero):
 
 def todos_numeros(*cadenas):
     for cadena in cadenas:
-        if not cadena.isdigit():
+        try:
+            numero = int(cadena)
+            if numero <= 0:
+                return False
+        except ValueError:
             return False
     return True
+
 
 def todos_cadenas(*cadenas):
     for cadena in cadenas:
@@ -281,15 +286,30 @@ def formulario_adopcion(request):
 
 def enviar_formulario_adopcion(request):
     if request.method == 'POST':
-        # Obtener datos del formulario
-        nombre = request.POST.get('nombre')
-        apellido = request.POST.get('apellido')
-        dni = request.POST.get('dni')
-        correo = request.POST.get('correo')
-        telefono = request.POST.get('telefono')
+
+        if (request.user.is_authenticated):
+            cliente = Cliente.objects.filter(usuario__email=request.user.email)[0]
+            nombre = cliente.datos.nombre
+            apellido = cliente.datos.apellido
+            dni = cliente.datos.dni
+            correo = request.user.email
+            telefono = cliente.datos.telefono
+        else:
+            # Obtener datos del formulario
+            nombre = request.POST.get('nombre')
+            apellido = request.POST.get('apellido')
+            dni = request.POST.get('dni')
+            correo = request.POST.get('correo')
+            telefono = request.POST.get('telefono')
+
         motivo = request.POST.get('motivo')
 
-        if (dni_is_valid(dni)):
+        ingreso_solo_letras = todos_cadenas(nombre, apellido)
+        ingreso_solo_numeros = todos_numeros(telefono, dni)
+
+        correo_existe = (True == validate_email(correo, verify=True)) 
+
+        if (ingreso_solo_letras and ingreso_solo_numeros and correo_existe):
             # Renderizar la plantilla de correo electrónico
             html_message = render_to_string('email_template.html', {'nombre': nombre, 'apellido': apellido, 'dni': dni, 'correo': correo, 'telefono': telefono, 'motivo': motivo})
             plain_message = strip_tags(html_message)
@@ -303,11 +323,22 @@ def enviar_formulario_adopcion(request):
                 ['josuecarrera788@gmail.com'],
                 html_message=html_message,
             )
-
+            
+            messages.success(request, "Solicitud Enviada")
             # Redireccionar a una página de éxito
             return redirect('adopciones')
         else:
-            messages.error(request,"DNI invalido, solo ingrese numeos, sin puntos ni espacios ")
+            if not cadena_is_valid(nombre):
+                messages.info(request, "El nombre ingresado no es valido, "+MENSAJE_SOLO_LETRAS)
+            if not cadena_is_valid(apellido):
+                messages.info(request,"El apellido ingresado no es valido, "+ MENSAJE_SOLO_LETRAS)
+            if not numero_is_valid(dni):
+                messages.info(request, "El DNI ingresado no es valido, "+MENSAJE_SOLO_NUMEROS)
+            if not numero_is_valid(telefono):
+                messages.info(request, "El Telefono ingresado no es valido, "+MENSAJE_SOLO_NUMEROS) 
+            if not correo_existe:
+                messages.info(request, 'La direccion de correo electronico no existe')
+            
             return redirect('adopciones')
     else:
         
@@ -497,6 +528,7 @@ def registrar_adopcion(request):
         raza = request.POST['raza']
         ingreso_solo_letras = todos_cadenas(nombre, color, raza)
         fecha_es_anterior_a_hoy = fecha_anterior_is_valid(fecha)
+
         if form.is_valid() and fecha_es_anterior_a_hoy  and ingreso_solo_letras:
 
             mi_objeto = form.save(commit=False)
@@ -547,9 +579,12 @@ def registrar_servicio(request):
         dni = request.POST['dni']
         direccion = request.POST['direccion']
         telefono = request.POST['telefono']
+        zona = request.POST['zona']
 
         son_todos_cadenas = todos_cadenas(nombre, apellido)
         son_todos_numeros = todos_numeros(telefono, dni)
+
+        
 
         if form.is_valid() and red_form.is_valid() and son_todos_cadenas and son_todos_numeros:
         
@@ -565,7 +600,8 @@ def registrar_servicio(request):
                 persona.save()
                 
                 prestador_de_servicios = Prestador_Servicios.objects.create(datos = persona,
-                                                    tipo = tipo)
+                                                                            tipo = tipo,
+                                                                            zona = zona)
                 prestador_de_servicios.save()
                 
                 red.dueno = prestador_de_servicios
@@ -575,6 +611,7 @@ def registrar_servicio(request):
                 print("\nSe registro un servicio")
             else:
                 form.errors['correo'] = ["El usuario ya existe"]
+                form.errors['zona'] = ["Zona incorrecta, debe ser una valor entre 1 y 25"]
         else:
              # Verificar errores y mostrar mensajes personalizados
 
@@ -753,7 +790,7 @@ def solicitar_turno(request):
             turno.save()
             print("\nSe registro el turno")
             #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
-        
+            messages.success(request, "Se registro al turno")
             return redirect("main")
         else:
             print("\nNo se registro el turno")

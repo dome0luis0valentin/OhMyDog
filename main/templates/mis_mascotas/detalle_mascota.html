@@ -22,7 +22,8 @@
 <form method="post" action="{% url 'main' %}">
   {% csrf_token %}
   <input type="hidden" name="" value="">
-  <button type="submit">Volver</button>
+  <a href="{% url 'Ver mis Mascotas' %}"><button>Volver</button></a>
+
 </form>
 
 <button type="button" onclick="return false;">Ver historial de turnos</button>
