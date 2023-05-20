@@ -28,9 +28,15 @@
           {{perro.dueno.datos.correo}}
         </p>
         <a class="mb-2" href="{{ perro.get_absolute_url }}">Detalle</a>
+        {% if not perro.is_adoptado %}
         <form action="http://127.0.0.1:8000/formulario_adopcion/">
           <input class="btn btn-success mb-2" type="submit" value="Adoptar Mascota" />
         </form>
+        {% else %}
+        <form action="http://127.0.0.1:8000/formulario_adopcion/">
+          <input class="btn btn-success mb-2" type="submit" value="Adoptar Mascota" disabled />
+        </form>
+        {% endif %}
       </div>
     </div>
     {% endfor %}
