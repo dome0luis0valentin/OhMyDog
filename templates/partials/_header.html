@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-        <a href="" class="navbar-brand me-auto">
+        <a href="http://127.0.0.1:8000/menu_principal/" class="navbar-brand me-auto">
             <img style="height:45px ;" src="https://github.com/Vane-git/Imagenes/blob/main/brand.png?raw=true" alt=""
                 srcset="">
         </a>
@@ -10,18 +10,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <!--FUNCIONALIDAD EN COMUN-->
-            <form style="display: inline-block;" action="http://127.0.0.1:8000/menu_principal/">
+
+            <form style="display: inline-block;" action="http://127.0.0.1:8000/">
                 <input type="submit" class="m-2 btn btn-outline-success" value="Menu Principal" />
             </form>
-
-            <form style="display: inline-block;" action="http://127.0.0.1:8000/about/">
-                <input type="submit" class="m-2 btn btn-outline-success" value="Más Infomación" />
-            </form>
-            {% if not user.is_authenticated %}
-            <form style="display: inline-block;" action="http://127.0.0.1:8000/adopcion/">
-                <input type="submit" class="m-2 btn btn-outline-success" value="Mascotas en Adopción" />
-            </form>
-            {%endif%}
 
             <!--ACA VAN LAS FUNCIONALIDADES EN COMUN DEL CLIENTE  SOLAMENTE-->
             {% if user.is_authenticated %}
@@ -66,6 +58,7 @@
             <form style="display: inline-block;" action="http://127.0.0.1:8000/ver_servicios/">
                 <input type="submit" class="m-2 btn btn-outline-success" value="Paseadores/Cuidadores" />
             </form>
+
             <!--veterinario-->
             {% if user.is_veterinario %}
 
@@ -90,14 +83,35 @@
 
 
             {% endif %}
-            <div class="navbar-nav ms-auto">
-                <li><a class="m-2 btn btn-outline-success" href="http://127.0.0.1:8000/confirmar_cerrar_sesion/">Cerrar
-                        Sesion</a></li>
-            </div>
-            {% else %}
-            <form class="navbar-nav" style="display: inline-block;" action="http://127.0.0.1:8000/inicio_sesion/">
-                <input type="submit" class="m-2 btn btn-outline-success" value="Iniciar Sesion" />
+
+            <form style="display: inline-block;" action="http://127.0.0.1:8000/about/">
+                <input type="submit" class="m-2 btn btn-outline-success" value="Más Infomación" />
             </form>
+
+            <div class="navbar-nav ms-auto">
+                <li>
+                    <a class="m-2 btn btn-outline-success" href="http://127.0.0.1:8000/confirmar_cerrar_sesion/">Cerrar
+                        Sesion</a>
+                </li>
+            </div>
+
+
+            {% else %}
+            <form style="display: inline-block;" action="http://127.0.0.1:8000/adopcion/">
+                <input type="submit" class="m-2 btn btn-outline-success" value="Mascotas en Adopción" />
+            </form>
+
+            <form style="display: inline-block;" action="http://127.0.0.1:8000/ver_servicios/">
+                <input type="submit" class="m-2 btn btn-outline-success" value="Paseadores/Cuidadores" />
+            </form>
+            <form style="display: inline-block;" action="http://127.0.0.1:8000/about/">
+                <input type="submit" class="m-2 btn btn-outline-success" value="Más Infomación" />
+            </form>
+            <div class="navbar-nav ms-auto">
+                <form class="navbar-nav" style="display: inline-block;" action="http://127.0.0.1:8000/inicio_sesion/">
+                    <input type="submit" class="m-2 btn btn-outline-success" value="Iniciar Sesion" />
+                </form>
+            </div>
 
 
             {% endif %}

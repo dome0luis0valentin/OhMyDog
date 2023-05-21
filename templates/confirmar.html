@@ -1,10 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>¿Estás seguro de que quieres {{accion}}?</h2>
-  <form action="{% url direccion %}" method="post">
-    {% csrf_token %}
-    <button type="submit" name="confirmar" value="1">Aceptar</button>
-    <button type="submit" name="confirmar" value="0">Cancelar</button>
-  </form>
+<div class="container">
+  <div class="card">
+    <div class="card-header text-center">
+      <h2>¿Estás seguro de que quieres {{accion}}?</h2>
+    </div>
+    <div class="card-body">
+      <form action="{% url direccion %}" method="post">
+        {% csrf_token %}
+        <div class="text-center">
+
+          <button class="btn btn-success" type="submit" name="confirmar" value="1">Aceptar</button>
+          <button class="btn btn-danger" type="submit" name="confirmar" value="0">Cancelar</button>
+        </div>
+        </form>
+    </div>
+  </div>
+  </div>
 {% endblock %}
