@@ -129,6 +129,7 @@ def usuario_is_valid(username):
 
 
 MENSAJE_FECHA_INVALIDA = 'Verifique que la fecha tenga el formato AAAA-MM-DD y que sea un dia valido. Ejemplo: 2023-01-01'
+MENSAJE_FECHA_ANTERIOR = "Fecha invalida, La fecha no tiene que ser anterior a la fecha actual"
 MENSAJE_USUARIO_INVALIDO = 'Usuario incorrecto, revise que el email sea correcto y que el cliente este registrado'
 MENSAJE_SOLO_LETRAS = 'Solo se permiten letras, no ingrese numeros, ni simbolos como #,$,/, etc.'
 MENSAJE_SOLO_NUMEROS = "Solo se permiten números, no ingrese simbolos como .,-, /, etc."
@@ -688,33 +689,41 @@ def registrar_mascota(request):
     return render(request, "registro.html", context)
 
 
-def mascota_cumple(mascota ,fecha, tipo):
+def mascota_cumple(mascota,fecha,fecha_nac,tipo):
+    
+    fecha_ingresada = datetime.strptime(fecha, "%Y-%m-%d").date()
+    edad_meses = int((fecha_ingresada - fecha_nac).days / 30)
+    
     if tipo == "A" :
+        
         if Vacuna_tipoA.objects.filter(mascota_id = mascota.id).exists() :
-            fecha_ingresada = datetime.strptime(fecha, "%Y-%m-%d").date()
-            edad_meses = (fecha_ingresada.year - mascota.fecha_nac.year) * 12 + fecha_ingresada.month - mascota.fecha_nac.month
-            vacuna = Vacuna_tipoA.objects.get(mascota_id = mascota.id)           
+            
+            vacuna = Vacuna_tipoA.objects.get(mascota_id = mascota.id) 
+                      
             if edad_meses > 2 and edad_meses < 4 :
-                if fecha_ingresada > vacuna.fecha_aplicacion + timedelta(days=21) :
-                    return True  
+                return [fecha_ingresada > (vacuna.fecha_aplicacion + timedelta(days=21)),"No se puede aplicar la vacuna por que no an pasado los 21 dias de espera"]
             elif edad_meses > 4 :
-                if fecha_ingresada > vacuna.fecha_aplicacion + relativedelta(years=1) :
-                    return True
-            else :
-                return False
-        return True        
+                return [fecha_ingresada > (vacuna.fecha_aplicacion + relativedelta(years=1)),"No se puede aplicar la vacuna por que no an pasado el año de espera"]
+        else:  
+              if edad_meses < 2 :
+                  return [False,"La mascota es muy pequeña para aplicarle la vacuna tipo A"]
+              else: 
+                  return[True,""]
+                      
     elif tipo == "B":
         if Vacuna_tipoB.objects.filter(mascota_id = mascota.id).exists() :
-            fecha_ingresada = datetime.strptime(fecha, "%Y-%m-%d").date()
-            edad_meses = (fecha_ingresada.year - mascota.fecha_nac.year) * 12 + fecha_ingresada.month - mascota.fecha_nac.month
+            
             vacuna = Vacuna_tipoB.objects.get(mascota_id = mascota.id)           
             if edad_meses > 4 :
-                if fecha_ingresada > vacuna.fecha_aplicacion + relativedelta(years=1) :
-                    return True
-            else :
-                return False
-        return True
-    return True        
+                return [fecha_ingresada > vacuna.fecha_aplicacion + relativedelta(years=1),"No se puede aplicar la vacuna por que no a pasado el año de espera"] 
+        else: 
+            if edad_meses < 4:
+                return [False,"La mascota es no tiene todavia mas de 4 meses de edad , para aplicarle la vacuna tipo B"]
+            else:
+               return[True,""] 
+    
+    if (tipo != "A" and tipo != "B"):
+        return [True,""]
         
 @login_required
 def solicitar_turno(request):
@@ -734,10 +743,14 @@ def solicitar_turno(request):
         
         mascota = get_object_or_404(Mascota, id=mascota_id)
         
+        fecha_nacimineto = mascota.fecha_nac
+        
         motivo = request.POST["motivo"]
+        
+        resultado_mascota_cumple = mascota_cumple(mascota,fecha,fecha_nacimineto,motivo)
 
         #Python no valida todo el condicional, si el form no es valido no valida la fecha
-        if form.is_valid() and fecha_is_valid(fecha) and mascota_cumple(mascota,fecha,motivo):
+        if form.is_valid() and fecha_is_valid(fecha) and resultado_mascota_cumple[0]:
 
             turno = form.save(commit=False)
 
@@ -757,8 +770,15 @@ def solicitar_turno(request):
             return redirect("main")
         else:
             print("\nNo se registro el turno")
-           
-            messages.info(request, MENSAJE_FECHA_INVALIDA)
+
+            if not (fecha_is_valid(fecha)):
+                if fecha_anterior_is_valid(fecha):
+                    messages.info(request, MENSAJE_FECHA_ANTERIOR)
+                else:    
+                    messages.info(request, MENSAJE_FECHA_INVALIDA)
+            else:
+                messages.info(request,resultado_mascota_cumple[1])    
+            
             return redirect('solicitar turno')
         
     context = {'form':form, 'titulo': "Solicitud de Turno"}
