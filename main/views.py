@@ -415,7 +415,7 @@ class TurnosListView(generic.ListView):
 
     #Metodo que devuelve los turnos sin confirmar
     def get_queryset(self):
-        return Turno.objects.filter(estado='E')
+        return Turno.objects.filter(estado='Esperando Confirmacion')
     
     queryset = get_queryset
 
@@ -740,7 +740,7 @@ def mascota_cumple(mascota,fecha,fecha_nac,tipo):
     fecha_ingresada = datetime.strptime(fecha, "%Y-%m-%d").date()
     edad_meses = int((fecha_ingresada - fecha_nac).days / 30)
     
-    if tipo == "A" :
+    if tipo == "Vacunación de tipo A" :
         
         if Vacuna_tipoA.objects.filter(mascota_id = mascota.id).exists() :
             
@@ -756,7 +756,7 @@ def mascota_cumple(mascota,fecha,fecha_nac,tipo):
               else: 
                   return[True,""]
                       
-    elif tipo == "B":
+    elif tipo == "Vacunación de tipo B":
         if Vacuna_tipoB.objects.filter(mascota_id = mascota.id).exists() :
             
             vacuna = Vacuna_tipoB.objects.get(mascota_id = mascota.id)           
@@ -768,7 +768,7 @@ def mascota_cumple(mascota,fecha,fecha_nac,tipo):
             else:
                return[True,""] 
     
-    if (tipo != "A" and tipo != "B"):
+    if (tipo != "Vacunación de tipo A" and tipo != "Vacunación de tipo B"):
         return [True,""]
         
 @login_required
@@ -805,14 +805,14 @@ def solicitar_turno(request):
             
             turno.asistio = False
            
-            turno.estado = 'E'
+            turno.estado = 'Esperando Confirmacion'
             # guardar el objeto en la base de datos
 
             #AGREGAR A FORM LOS DATOS DEL USUARIO
             turno.save()
             print("\nSe registro el turno")
             #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
-            messages.success(request, "Se registro al turno")
+            messages.success(request, "Se registro el turno")
             return redirect("main")
         else:
             print("\nNo se registro el turno")

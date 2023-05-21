@@ -102,27 +102,27 @@ class Turno(models.Model):
     cliente= models.ForeignKey(Cliente,on_delete=models.CASCADE)
 
     ESTADO = (
-        ('E','Esperando Confirmacion'),
-        ('A','Aceptado'),
-        ('R','Rechazado'),
+        ('Esperando Confirmacion','Esperando Confirmacion'),
+        ('Aceptado','Aceptado'),
+        ('Rechazado','Rechazado'),
     )
 
     MOTIVO = (
-        ('C','Consulta'),
-        ('U','Urgencia'),
-        ('S','Castración'),
-        ('A','Vacunación de tipo A'),
-        ('B','Vacunación de tipo B'),
-        ('D','Desparasitación')
+        ('Consulta','Consulta'),
+        ('Urgencia','Urgencia'),
+        ('Castración','Castración'),
+        ('Vacunación de tipo A','Vacunación de tipo A'),
+        ('Vacunación de tipo B','Vacunación de tipo B'),
+        ('Desparasitación','Desparasitación')
     )
     BANDA_HORARIA = (
-        ('M', 'Mañana'),
-        ('T', 'Tarde'),
+        ('Mañana', 'Mañana'),
+        ('Tarde', 'Tarde'),
     )
 
-    banda_horaria = models.CharField(max_length=1, choices=BANDA_HORARIA, default='M', help_text='Horario en el que puede ir a la veterinaria mañana(7 AM - 12 PM) o tarde (12 PM a 6 PM')
-    motivo= models.CharField(max_length=1, choices=MOTIVO, default='C')
-    estado = models.CharField(max_length=1, choices=ESTADO, blank=True, default='E')
+    banda_horaria = models.CharField(max_length=100, choices=BANDA_HORARIA, default='Mañana', help_text='Horario en el que puede ir a la veterinaria mañana(7 AM - 12 PM) o tarde (12 PM a 6 PM')
+    motivo= models.CharField(max_length=100, choices=MOTIVO, default='Consulta')
+    estado = models.CharField(max_length=100, choices=ESTADO, blank=True, default='Esperando Confirmacion')
    
     mascota = models.ForeignKey(Mascota, on_delete=models.SET_NULL, null=True, blank=True)
 
