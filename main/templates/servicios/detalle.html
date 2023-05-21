@@ -1,10 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>{{object.nombre}} {{ object }} </h1>
+<div class="container">
 
-  <p><strong>Correo:</strong> {{ object.datos.correo }}</p>
-  <p><strong>Red Social:</strong> {{ object.datos.correo }}</p>
-
-  
+  <div class="card col-md-6 mx-auto">
+    <div class="card-header">
+      <h1 class="text-center">{{object.nombre}} {{ object }} </h1>
+    </div>
+    <div class="card-body m-2">
+      <p><strong>Servicio:</strong>  
+        {% if object.tipo == 'p' %} 
+          Paseador 
+        {% else %} 
+          Cuidador
+      {% endif %}
+      </p>
+      <p><strong>Correo:</strong> {{ object.datos.correo }}</p>
+      <p><strong>Red Social:</strong> Twitter</p>
+    </div>
+    <div class="card-footer text-center">
+      <p><strong>Zona</strong> {{ object.zona }}</p>
+    </div>
+  </div>
+</div>
+<div class="text-center mt-2">
+  <a href="http://127.0.0.1:8000/ver_servicios/" class="btn btn-primary">Volver</a>
+</div>
 {% endblock %}

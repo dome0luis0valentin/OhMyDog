@@ -1,34 +1,37 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Mi lista de perros en adopción</h1>
-
+<div class="container">
     {% if object_list %}
-    <ul>
+    <div class="text-center">
+      <img class="m-5" style="width: 80px;" src="https://files.cults3d.com/uploaders/14728184/illustration-file/e7344747-32a4-4f27-b460-f34ba9594bf7/PATA-PIES-CORAZON-ALMOHADA.png" alt="" srcset="">
+      <label class="h1">Mis Perros en Adopcion</label>
+      <img class="m-5" style="width: 80px;" src="https://files.cults3d.com/uploaders/14728184/illustration-file/e7344747-32a4-4f27-b460-f34ba9594bf7/PATA-PIES-CORAZON-ALMOHADA.png" alt="" srcset="">
+    </div>
+    <div class="col-md-12 text-center row">
 
       {% for perro in object_list %}
-      <li>
-        <a href="{{ perro.get_absolute_url }}">{{ perro }}</a> 
-        <br> Nombre del Perro: {{perro}}
-
-        <hr>
+      <div class="card col-md-4 mb-4 p-4 bg-light">
+        <p class="m-2">
+          <strong>Nombre: </strong>{{perro}}
+        </p>
+        <a class="m-2" href="{{ perro.get_absolute_url }}"> Detalle </a>
 
         {% if perro.estado == "a"%}
-          <p><strong>Adoptado</strong></p>
+          <p class="m-2"><strong><label class="h4" style="color:#e87c09">Adoptado</label></strong></p>
         {% endif %}
 
         <form action="{% url 'marcar_adopcion' pk=perro.pk %}" method="post" style="display:inline-block;">
           {% csrf_token %}  
-          <button type="submit" {% if perro.estado == "a" %}disabled{% endif %}>Marcar como Adoptado</button>
+          <button class="m-2 btn btn-success" type="submit" {% if perro.estado == "a" %}disabled{% endif %}>Marcar como Adoptado</button>
         </form>
         <br>
-        <a href="{{ perro.get_absolute_url }}"> Detalle </a>
         <br>
         <br>
-      </li>
+      </div>
       {% endfor %}
 
-    </ul>
+    </div>
     {% else %}
       <p>Todavia no hay perros en adopcion, regrese más tarde</p>
     {% endif %}

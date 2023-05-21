@@ -120,9 +120,9 @@ class Turno(models.Model):
         ('Tarde', 'Tarde'),
     )
 
-    banda_horaria = models.CharField(max_length=100, choices=BANDA_HORARIA, default='Mañana', help_text='Horario en el que puede ir a la veterinaria mañana(7 AM - 12 PM) o tarde (12 PM a 6 PM')
+    banda_horaria = models.CharField(max_length=100, choices=BANDA_HORARIA, default='Mañana', help_text='Mañana(7 a 12hs) - Tarde(12 a 18hs)')
     motivo= models.CharField(max_length=100, choices=MOTIVO, default='Consulta')
-    estado = models.CharField(max_length=100, choices=ESTADO, blank=True, default='Esperando Confirmacion')
+    estado = models.CharField(max_length=100, choices=ESTADO, blank=True, default='Esperando Confirmación')
    
     mascota = models.ForeignKey(Mascota, on_delete=models.SET_NULL, null=True, blank=True)
 

@@ -1,33 +1,37 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Nombre: {{ object }}</h1>
+<div class="container text-center ">
+  <div class="card col-md-6 mx-auto">
+    <div class="card-header">
+      <h1>Nombre: {{ object }}</h1>
 
-  <p><strong>Color:</strong> {{ object.color }}</p>
-  <p><strong>Raza:</strong> {{ object.raza }}</p>
-  <p><strong>Fecha De Nacimiento:</strong> {{ object.fecha_nac }}</p>
-  <p><strong>Foto: </strong></p><br>
+    </div>
+    <div class="card-body">
+      <p><strong>Color:</strong> {{ object.color }}</p>
+      <p><strong>Raza:</strong> {{ object.raza }}</p>
+      <p><strong>Fecha De Nacimiento:</strong> {{ object.fecha_nac }}</p>
+      <p><strong>Foto: </strong></p><br>
 
-  {%if object.foto %}
-    <img src="{{ object.foto.url }}" alt="Foto de la mascota">
-  {%else%}
-    No tiene foto
-  {%endif%}
-  <form method="post" action="{% url 'confirmar_eliminar_mascota' object.id %}">
-    {% csrf_token %}
-    <input type="hidden" name="mascota_id" value="{{ object.id }}">
-    <button type="submit">Dar de Baja</button>
-</form>
+      {%if object.foto %}
+      <img src="{{ object.foto.url }}" alt="Foto de la mascota">
+      {%else%}
+      No tiene foto
+      {%endif%}
+      <form method="post" action="{% url 'confirmar_eliminar_mascota' object.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="mascota_id" value="{{ object.id }}">
+        <button class="btn btn-danger mt-2" type="submit">Eliminar Mascota</button>
+      </form>
+    </div>
+    <!-- <div class="card-footer">
+      <button type="button" onclick="return false;">Ver historial de turnos</button>
+        <button type="button" onclick="return false;">Ver historial de visitas</button>
+    </div> -->
+  </div>
+</div>
+<div class="text-center mt-2">
 
-<form method="post" action="{% url 'main' %}">
-  {% csrf_token %}
-  <input type="hidden" name="" value="">
-  <a href="{% url 'Ver mis Mascotas' %}"><button>Volver</button></a>
-
-</form>
-
-<button type="button" onclick="return false;">Ver historial de turnos</button>
-<button type="button" onclick="return false;">Ver historial de visitas</button>
-
-
+  <a class="btn btn-primary" href="http://127.0.0.1:8000/ver_mis_mascotas/">Volver</a>
+</div>
 {% endblock %}

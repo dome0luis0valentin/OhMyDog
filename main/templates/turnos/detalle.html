@@ -1,23 +1,36 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Fecha: {{ object.fecha }}</h1>
-  
-  <p><strong>Cliente:</strong> {{ object.cliente.usuario.email }}</p>
-  <br>
-  <p><strong>Motivo:</strong> {{ object.motivo }}</p>
-  <p><strong>Fecha:</strong> {{ object.fecha }}</p>
-  <p><strong>Banda Horaria: </strong>{{ object.banda_horaria }}</p><br>
+<div class="card">
+  <div class="card-header">
+    <h1>Fecha: {{ object.fecha }}</h1>
+  </div>
+  <div class="card-body">
 
-  <form method="post" action="{% url 'aceptar turno' object.id %}">
-    {% csrf_token %}
-    <input type="hidden" name="turno_id" value="{{ object.id }}">
-    <button type="submit">Rechazar Turno</button>
-  </form>
+    <p><strong>Banda Horaria: </strong>{{ object.banda_horaria }}</p>
+    <p><strong>Cliente:</strong> {{ object.cliente.usuario.email }}</p>
+    <p><strong>Mascota:</strong> {{ object.mascota.nombre }}</p>
+    <p><strong>Motivo:</strong> {{ object.motivo }}</p>
+  </div>
+  <div class="card-footer text-center">
+    <p>
 
-  <form method="post" action="{% url 'rechazar turno' object.id %}">
-    {% csrf_token %}
-    <input type="hidden" name="turno_id" value="{{ object.id }}">
-    <button type="submit">Aceptar Turno</button>
-  </form>
+      <form method="post" action="{% url 'aceptar turno' object.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="turno_id" value="{{ object.id }}">
+        <button class="btn btn-success" type="submit">Aceptar Turno</button>
+      </form>
+      <form method="post" action="{% url 'rechazar turno' object.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="turno_id" value="{{ object.id }}">
+        <button class="btn btn-danger" type="submit">Rechazar Turno</button>
+      </form>
+    </p>
+  </div>
+</div>
+<div class="text-center">
+  <a href="http://127.0.0.1:8000/confirmar_turnos/" class="btn btn-primary">Volver</a>
+</div>
+
+
 {% endblock %}

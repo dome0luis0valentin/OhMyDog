@@ -17,6 +17,7 @@ def validate_image(file):
         )
     
 
+
 class UsuarioForm(forms.ModelForm):
 
     #Para validar los datos en el formulario falta implementar esto:
@@ -27,11 +28,18 @@ class UsuarioForm(forms.ModelForm):
         model = Cliente  #Busco el modelo, para cada campo del modelo, hará una entrada al formularion
         fields = '__all__'  #Todos los campos del modelo
 
-class MascotaForm(forms.ModelForm):
 
+class MascotaForm(forms.ModelForm):
+    nombre = forms.CharField(widget=forms.widgets.TextInput(attrs={'class': 'col-5','placeholder':'Ingrese Nombre'})) 
+    color = forms.CharField(widget=forms.widgets.TextInput(attrs={'class': 'col-5','placeholder':'Ingrese Color'})) 
+    raza = forms.CharField(widget=forms.widgets.TextInput(attrs={'class': 'col-5','placeholder':'Ingrese Raza'})) 
+   
+    
     fecha_nac = forms.DateField(error_messages={
         'invalid': 'El formato de fecha es inválido. Use el formato AAAA-MM-DD.'
     })
+    fecha_nac = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)', 'class': 'datepicker'}))
+
     foto = forms.ImageField(validators=[validate_image])
 
     class Meta:
@@ -53,12 +61,12 @@ class Red_SocialForm(forms.ModelForm):
         fields = ['usuario_red','nombre_red']
 
 class ServicioForm(forms.ModelForm):
-    nombre = forms.CharField(max_length=50) 
-    apellido = forms.CharField(max_length=50)
-    dni = forms.IntegerField()
-    direccion = forms.CharField(max_length=200,)
-    correo = forms.EmailField()
-    telefono = forms.CharField(max_length=20)
+    nombre = forms.CharField(widget=forms.widgets.TextInput(attrs={'class': 'col-5','placeholder':'Ingrese Nombre'})) 
+    apellido = forms.CharField(widget=forms.widgets.TextInput(attrs={'class': 'col-5','placeholder':'Ingrese Apellido'}))
+    dni = forms.IntegerField(widget=forms.widgets.TextInput(attrs={'class': 'col-5','placeholder':'Ingrese DNI'}))
+    direccion = forms.CharField(widget=forms.widgets.TextInput(attrs={'class': 'col-5','placeholder':'Ingrese Direccion '}))
+    correo = forms.EmailField(widget=forms.widgets.EmailInput(attrs={'class': 'col-5','placeholder':'ejemplo@gmail.com'}))
+    telefono = forms.CharField(widget=forms.widgets.TextInput(attrs={'class': 'col-5','placeholder':'Ingrese Telefono'}))
     red = Red_SocialForm
 
     class Meta:
@@ -68,7 +76,7 @@ class ServicioForm(forms.ModelForm):
 class TurnoForm(forms.ModelForm):
     
     mascota = forms.ModelChoiceField(queryset=Mascota.objects.none())
-    
+    fecha = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)', 'class': 'datepicker'}))
     class Meta:
         model = Turno
         fields = ('fecha', 'banda_horaria', 'motivo', 'mascota')
@@ -81,13 +89,10 @@ class TurnoForm(forms.ModelForm):
         self.fields['mascota'].queryset = Mascota.objects.filter(dueno_id = dueño_cliente)
 
 class UrgenciaForm(forms.ModelForm):
-    cliente = forms.EmailField(max_length=70)
+    cliente = forms.EmailField(widget=forms.widgets.EmailInput(attrs={'class': 'col-5','placeholder':'ejemplo@gmail.com'}))
     turno = TurnoForm
-    fecha = forms.DateField(
-        error_messages={
-            'invalid': 'Fecha incorrecta. Use el formato AAAA-MM-DD.'
-        }
-    )
+    fecha = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)', 'class': 'datepicker'}))
+
     
     class Meta:
         model = Turno
@@ -104,9 +109,12 @@ class MascotaAdopcionForm(forms.ModelForm):
     #Para validar los datos en el formulario falta implementar esto:
 
     #https://runebook.dev/es/docs/django/ref/forms/validation
+
+    nombre = forms.CharField(widget=forms.widgets.TextInput(attrs={'class': 'col-5','placeholder':'Ingrese Nombre'}))
+    color = forms.CharField(widget=forms.widgets.TextInput(attrs={'class': 'col-5','placeholder':'Ingrese Color'}))
+    raza = forms.CharField(widget=forms.widgets.TextInput(attrs={'class': 'col-5','placeholder':'Ingrese Raza'}))
+    fecha_nac = forms.DateField(widget=forms.widgets.DateInput(format='%Y-%m-%d', attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)', 'class': 'col-5'}))
     
     class Meta: 
         model = Mascota_Adopcion  #Busco el modelo, para cada campo del modelo, hará una entrada al formularion
         fields = ['nombre','color', 'raza', 'fecha_nac']
-
-

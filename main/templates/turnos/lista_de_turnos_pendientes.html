@@ -1,23 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Listado de Turnos a confirmar</h1>
+<div class="text-center">
+  <h1>Listado de Turnos a confirmar</h1>
+</div>
 
-    {% if object_list %}
-    <ul>
+{% if object_list %}
 
-      {% for turno in object_list %}
-        <br><p><strong>Turno:</strong> {{ turno.fecha }}</p>
-        <br><p><strong>Cliente:</strong> {{ turno.cliente.usuario.email }}</p>
-        <br><p><strong>Banda Horaria:</strong> {{ turno.banda_horaria }}</p>
-        <br>
-        <a href="{{ turno.get_absolute_url }}">Detalle</a>
-        <br>
+{% for turno in object_list %}
+<div class="card mb-5 col-md-5">
+  <div class="card-header text-center">
+    <h4><strong>Turno:</strong> {{ turno.fecha }}</h4>
+  </div>
+  <div class="card-body p-2">
+    <p><strong>Banda Horaria:</strong> {{ turno.banda_horaria }}</p>
+    <p><strong>Cliente:</strong> {{ turno.cliente.usuario.email }}</p>
+  </div>
+  <div class="text-center card-footer">
+    <a href="{{ turno.get_absolute_url }}">Detalle</a>
+  </div>
 
-      {% endfor %}
 
-    </ul>
-    {% else %}
-      <p>No hay turnos pendientes por el momento</p>
-    {% endif %}
+</div>
+{% endfor %}
+
+{% else %}
+<p>No hay turnos pendientes por el momento</p>
+{% endif %}
 {% endblock %}
