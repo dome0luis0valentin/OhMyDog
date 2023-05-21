@@ -17,6 +17,11 @@
             <form style="display: inline-block;" action="http://127.0.0.1:8000/about/">
                 <input type="submit" class="m-2 btn btn-outline-success" value="Más Infomación" />
             </form>
+            {% if not user.is_authenticated %}
+            <form style="display: inline-block;" action="http://127.0.0.1:8000/adopcion/">
+                <input type="submit" class="m-2 btn btn-outline-success" value="Mascotas en Adopción" />
+            </form>
+            {%endif%}
 
             <!--ACA VAN LAS FUNCIONALIDADES EN COMUN DEL CLIENTE  SOLAMENTE-->
             {% if user.is_authenticated %}

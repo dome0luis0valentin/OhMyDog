@@ -7,6 +7,8 @@ from django.urls import reverse #Used to generate URLs by reversing the URL patt
 
 from django.contrib.auth.models import AbstractUser
 
+from django.core.validators import MinLengthValidator, MinValueValidator, MaxValueValidator
+
 #https://developer.mozilla.org/es/docs/Learn/Server-side/Django/Models
 
 # Create your models here.
@@ -156,6 +158,7 @@ class Campana(models.Model):
 
 class Prestador_Servicios(models.Model):
     datos = models.ForeignKey(Persona, on_delete=models.CASCADE)
+    zona = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(25)], blank= True, default=1)
 
     def __str__(self) -> str:
         return self.datos.nombre

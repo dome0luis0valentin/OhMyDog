@@ -63,7 +63,7 @@ class ServicioForm(forms.ModelForm):
 
     class Meta:
         model = Prestador_Servicios
-        fields = ['tipo']
+        fields = ['tipo', 'zona']
 
 class TurnoForm(forms.ModelForm):
     

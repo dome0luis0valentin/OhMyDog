@@ -4,6 +4,8 @@
   <h1>Formulario de adopción</h1>
   <form method="POST">
     {% csrf_token %}
+
+    {% if not user.is_authenticated %}
     <div class="form-group">
       <label for="nombre">Nombre:</label>
       <input type="text" class="form-control" id="nombre" name="nombre" required>
@@ -24,10 +26,18 @@
       <label for="telefono">Teléfono:</label>
       <input type="text" class="form-control" id="telefono" name="telefono" required>
     </div>
+    {% endif %}
+
     <div class="form-group">
       <label for="motivo">Motivo de adopción:</label>
       <textarea class="form-control" id="motivo" name="motivo" required></textarea>
     </div>
+
+    {% if user.is_authenticated %}
+      <p><small>Se usarán los datos con los que se registró para enviarle una mail al dueño del perro a adoptar.</small></p>
+    {% endif %}
+
+    <div></div>
     <button type="submit" class="btn btn-primary">Enviar</button>
   </form>
 {% endblock %}
