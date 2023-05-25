@@ -42,13 +42,13 @@ urlpatterns = [
 
     path('solicitar_turno/', views.solicitar_turno, name='solicitar turno'),
     path('confirmar_turnos/', views.TurnosListView.as_view(), name='confirmar turnos'),
-    path('confirmar_turnos/<int:pk>', views.TurnoDetailView.as_view(), name='detalle de turno'),
+    path('confirmar_turnos/<int:pk>', views.turno_detail_view, name='detalle de turno'),
     path('aceptar_turno/<int:turno_id>', views.aceptar_turno, name='aceptar turno'),
     path('rechazar_turno/<int:turno_id>', views.rechazar_turno, name='rechazar turno'),
 
     path('registrar_servicio/', views.registrar_servicio, name='registrar servicio'),
     path('ver_servicios/', views.ServiciosListView.as_view(), name='ver servicio'),
-    path('ver_servicios/<int:pk>',views.ServicioDetailView.as_view(), name="detalle servicio"), 
+    path('ver_servicios/<int:pk>',views.servicio_detail_view, name="detalle servicio"), 
     path('favicon.ico', RedirectView.as_view(url='/main/static/img/favicon.ico')),
 
     path('registrar_urgencia/', views.registrar_urgencia, name = 'registrar urgencia'),

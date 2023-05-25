@@ -52,6 +52,10 @@ from validate_email_address import validate_email
 import random
 import string
 
+
+from .form import CustomPasswordChangeForm
+
+
 def generar_contrasena():
     caracteres = string.ascii_letters + string.digits + string.punctuation
     contrasena = ''.join(random.choice(caracteres) for _ in range(10))
@@ -133,7 +137,8 @@ def usuario_is_valid(username):
         return False
 
 
-MENSAJE_FECHA_INVALIDA = 'Verifique que la fecha tenga el formato AAAA-MM-DD y que sea un dia valido. Ejemplo: 2023-01-01'
+MENSAJE_FECHA_ANTERIOR = 'Fecha invalida debe ser una fecha posterior'
+MENSAJE_FECHA_INVALIDA = 'Verifique que la fecha tenga el formato DD/MM/AAAA y que sea un dia valido. Ejemplo: 01/01/2023'
 MENSAJE_USUARIO_INVALIDO = 'Usuario incorrecto, revise que el email sea correcto y que el cliente este registrado'
 MENSAJE_SOLO_LETRAS = 'Solo se permiten letras, no ingrese numeros, ni simbolos como #,$,/, etc.'
 MENSAJE_SOLO_NUMEROS = "Solo se permiten números, no ingrese simbolos como .,-, /, etc."
@@ -198,13 +203,15 @@ def usuario_bloqueado(request):
 
 def cambiar_contraseña(request):
     if request.method == 'POST':
-        form = PasswordChangeForm(request.user, request.POST)
+       
+        form = CustomPasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request, user)  # Actualiza la sesión del usuario.
+            # Actualiza la sesión del usuario.
+            update_session_auth_hash(request, user)  
             return redirect('main')
     else:
-        form = PasswordChangeForm(request.user)
+        form = CustomPasswordChangeForm(request.user)
     return render(request, 'cambiar_contrasenia.html', {'form': form})
 
 def confirmar_cambiar_contraseña(request):
@@ -318,9 +325,9 @@ def enviar_formulario_adopcion(request):
             send_mail(
                 'Formulario de adopción',
                 plain_message,
-                'grupo21ing2@gmail.com',
+                correo,
                 # tendriamos que agregar el gmail del usuario que publico la adopcion mejor dicho el dueño del perro
-                ['josuecarrera788@gmail.com'],
+                ['grupo21ing2@gmail.com'],
                 html_message=html_message,
             )
             
@@ -479,14 +486,24 @@ class MascotaDetailView(generic.DetailView):
             'main/templates/mis_mascotas/detalle_mascota.html',
             context={'mascota':mascota_id}
         )
-    
+
+def turno_detail_view(request, pk):
+    turno = get_object_or_404(Turno, pk=pk)
+    print(turno.mascota)
+    mascota = get_object_or_404(Mascota, pk=turno.mascota.id)
+
+    return render(
+        request,
+        'turnos/detalle.html',
+        context={'object': turno, 'mascota': mascota}
+    )
 class TurnoDetailView(generic.DetailView):
     model = Turno
     template_name = 'turnos/detalle.html'  # Specify your own template name/location
-
+    
     def turno_detail_view(request,pk):
-        try:
-            turno_id=Turno.objects.get(pk=pk)
+        try:       
+            turno_id=Turno.objects.get(pk=pk)  
         except Turno.DoesNotExist:
             raise Http404("Esta mascota no esta registrada")
 
@@ -497,23 +514,37 @@ class TurnoDetailView(generic.DetailView):
             'main/templates/turnos/detalle.html',
             context={'mascota':turno_id}
         )
-    
+
+
+from django.shortcuts import get_object_or_404
+
+def servicio_detail_view(request, pk):
+    servicio = get_object_or_404(Prestador_Servicios, pk=pk)
+    red_social = get_object_or_404(Red_Social, dueno__pk=pk)
+
+    return render(
+        request,
+        'servicios/detalle.html',
+        context={'servicio': servicio, 'red_social': red_social}
+    )
+
 class ServicioDetailView(generic.DetailView):
     model = Prestador_Servicios
-    template_name = 'servicios/detalle.html'  # Specify your own template name/location
+    template_name = 'servicios/detalle.html'  
 
     def servicio_detail_view(request,pk):
         try:
+            red_social = Red_Social.objects.get(pk=0)
             servicio_id=Prestador_Servicios.objects.get(pk=pk)
+
         except Prestador_Servicios.DoesNotExist:
-            raise Http404("Esta mascota no esta registrada")
-
-        #book_id=get_object_or_404(Book, pk=pk)
-
+            print("Error")
+            raise Http404("Este servicio no esta registrado")
+        
         return render(
             request,
             'main/templates/servicios/detalle.html',
-            context={'servicio':servicio_id}
+            context={'servicio':servicio_id, 'red_social':red_social}
         )
     
 @login_required
@@ -607,6 +638,8 @@ def registrar_servicio(request):
                 prestador_de_servicios.save()
                 
                 red.dueno = prestador_de_servicios
+
+                red.save()
                 messages.success(request,"Se registro el servicio")
                 return redirect('main')
 
@@ -733,35 +766,45 @@ def registrar_mascota(request):
     context = {'form':form, 'titulo': "Registro de Mascota"}
     return render(request, "registro.html", context)
 
+def mascota_cumple(mascota,fecha,fecha_nac,tipo):
+    
+    fecha_ingresada = datetime.strptime(fecha, "%Y-%m-%d").date()
+    edad_meses = int((fecha_ingresada - fecha_nac).days / 30)
 
-def mascota_cumple(mascota ,fecha, tipo):
-    if tipo == "A" :
+    print(edad_meses, tipo)
+    
+    if tipo == "Vacunación de tipo A" :
+        
         if Vacuna_tipoA.objects.filter(mascota_id = mascota.id).exists() :
-            fecha_ingresada = datetime.strptime(fecha, "%Y-%m-%d").date()
-            edad_meses = (fecha_ingresada.year - mascota.fecha_nac.year) * 12 + fecha_ingresada.month - mascota.fecha_nac.month
-            vacuna = Vacuna_tipoA.objects.get(mascota_id = mascota.id)           
+            
+            vacuna = Vacuna_tipoA.objects.get(mascota_id = mascota.id) 
+                      
             if edad_meses > 2 and edad_meses < 4 :
-                if fecha_ingresada > vacuna.fecha_aplicacion + timedelta(days=21) :
-                    return True  
+                return [fecha_ingresada > (vacuna.fecha_aplicacion + timedelta(days=21)),"No se puede aplicar la vacuna por que no an pasado los 21 dias de espera"]
             elif edad_meses > 4 :
-                if fecha_ingresada > vacuna.fecha_aplicacion + relativedelta(years=1) :
-                    return True
-            else :
-                return False
-        return True        
-    elif tipo == "B":
+                return [fecha_ingresada > (vacuna.fecha_aplicacion + relativedelta(years=1)),"No se puede aplicar la vacuna por que no an pasado el año de espera"]
+        else:  
+              if edad_meses < 2 :
+                  return [False,"La mascota es muy pequeña para aplicarle la vacuna tipo A"]
+              else: 
+                  return[True,""]
+                      
+    elif tipo == "Vacunación de tipo B":
         if Vacuna_tipoB.objects.filter(mascota_id = mascota.id).exists() :
-            fecha_ingresada = datetime.strptime(fecha, "%Y-%m-%d").date()
-            edad_meses = (fecha_ingresada.year - mascota.fecha_nac.year) * 12 + fecha_ingresada.month - mascota.fecha_nac.month
+            
             vacuna = Vacuna_tipoB.objects.get(mascota_id = mascota.id)           
             if edad_meses > 4 :
-                if fecha_ingresada > vacuna.fecha_aplicacion + relativedelta(years=1) :
-                    return True
-            else :
-                return False
-        return True
-    return True        
-        
+                return [fecha_ingresada > vacuna.fecha_aplicacion + relativedelta(years=1),"No se puede aplicar la vacuna por que no a pasado el año de espera"] 
+        else: 
+            if edad_meses < 4:
+                return [False,"La mascota no tiene todavia mas de 4 meses de edad , para aplicarle la vacuna tipo B"]
+            else:
+               return[True,""] 
+    
+    if (tipo != "A" and tipo != "B"):
+        return [True,""]      
+
+
 @login_required
 def solicitar_turno(request):
     
@@ -782,8 +825,13 @@ def solicitar_turno(request):
         
         motivo = request.POST["motivo"]
 
+        fecha_nacimineto = mascota.fecha_nac
+
+        resultado_mascota_cumple = mascota_cumple(mascota,fecha,fecha_nacimineto,motivo)
+        print(resultado_mascota_cumple)
+
         #Python no valida todo el condicional, si el form no es valido no valida la fecha
-        if form.is_valid() and fecha_is_valid(fecha) and mascota_cumple(mascota,fecha,motivo):
+        if form.is_valid() and fecha_is_valid(fecha) and resultado_mascota_cumple[0]:
 
             turno = form.save(commit=False)
 
@@ -802,9 +850,14 @@ def solicitar_turno(request):
             messages.success(request, "Se registro al turno")
             return redirect("main")
         else:
-            print("\nNo se registro el turno")
-           
-            messages.info(request, MENSAJE_FECHA_INVALIDA)
+            if not (fecha_is_valid(fecha)):
+                if not fecha_anterior_is_valid(fecha):
+                    messages.info(request, MENSAJE_FECHA_ANTERIOR)
+                else:    
+                    messages.info(request, MENSAJE_FECHA_INVALIDA)
+            else:
+                messages.info(request,resultado_mascota_cumple[1])    
+            
             return redirect('solicitar turno')
         
     context = {'form':form, 'titulo': "Solicitud de Turno"}
@@ -820,10 +873,10 @@ def registro(request):
         dni = request.POST['dni']
         direccion = request.POST['direccion']
         telefono = request.POST['telefono']
-        is_veterinario = request.POST.get('is_veterinario')
-
+        is_veterinario = request.POST.get('is_veterinario', False)
+        
         is_veterinario = (is_veterinario=='on')
-
+       
         son_todos_letras = todos_cadenas(nombre, apellido)
         son_todos_numeros = todos_numeros(telefono, dni)
 
@@ -866,8 +919,6 @@ def registro(request):
                 messages.info(request, MENSAJE_SOLO_LETRAS)
             if not son_todos_numeros:
                 messages.info(request, MENSAJE_SOLO_NUMEROS)
-            if contraseña !=contraseña_confir:
-                messages.info(request, 'Las contraseñas no son las mismas')
             if not correo_existe:
                 messages.info(request, 'La direccion de correo electronico no existe')
             return redirect(registro)

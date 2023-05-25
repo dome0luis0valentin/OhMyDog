@@ -5,21 +5,30 @@
 
   <div class="card col-md-6 mx-auto">
     <div class="card-header">
-      <h1 class="text-center">{{object.nombre}} {{ object }} </h1>
+      <h1 class="text-center">{{servicio.nombre}} {{ servicio }} </h1>
     </div>
     <div class="card-body m-2">
       <p><strong>Servicio:</strong>  
-        {% if object.tipo == 'p' %} 
+        {% if servicio.tipo == 'p' %} 
           Paseador 
         {% else %} 
           Cuidador
       {% endif %}
       </p>
-      <p><strong>Correo:</strong> {{ object.datos.correo }}</p>
-      <p><strong>Red Social:</strong> Twitter</p>
+      <p><strong>Correo:</strong> {{ servicio.datos.correo }}</p>
+
+      {{ servicio_id }}
+      {% if red_social %}
+      <p>Seguime en <strong> {{ red_social.nombre_red }} </strong> como {{ red_social.usuario_red }} </p>
+      {% endif %}
     </div>
+    
     <div class="card-footer text-center">
+
+      {% if object.tipo == 'p' %} 
       <p><strong>Zona</strong> {{ object.zona }}</p>
+      {% endif %}
+      
     </div>
   </div>
 </div>

@@ -1,13 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-md-6">
@@ -42,8 +36,8 @@
               <input type="email" class="form-control" id="correo" name="correo" placeholder="Ingresa tu correo electrónico" required>
             </div>
             <div class="form-group">
-              <input type="checkbox" id="is_veterinaio" name="is_veterinaio">
-              <label for="is_veterinaio">Es veterinario</label>
+              <label for="id_is_veterinario">Es veterinario</label>
+              <input type="checkbox" id="id_is_veterinario" name="is_veterinario">
             </div>
             <div class="mt-2 text-center">
               <button type="submit" class="btn btn-success">Registrar Mascota</button>

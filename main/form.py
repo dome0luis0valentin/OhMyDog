@@ -10,12 +10,29 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+from django.contrib.auth.forms import PasswordChangeForm
+from django.utils.translation import gettext as _
+
+
 def validate_image(file):
     if not file.name.endswith('.jpg') and not file.name.endswith('.jpeg') and not file.name.endswith('.png'):
         raise ValidationError(
             _('El archivo subido no es una imagen válida.')
         )
     
+class CustomPasswordChangeForm(PasswordChangeForm):
+    error_messages = {
+        'password_mismatch': _("Las contraseñas no coinciden."),
+        'password_incorrect': _("La contraseña actual es incorrecta."),
+        'password_entirely_numeric': _("La contraseña no puede ser completamente numérica."),
+    }
+
+    help_texts = {
+        'password_current': _("Ingrese su contraseña actual."),
+        'password_new': _("Ingrese una nueva contraseña."),
+        'password_new_confirm': _("Confirme su nueva contraseña."),
+    }
+
 
 
 class UsuarioForm(forms.ModelForm):
