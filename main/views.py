@@ -136,8 +136,9 @@ def usuario_is_valid(username):
         # El usuario no existe en la base de datos
         return False
 
-
-MENSAJE_FECHA_ANTERIOR = 'Fecha invalida debe ser una fecha posterior'
+MENSAJE_USARIO_YA_EXISTE = 'Este correo electrónico ya se encuentra ocupado por otro usuario, si desea continuar con el registro, cambie el correo'
+MENSAJE_FECHA_POSTERIOR = 'Fecha invalida NO debe ser una fecha posterior a la de hoy'
+MENSAJE_FECHA_ANTERIOR = 'Fecha invalida debe ser una fecha posterior a la de hoy'
 MENSAJE_FECHA_INVALIDA = 'Verifique que la fecha tenga el formato DD/MM/AAAA y que sea un dia valido. Ejemplo: 01/01/2023'
 MENSAJE_USUARIO_INVALIDO = 'Usuario incorrecto, revise que el email sea correcto y que el cliente este registrado'
 MENSAJE_SOLO_LETRAS = 'Solo se permiten letras, no ingrese numeros, ni simbolos como #,$,/, etc.'
@@ -847,7 +848,7 @@ def solicitar_turno(request):
             turno.save()
             print("\nSe registro el turno")
             #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
-            messages.success(request, "Se registro al turno")
+            messages.success(request, "Se registro el turno")
             return redirect("main")
         else:
             if not (fecha_is_valid(fecha)):
@@ -885,10 +886,10 @@ def registro(request):
 
         if son_todos_numeros and son_todos_letras and correo_existe:
             if User.objects.filter(username=correo).exists():
-                messages.info(request, 'El usuario ya existe, prueba otro')
+                messages.info(request, MENSAJE_USARIO_YA_EXISTE)
                 return redirect(registro)
             elif User.objects.filter(email=correo).exists():
-                messages.info(request, 'Este correo ya esta registrado')
+                messages.info(request, MENSAJE_USARIO_YA_EXISTE)
                 return redirect(registro)
             else:
 
