@@ -64,7 +64,7 @@ ROOT_URLCONF = 'OhMyDog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ["templates"],
+        'DIRS': ["templates" , "Turno/templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

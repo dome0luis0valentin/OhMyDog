@@ -38,14 +38,8 @@ urlpatterns = [
     path('ver_mis_adopciones/', views.MisAdopcionesListView.as_view(), name='ver mis adopciones'),
     path('formulario_adopcion/', views.enviar_formulario_adopcion, name='enviar_formulario_adopcion'),
     path('marcar_adopcion/<int:pk>/', views.marcar_adopcion, name='marcar_adopcion'),
-    path('registrar_adopcion/', views.registrar_adopcion, name='registrar adopcion'),
-
-    path('solicitar_turno/', views.solicitar_turno, name='solicitar turno'),
-    path('confirmar_turnos/', views.TurnosListView.as_view(), name='confirmar turnos'),
-    path('confirmar_turnos/<int:pk>', views.turno_detail_view, name='detalle de turno'),
-    path('aceptar_turno/<int:turno_id>', views.aceptar_turno, name='aceptar turno'),
-    path('rechazar_turno/<int:turno_id>', views.rechazar_turno, name='rechazar turno'),
-
+    path('registrar_adopcion/', views.registrar_adopcion, name='registrar adopcion'),    
+    
     path('registrar_servicio/', views.registrar_servicio, name='registrar servicio'),
     path('ver_servicios/', views.ServiciosListView.as_view(), name='ver servicio'),
     path('ver_servicios/<int:pk>',views.servicio_detail_view, name="detalle servicio"), 
