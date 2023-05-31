@@ -1,6 +1,6 @@
 from main.models import Mascota, Cliente,Turno, Prestador_Servicios, Vacuna_tipoA , Vacuna_tipoB , Persona
 from main.form import UrgenciaForm,Red_SocialForm , TurnoForm, ServicioForm
-from datetime import datetime , timedelta
+from datetime import datetime , timedelta , date
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
@@ -254,7 +254,6 @@ class TurnosListView(generic.ListView):
     
 #Mostar detalle de mascota
 def detalle_mascota(request, pk=None):
-
     return render(request, "prueba_detalle_mascota.html")    
  
 class TurnoDetailView(generic.DetailView):
@@ -288,31 +287,59 @@ def turno_detail_view(request, pk):
         context={'object': turno, 'mascota': mascota}
     )
     
+def turno_confirmado_detail_view(request, pk):
+    turno = get_object_or_404(Turno, pk=pk)
+    print(turno.mascota)
+    mascota = get_object_or_404(Mascota, pk=turno.mascota.id)
+
+    return render(
+        request,
+        'detalle_turnos_aceptados.html',
+        context={'object': turno, 'mascota': mascota}
+    )    
+    
  
 def rechazar_turno(request, turno_id):
     if request.method == 'POST':
         #rechazar
         turno = Turno.objects.filter(id = turno_id)[0]
-        turno.estado='A'
+        turno.estado='R'
         turno.save()
 
-        return redirect('confirmar turnos')
+        return redirect('confirmar_turnos')
         
 
 def aceptar_turno(request, turno_id):
     if request.method == 'POST':
         #aceptar
         turno = Turno.objects.filter(id = turno_id)[0]
-        turno.estado='R'
+        turno.estado='A'
         turno.save()
 
-        return redirect('confirmar turnos')    
+        return redirect('confirmar_turnos')    
 
 
 def turnos_confirmados(request):
-    fecha_actual = datetime.date.today()
-    fecha_formateada_actual = fecha_actual.strftime("%YYYY/%mm/%dd")
-    turnos_confirmados = Turno.objects.filter(estado ='A',fecha=fecha_formateada_actual)
+    fecha_actual = date.today()
+    turnos_confirmados = Turno.objects.filter(fecha=fecha_actual, estado="A")
     contexto = {'turnos_confirmados': turnos_confirmados}
     return render(request, "lista_de_turnos_aceptados.html", contexto)    
     
+    
+def Falto_al_turno(request, turno_id):
+    if request.method == 'POST':
+        #falto al turno 
+        turno = Turno.objects.filter(id = turno_id)[0]
+        turno.estado='F'
+        turno.save()
+
+        return redirect('turnos_confirmados')    
+    
+def Asistio_al_turno(request, turno_id):
+    if request.method == 'POST':
+        #aceptar
+        turno = Turno.objects.filter(id = turno_id)[0]
+        turno.estado='As'
+        turno.save()
+
+        return redirect('turnos_confirmados')        
