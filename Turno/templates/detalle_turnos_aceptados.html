@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header">
+    <h1>Fecha: {{ object.fecha }}</h1>
+  </div>
+  <div class="card-body">
+
+    <p><strong>Banda Horaria: </strong>{{ object.banda_horaria }}</p>
+    <p><strong>Cliente:</strong> {{ object.cliente.usuario.email }}</p>
+    <p><strong>Mascota:</strong> {{ mascota.nombre }}</p>
+    <p><strong>Motivo:</strong> {{ object.motivo }}</p>
+  </div>
+  <div class="card-footer text-center">
+    <p>
+
+      <form method="post" action="{% url 'Asistio_al_turno' object.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="turno_id" value="{{ object.id }}">
+        <button class="btn btn-success" type="submit">Asistio</button>
+      </form>
+      <form method="post" action="{% url 'Falto_al_turno' object.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="turno_id" value="{{ object.id }}">
+        <button class="btn btn-danger" type="submit">Falto</button>
+      </form>
+    </p>
+  </div>
+</div>
+<div class="text-center">
+  <a href="http://127.0.0.1:8000/turnos_confirmados/" class="btn btn-primary">Volver</a>
+</div>
+
+
+{% endblock %}

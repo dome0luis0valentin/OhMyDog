@@ -1,8 +1,7 @@
 from main.models import Mascota, Cliente,Turno, Prestador_Servicios, Vacuna_tipoA , Vacuna_tipoB , Persona
 from main.form import UrgenciaForm,Red_SocialForm , TurnoForm, ServicioForm
-from .forms import VeterinariasForm
-from datetime import datetime 
-
+from datetime import datetime , timedelta , date
+from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -171,6 +170,12 @@ class TurnosListView(generic.ListView):
     #Especifica el lugar del template
     template_name = 'lista_de_turnos_pendientes.html'
     
+    
+#Mostar detalle de mascota
+def detalle_mascota(request, pk=None):
+
+    return render(request, "prueba_detalle_mascota.html")    
+ 
 class TurnoDetailView(generic.DetailView):
     model = Turno
     template_name = 'turnos/detalle.html'  # Specify your own template name/location
@@ -202,59 +207,59 @@ def turno_detail_view(request, pk):
         context={'object': turno, 'mascota': mascota}
     )
     
-@login_required
+def turno_confirmado_detail_view(request, pk):
+    turno = get_object_or_404(Turno, pk=pk)
+    print(turno.mascota)
+    mascota = get_object_or_404(Mascota, pk=turno.mascota.id)
+
+    return render(
+        request,
+        'detalle_turnos_aceptados.html',
+        context={'object': turno, 'mascota': mascota}
+    )    
+    
+ 
 def rechazar_turno(request, turno_id):
     if request.method == 'POST':
         #rechazar
         turno = Turno.objects.filter(id = turno_id)[0]
-        turno.estado='A'
+        turno.estado='R'
         turno.save()
 
-        return redirect('confirmar turnos')
+        return redirect('confirmar_turnos')
         
 @login_required
 def aceptar_turno(request, turno_id):
     if request.method == 'POST':
         #aceptar
         turno = Turno.objects.filter(id = turno_id)[0]
-        turno.estado='R'
+        turno.estado='A'
         turno.save()
 
-        return redirect('confirmar turnos')    
+        return redirect('confirmar_turnos')    
 
 @login_required
 def turnos_confirmados(request):
-    fecha_actual = datetime.date.today()
-    fecha_formateada_actual = fecha_actual.strftime("%YYYY/%mm/%dd")
-    turnos_confirmados = Turno.objects.filter(estado ='A',fecha=fecha_formateada_actual)
+    fecha_actual = date.today()
+    turnos_confirmados = Turno.objects.filter(fecha=fecha_actual, estado="A")
     contexto = {'turnos_confirmados': turnos_confirmados}
     return render(request, "lista_de_turnos_aceptados.html", contexto)    
     
-
-@login_required
-def cargar_veterinarias(request):
-
-    form = VeterinariasForm()
-
-    if request.method == 'POST':
-        form = VeterinariasForm(request.POST, request.FILES)
-        archivo = request.FILES['arch']
-        if form.is_valid() and archivo_is_valid(archivo):
-            #Cargar archivo
-            veterinarias_de_turno = form.save(commit=False)
-            veterinarias_de_turno.fecha_creación = datetime.today()
-            veterinarias_de_turno.save()
-            messages.success(request, "Archivo cargado con exito")
-            return redirect('main')
-        else: 
-            #Mensaje  de error
-            messages.error(request, MENSAJE_ARCHIVO_TURNOS)
-            return redirect('cargar veterinarias de turno')
-    else:
-        context = {'form':form, 'titulo': "Cargar Veterinarias de Turno"}
-        return render(request, "cargar_veterinarias.html", context)
-
-            
-
     
+def Falto_al_turno(request, turno_id):
+    if request.method == 'POST':
+        #falto al turno 
+        turno = Turno.objects.filter(id = turno_id)[0]
+        turno.estado='F'
+        turno.save()
 
+        return redirect('turnos_confirmados')    
+    
+def Asistio_al_turno(request, turno_id):
+    if request.method == 'POST':
+        #aceptar
+        turno = Turno.objects.filter(id = turno_id)[0]
+        turno.estado='As'
+        turno.save()
+
+        return redirect('turnos_confirmados')        
