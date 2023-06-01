@@ -1,5 +1,8 @@
-from main.models import Mascota, Cliente,Turno, Prestador_Servicios, Vacuna_tipoA , Vacuna_tipoB , Persona
-from main.form import UrgenciaForm,Red_SocialForm , TurnoForm, ServicioForm
+from main.models import Mascota, Cliente,Turno, Prestador_Servicios, Persona
+from .models import Veterinarias_de_turno
+from main.form import Red_SocialForm , TurnoForm, ServicioForm
+from .forms import VeterinariasForm
+
 from datetime import datetime , timedelta , date
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.decorators import login_required
@@ -10,8 +13,12 @@ from Mensaje import *
 from validate_email_address import validate_email
 from django.views import generic
 from .validaciones import archivo_is_valid, mascota_cumple
-      
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+import csv 
     
+from .funciones import leer_archivo
 @login_required
 def solicitar_turno(request):
     
@@ -168,13 +175,7 @@ class TurnosListView(generic.ListView):
     queryset = get_queryset
 
     #Especifica el lugar del template
-    template_name = 'lista_de_turnos_pendientes.html'
-    
-    
-#Mostar detalle de mascota
-def detalle_mascota(request, pk=None):
-
-    return render(request, "prueba_detalle_mascota.html")    
+    template_name = 'lista_de_turnos_pendientes.html'   
  
 class TurnoDetailView(generic.DetailView):
     model = Turno
@@ -206,7 +207,8 @@ def turno_detail_view(request, pk):
         'detalle.html',
         context={'object': turno, 'mascota': mascota}
     )
-    
+
+@login_required   
 def turno_confirmado_detail_view(request, pk):
     turno = get_object_or_404(Turno, pk=pk)
     print(turno.mascota)
@@ -218,7 +220,7 @@ def turno_confirmado_detail_view(request, pk):
         context={'object': turno, 'mascota': mascota}
     )    
     
- 
+@login_required
 def rechazar_turno(request, turno_id):
     if request.method == 'POST':
         #rechazar
@@ -245,7 +247,7 @@ def turnos_confirmados(request):
     contexto = {'turnos_confirmados': turnos_confirmados}
     return render(request, "lista_de_turnos_aceptados.html", contexto)    
     
-    
+@login_required    
 def Falto_al_turno(request, turno_id):
     if request.method == 'POST':
         #falto al turno 
@@ -254,7 +256,8 @@ def Falto_al_turno(request, turno_id):
         turno.save()
 
         return redirect('turnos_confirmados')    
-    
+
+@login_required   
 def Asistio_al_turno(request, turno_id):
     if request.method == 'POST':
         #aceptar
@@ -263,3 +266,54 @@ def Asistio_al_turno(request, turno_id):
         turno.save()
 
         return redirect('turnos_confirmados')        
+
+
+@login_required
+def cargar_veterinarias(request):
+
+    form = VeterinariasForm()
+
+    if request.method == 'POST':
+        form = VeterinariasForm(request.POST, request.FILES)
+        archivo = request.FILES['arch']
+        if form.is_valid() and archivo_is_valid(archivo):
+            #Cargar archivo
+            veterinarias_de_turno = form.save(commit=False)
+            veterinarias_de_turno.fecha_creación = datetime.today()
+            veterinarias_de_turno.save()
+
+            messages.success(request, "Archivo cargado con exito")
+            return redirect('main')
+        else: 
+            #Mensaje  de error
+            messages.error(request, MENSAJE_ARCHIVO_TURNOS)
+            return redirect('cargar veterinarias de turno')
+    else:
+        context = {'form':form, 'titulo': "Cargar Veterinarias de Turno"}
+        return render(request, "cargar_veterinarias.html", context)
+  
+def ver_veterinarias_de_turno(request):
+
+    if(Veterinarias_de_turno.objects.exists()):
+        #Mostrar Veterinarias
+        ultimo_subido = Veterinarias_de_turno.objects.last().arch
+        
+        data = leer_archivo(ultimo_subido.name)
+        return render(request, 'mostrar_veterinarias_de_turno.html', {'data': data})
+    else:
+        #Mostrar error
+        messages.error(request, MENSAJE_NO_HAY_VETERINARIAS)
+        return redirect("main")
+    
+def ver_historial_de_turnos(request):
+
+    usuarios = Turno.objects.filter(cliente__usuario__email=request.user.email)
+    #Tiene turnos
+    if(usuarios.exists()):
+        data = Turno.objects.filter(cliente__usuario__email=request.user.email) 
+        
+    #No tiene turnos
+    else:
+        data = []
+
+    return render(request, 'historial/historial_turnos.html', {'data': data})

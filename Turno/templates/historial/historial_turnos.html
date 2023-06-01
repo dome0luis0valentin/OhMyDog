@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center">
+  <h1>Historial de Turnos</h1>
+</div>
+{% if data %}
+    {% for turno in data %}
+    <div class="card mb-5 col-md-5">
+        <div class="card-header text-center">
+            <h4><strong>Turno:</strong> {{ turno.fecha }}</h4>
+        </div>
+        <div class="card-body p-2">
+            <p><strong>Banda Horaria:</strong> {{ turno.banda_horaria }}</p>
+            <p><strong>Estado:</strong> {{ turno.estado }}</p>
+        </div>
+    </div>
+    {% endfor %}
+
+{% else %}
+<p>Sin turnos solicitados</p>
+{% endif %}
+{% endblock %}

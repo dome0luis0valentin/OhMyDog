@@ -11,6 +11,8 @@ urlpatterns = [
     path('turnos_confirmados/<int:pk>', views.turno_confirmado_detail_view , name='detalle de turno confirmado'),
     path('Asistio_al_turno/<int:turno_id>', views.Asistio_al_turno, name='Asistio_al_turno'),
     path('Falto_al_turno/<int:turno_id>', views.Falto_al_turno, name='Falto_al_turno'),
-    path('cargar_veterinarias/',views.cargar_veterinarias, name="cargar veterinarias de turno")
+    path('cargar_veterinarias/',views.cargar_veterinarias, name="cargar veterinarias de turno"),
+    path('ver_veterinarias_de_turno/',views.ver_veterinarias_de_turno, name="ver veterinarias de turno"),
+    path('ver_historial_de_turnos/',views.ver_historial_de_turnos, name="ver historial de turnos"),
 
 ]

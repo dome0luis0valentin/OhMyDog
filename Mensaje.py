@@ -6,3 +6,4 @@ MENSAJE_USUARIO_INVALIDO = 'Usuario incorrecto, revise que el email sea correcto
 MENSAJE_SOLO_LETRAS = 'Solo se permiten letras, no ingrese numeros, ni simbolos como #,$,/, etc.'
 MENSAJE_SOLO_NUMEROS = "Solo se permiten números, no ingrese simbolos como .,-, /, etc."
 MENSAJE_ARCHIVO_TURNOS = "Archivo invalido, verifique que el archivo sea de tipo .csv, .xls o .xlsx y que dentro tenga 1 columna con nombres y otra con fechas con el formato DD/MM/AAAA"
+MENSAJE_NO_HAY_VETERINARIAS = "No se encuentra el listado de veterinarias de turno"

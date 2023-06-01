@@ -1,13 +1,12 @@
 import pandas as pd
 from datetime import datetime, timedelta
-import datetime
+import datetime as dt
 from main.models import  Vacuna_tipoA , Vacuna_tipoB 
 from dateutil.relativedelta import relativedelta
 
 
 def archivo_is_valid(archivo):
     extension = archivo.name.split('.')[-1].lower()
-    print(extension)
 
     if extension == 'csv':
         df = pd.read_csv(archivo)
@@ -15,26 +14,26 @@ def archivo_is_valid(archivo):
         df = pd.read_excel(archivo)
     else:
         return False
-    print("1")
+    
     if len(df.columns) < 2:
         return False
-    print("3")
+    
     primera_columna = df.iloc[:, 0]
     segunda_columna = df.iloc[:, 1]
 
     if primera_columna.dtype != 'object':
         return False
-    print("4")
+    
     for fecha in segunda_columna:
         if isinstance(fecha, pd.Timestamp):
             fecha = fecha.strftime('%d/%m/%Y')
         try:
-            print(fecha)
-            datetime.datetime.strptime(fecha, '%d/%m/%Y')
-            print(fecha)
+            
+            dt.datetime.strptime(fecha, '%d/%m/%Y')
+
         except ValueError:
             return False
-    print("5")
+    
     return True
 
 def mascota_cumple(mascota,fecha,fecha_nac,tipo):
