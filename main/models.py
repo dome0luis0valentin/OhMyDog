@@ -190,3 +190,14 @@ class Intentos(models.Model):
     )
 
     estado = models.CharField(max_length=1, choices=ESTADO_USUARIO, default='n')
+
+class Visitas(models.Model):
+    """
+fecha DATETIME
+motivo VARCHAR(45)
+observaciones VARCHAR(200)
+user_id INT
+fichamedica_idfichamedica INT
+mascota_idmascota INT
+peso DECIMAL(2)
+"""

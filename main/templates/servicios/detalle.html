@@ -5,7 +5,7 @@
 
   <div class="card col-md-6 mx-auto">
     <div class="card-header">
-      <h1 class="text-center">{{servicio.nombre}} {{ servicio }} </h1>
+      <h1 class="text-center">{{servicio.datos.nombre}} {{ servicio.datos.apellido}} </h1>
     </div>
     <div class="card-body m-2">
       <p><strong>Servicio:</strong>  
@@ -15,7 +15,13 @@
           Cuidador
       {% endif %}
       </p>
+      {% if servicio.tipo == 'p' %} 
+        <p><strong>Zona:</strong> {{ servicio.zona }}</p>
+      {% endif %}
       <p><strong>Correo:</strong> {{ servicio.datos.correo }}</p>
+      <p><strong>Telefono de contacto:</strong> {{ servicio.datos.telefono }}</p>
+      <p><strong>DNI:</strong> {{ servicio.datos.dni }}</p>
+      <p><strong>Direccion :</strong> {{ servicio.datos.direccion }}</p>
 
       {{ servicio_id }}
       {% if red_social %}

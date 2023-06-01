@@ -14,5 +14,6 @@ urlpatterns = [
     path('cargar_veterinarias/',views.cargar_veterinarias, name="cargar veterinarias de turno"),
     path('ver_veterinarias_de_turno/',views.ver_veterinarias_de_turno, name="ver veterinarias de turno"),
     path('ver_historial_de_turnos/',views.ver_historial_de_turnos, name="ver historial de turnos"),
+    path('ver_historial_de_visitas/<int:pk>',views.ver_historial_de_visitas, name="ver historial de visitas"),
 
 ]

@@ -291,7 +291,8 @@ def cargar_veterinarias(request):
     else:
         context = {'form':form, 'titulo': "Cargar Veterinarias de Turno"}
         return render(request, "cargar_veterinarias.html", context)
-  
+
+@login_required   
 def ver_veterinarias_de_turno(request):
 
     if(Veterinarias_de_turno.objects.exists()):
@@ -304,10 +305,25 @@ def ver_veterinarias_de_turno(request):
         #Mostrar error
         messages.error(request, MENSAJE_NO_HAY_VETERINARIAS)
         return redirect("main")
-    
+
+@login_required   
 def ver_historial_de_turnos(request):
 
     usuarios = Turno.objects.filter(cliente__usuario__email=request.user.email)
+    #Tiene turnos
+    if(usuarios.exists()):
+        data = Turno.objects.filter(cliente__usuario__email=request.user.email) 
+        
+    #No tiene turnos
+    else:
+        data = []
+
+    return render(request, 'historial/historial_turnos.html', {'data': data})
+
+@login_required   
+def ver_historial_de_visitas(request, pk):
+
+    visitas = Visitas.objects.filter(cliente__usuario__email=request.user.email)
     #Tiene turnos
     if(usuarios.exists()):
         data = Turno.objects.filter(cliente__usuario__email=request.user.email) 
