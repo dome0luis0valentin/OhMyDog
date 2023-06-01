@@ -8,6 +8,6 @@ urlpatterns = [
     path('aceptar_turno/<int:turno_id>', views.aceptar_turno, name='aceptar turno'),
     path('rechazar_turno/<int:turno_id>', views.rechazar_turno, name='rechazar turno'),
     path('turnos_confirmados/', views.turnos_confirmados , name='turnos confirmados'),
-    path('detalle_mascota_view/<int:id>',views.detalle_mascota, name="detalle_mascota_view")
+    path('cargar_veterinarias/',views.cargar_veterinarias, name="cargar veterinarias de turno")
 
 ]

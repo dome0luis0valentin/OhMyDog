@@ -5,3 +5,4 @@ MENSAJE_FECHA_INVALIDA = 'Verifique que la fecha tenga el formato DD/MM/AAAA y q
 MENSAJE_USUARIO_INVALIDO = 'Usuario incorrecto, revise que el email sea correcto y que el cliente este registrado'
 MENSAJE_SOLO_LETRAS = 'Solo se permiten letras, no ingrese numeros, ni simbolos como #,$,/, etc.'
 MENSAJE_SOLO_NUMEROS = "Solo se permiten números, no ingrese simbolos como .,-, /, etc."
+MENSAJE_ARCHIVO_TURNOS = "Archivo invalido, verifique que el archivo sea de tipo .csv, .xls o .xlsx y que dentro tenga 1 columna con nombres y otra con fechas con el formato DD/MM/AAAA"

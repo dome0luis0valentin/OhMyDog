@@ -257,20 +257,9 @@ def lista_mascota(request):
     main_data = {"lista": lista}
     return render(request, "lista_mascota.html", {"cantidad": num_mascotas, "lista":lista})
    
-
 #Mostar detalle de mascota
 def detalle_mascota(request, pk=None):
-
-    return render(request, "prueba_detalle_mascota.html")
-
-    #Forma compleja --> Hacer mas adelante
-    """
-    if pk:
-        menu_item = Item.objects.get(pk=pk)
-    else:
-        menu_item = ""
-    return render(request, "menu_item.html", {"menu_item": menu_item})
-    """
+    return render(request, "prueba_detalle_mascota.html")   
 
 def confirmar_eliminar_mascota(request, mascota_id):
     return render(request,'mis_mascotas/confirmar_eliminar.html', {'id': mascota_id, 'accion': "eliminar mascota"})

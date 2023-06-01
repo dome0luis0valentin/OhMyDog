@@ -1,7 +1,8 @@
 from main.models import Mascota, Cliente,Turno, Prestador_Servicios, Vacuna_tipoA , Vacuna_tipoB , Persona
 from main.form import UrgenciaForm,Red_SocialForm , TurnoForm, ServicioForm
-from datetime import datetime , timedelta
-from dateutil.relativedelta import relativedelta
+from .forms import VeterinariasForm
+from datetime import datetime 
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -9,45 +10,8 @@ from Funciones import *
 from Mensaje import *
 from validate_email_address import validate_email
 from django.views import generic
-
-
-def mascota_cumple(mascota,fecha,fecha_nac,tipo):
-    
-    fecha_ingresada = datetime.strptime(fecha, "%Y-%m-%d").date()
-    edad_meses = int((fecha_ingresada - fecha_nac).days / 30)
-
-    print(edad_meses, tipo)
-    
-    if tipo == "Vacunación de tipo A" :
-        
-        if Vacuna_tipoA.objects.filter(mascota_id = mascota.id).exists() :
-            
-            vacuna = Vacuna_tipoA.objects.get(mascota_id = mascota.id) 
-                      
-            if edad_meses > 2 and edad_meses < 4 :
-                return [fecha_ingresada > (vacuna.fecha_aplicacion + timedelta(days=21)),"No se puede aplicar la vacuna por que no an pasado los 21 dias de espera"]
-            elif edad_meses > 4 :
-                return [fecha_ingresada > (vacuna.fecha_aplicacion + relativedelta(years=1)),"No se puede aplicar la vacuna por que no an pasado el año de espera"]
-        else:  
-              if edad_meses < 2 :
-                  return [False,"La mascota es muy pequeña para aplicarle la vacuna tipo A"]
-              else: 
-                  return[True,""]
-                      
-    elif tipo == "Vacunación de tipo B":
-        if Vacuna_tipoB.objects.filter(mascota_id = mascota.id).exists() :
-            
-            vacuna = Vacuna_tipoB.objects.get(mascota_id = mascota.id)           
-            if edad_meses > 4 :
-                return [fecha_ingresada > vacuna.fecha_aplicacion + relativedelta(years=1),"No se puede aplicar la vacuna por que no a pasado el año de espera"] 
-        else: 
-            if edad_meses < 4:
-                return [False,"La mascota no tiene todavia mas de 4 meses de edad , para aplicarle la vacuna tipo B"]
-            else:
-               return[True,""] 
-    
-    if (tipo != "A" and tipo != "B"):
-        return [True,""]      
+from .validaciones import archivo_is_valid, mascota_cumple
+      
     
 @login_required
 def solicitar_turno(request):
@@ -190,50 +154,6 @@ def registrar_servicio(request):
 
     return render(request, "registro_servicio.html", context)
 
-
-@login_required
-def registrar_urgencia(request):
-    form = UrgenciaForm()
-   
-    if request.method == "POST":
-        form = UrgenciaForm(request.POST) 
-
-        banda_horaria = request.POST['banda_horaria']
-        fecha = request.POST['fecha']
-        motivo = 'U'
-        correo_cliente = request.POST['cliente']
-
-        if form.is_valid() and fecha_is_valid(fecha) and usuario_is_valid(correo_cliente):
-            
-            urgencia = form.save(commit=False)
-
-            cliente= Cliente.objects.filter(usuario__email=correo_cliente)[0]
-
-            urgencia = Turno.objects.create(cliente = cliente,
-                                                fecha = fecha,
-                                                banda_horaria = banda_horaria,
-                                                motivo = motivo,
-                                                asistio = True,
-                                                estado = 'A')
-            urgencia.save()
-
-            print("\nSe registro la urgencia")
-                #ACA SE REGISTRA EN LA BASE DE DATOS PERO HAY QUE AGREGAR DATOS DE USUARIO
-            
-            return redirect("main")
-        else:
-            if 'fecha' in form.errors or not (fecha_is_valid(fecha)):
-                messages.info(request, MENSAJE_FECHA_INVALIDA)
-            if not (usuario_is_valid(correo_cliente)):
-                messages.info(request, MENSAJE_USUARIO_INVALIDO)
-            print("\n NO Se registro la urgencia")
-            return redirect('registrar urgencia')
-
-    context = {'form':form, 'titulo': "Registro de Servicios de Urgencias"}
-
-    return render(request, "registro.html", context)
-
-
 class TurnosListView(generic.ListView):
 
     # Modelo al que le va a consultar los datos
@@ -251,12 +171,6 @@ class TurnosListView(generic.ListView):
     #Especifica el lugar del template
     template_name = 'lista_de_turnos_pendientes.html'
     
-    
-#Mostar detalle de mascota
-def detalle_mascota(request, pk=None):
-
-    return render(request, "prueba_detalle_mascota.html")    
- 
 class TurnoDetailView(generic.DetailView):
     model = Turno
     template_name = 'turnos/detalle.html'  # Specify your own template name/location
@@ -276,7 +190,7 @@ class TurnoDetailView(generic.DetailView):
         ) 
      
     
-
+@login_required
 def turno_detail_view(request, pk):
     turno = get_object_or_404(Turno, pk=pk)
     print(turno.mascota)
@@ -288,7 +202,7 @@ def turno_detail_view(request, pk):
         context={'object': turno, 'mascota': mascota}
     )
     
- 
+@login_required
 def rechazar_turno(request, turno_id):
     if request.method == 'POST':
         #rechazar
@@ -298,7 +212,7 @@ def rechazar_turno(request, turno_id):
 
         return redirect('confirmar turnos')
         
-
+@login_required
 def aceptar_turno(request, turno_id):
     if request.method == 'POST':
         #aceptar
@@ -308,7 +222,7 @@ def aceptar_turno(request, turno_id):
 
         return redirect('confirmar turnos')    
 
-
+@login_required
 def turnos_confirmados(request):
     fecha_actual = datetime.date.today()
     fecha_formateada_actual = fecha_actual.strftime("%YYYY/%mm/%dd")
@@ -316,3 +230,31 @@ def turnos_confirmados(request):
     contexto = {'turnos_confirmados': turnos_confirmados}
     return render(request, "lista_de_turnos_aceptados.html", contexto)    
     
+
+@login_required
+def cargar_veterinarias(request):
+
+    form = VeterinariasForm()
+
+    if request.method == 'POST':
+        form = VeterinariasForm(request.POST, request.FILES)
+        archivo = request.FILES['arch']
+        if form.is_valid() and archivo_is_valid(archivo):
+            #Cargar archivo
+            veterinarias_de_turno = form.save(commit=False)
+            veterinarias_de_turno.fecha_creación = datetime.today()
+            veterinarias_de_turno.save()
+            messages.success(request, "Archivo cargado con exito")
+            return redirect('main')
+        else: 
+            #Mensaje  de error
+            messages.error(request, MENSAJE_ARCHIVO_TURNOS)
+            return redirect('cargar veterinarias de turno')
+    else:
+        context = {'form':form, 'titulo': "Cargar Veterinarias de Turno"}
+        return render(request, "cargar_veterinarias.html", context)
+
+            
+
+    
+

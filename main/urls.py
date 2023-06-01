@@ -45,7 +45,7 @@ urlpatterns = [
     path('ver_servicios/<int:pk>',views.servicio_detail_view, name="detalle servicio"), 
     path('favicon.ico', RedirectView.as_view(url='/main/static/img/favicon.ico')),
 
-    path('registrar_urgencia/', views.registrar_urgencia, name = 'registrar urgencia'),
+    #path('registrar_urgencia/', views.registrar_urgencia, name = 'registrar urgencia'),
 
 ]
 

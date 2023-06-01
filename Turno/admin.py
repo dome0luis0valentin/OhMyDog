@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Veterinarias_de_turno
+
+admin.site.register(Veterinarias_de_turno)
