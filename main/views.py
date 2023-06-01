@@ -359,7 +359,6 @@ class MascotaListView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'lista_mascotas'   # your own name for the list as a template variable
 
     def get_queryset(self):
-        #return Mascota.objects.filter(dueno__correo=self.request.user).order_by('nombre')
         return Mascota.objects.filter(dueno__usuario__email=self.request.user.email)
     queryset = get_queryset
     template_name = 'mis_mascotas/lista_mascotas.html'  # Specify your own template name/location
