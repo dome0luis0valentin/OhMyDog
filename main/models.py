@@ -192,12 +192,11 @@ class Intentos(models.Model):
     estado = models.CharField(max_length=1, choices=ESTADO_USUARIO, default='n')
 
 class Visitas(models.Model):
-    """
-fecha DATETIME
-motivo VARCHAR(45)
-observaciones VARCHAR(200)
-user_id INT
-fichamedica_idfichamedica INT
-mascota_idmascota INT
-peso DECIMAL(2)
-"""
+    fecha   = models.DateField(null=True)
+    motivo  = models.CharField(max_length=45, null=True)
+    observaciones= models.CharField(max_length=500, null=True)
+    cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT, null=True)
+    mascota = models.ForeignKey(Mascota, on_delete=models.PROTECT , null=True)
+    peso    = models.DecimalField(max_digits=6, decimal_places=3,null=True, blank=True)
+    codigo  = models.CharField(max_length=20, blank=True)
+    cant_desparacitante= models.DecimalField(max_digits=6, decimal_places=3,null=True, blank=True)

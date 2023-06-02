@@ -3,7 +3,28 @@ import os
 from openpyxl import load_workbook
 from pyexcel_ods3 import get_data
 
+from main.models import Visitas, Turno, Cliente, Mascota
 
+def registrar_visita(turno, datos):
+
+    descripcion = datos.POST["descripcion"]
+    print(turno.cliente.pk.__class__)
+    cliente = Cliente.objects.get(pk=turno.cliente.pk)
+    mascota = Mascota.objects.get(pk=turno.mascota.pk)
+
+    visita = Visitas.objects.create(fecha=turno.fecha,
+                            motivo=turno.motivo,
+                            observaciones=descripcion,
+                            cliente=cliente, 
+                            mascota=mascota)
+    
+    if ("Vacunación" in turno.motivo) or ("Desparacitación" in turno.motivo):
+        visita.peso = datos.POST["peso"]
+        visita.codigo = datos.POST["codigo"]
+        if ("Desparacitación" in turno.motivo):
+            visita.cant_desparacitante = datos.POST["cantidad"]
+    
+    visita.save()
 
 
 def leer_archivo(archivo):
