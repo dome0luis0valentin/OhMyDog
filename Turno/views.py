@@ -1,7 +1,9 @@
-from main.models import Mascota, Cliente,Turno, Prestador_Servicios, Persona
+from main.models import Mascota, Cliente,Turno, Prestador_Servicios, Persona , Vacuna_tipoA ,Vacuna_tipoB
 from .models import Veterinarias_de_turno
 from main.form import Red_SocialForm , TurnoForm, ServicioForm
-from .forms import VeterinariasForm
+from .forms import VeterinariasForm , FormularioSimple , DesparasitanteForm ,VacunacionForm
+from django.urls import reverse
+
 
 from datetime import datetime , timedelta , date
 from dateutil.relativedelta import relativedelta
@@ -46,7 +48,16 @@ def solicitar_turno(request):
 
         #Python no valida todo el condicional, si el form no es valido no valida la fecha
         if form.is_valid() and fecha_is_valid(fecha) and resultado_mascota_cumple[0]:
-
+            
+            """
+            if Turno.objects.filter(cliente=cliente, mascota=mascota , motivo="Castración").exists():
+                messages.error(request, "La mascota ya fue castrada")
+                return redirect('solicitar turno')
+            
+            if Turno.objects.filter(cliente=cliente, mascota=mascota , motivo=motivo , estado="E").exists():
+                messages.error(request, "Ya has solicitado un turno pendiente")
+                return redirect('solicitar turno')
+            """    
             turno = form.save(commit=False)
 
             #Aca obtengo el dueño al que pertenece el usuario
@@ -257,16 +268,14 @@ def Falto_al_turno(request, turno_id):
 
         return redirect('turnos_confirmados')    
 
-@login_required   
+@login_required 
+#ya no es necesario   
 def Asistio_al_turno(request, turno_id):
     if request.method == 'POST':
         #aceptar
         turno = Turno.objects.filter(id = turno_id)[0]
-        turno.estado='As'
-        turno.save()
-
-        return redirect('turnos_confirmados')        
-
+        url = reverse(turno.motivo,{'turno_id': turno_id})
+        return redirect(url)
 
 @login_required
 def cargar_veterinarias(request):
@@ -333,3 +342,68 @@ def ver_historial_de_visitas(request, pk):
         data = []
 
     return render(request, 'historial/historial_turnos.html', {'data': data})
+
+@login_required
+def formulario_simple(request, turno_id):
+    if request.method == 'POST':
+        form = FormularioSimple(request.POST)
+        if form.is_valid():
+            # Realizar alguna acción con los datos ingresados, por ejemplo, guardarlos en la base de datos
+            descripcion = form.cleaned_data['descripcion']
+            # Realizar aquí las acciones que necesites con el texto ingresado
+            
+            return redirect('turnos_confirmados')
+    else:
+        form = FormularioSimple()
+    
+    return render(request, 'formularios/formulario_simple.html', {'form': form , 'turno_id': turno_id})
+
+@login_required
+def formulario_desparasitante(request, turno_id):
+    if request.method == 'POST':
+        form = DesparasitanteForm(request.POST)
+        if form.is_valid():
+            # Procesar los datos del formulario si es válido
+            peso = form.cleaned_data['peso']
+            codigo = form.cleaned_data['codigo']
+            cantidad = form.cleaned_data['cantidad']
+            descripcion = form.cleaned_data['descripcion']
+            # Realizar acciones con los datos del formulario (guardar en la base de datos, etc.)
+            return redirect('turnos_confirmados')
+    else:
+        form = DesparasitanteForm()
+    
+    return render(request, 'formularios/formulario_simple.html', {'form': form , 'turno_id': turno_id})
+
+@login_required
+def formulario_vacunacion(request, turno_id):
+    if request.method == 'POST':
+        form = VacunacionForm(request.POST)
+        if form.is_valid():
+            # Procesar los datos del formulario si es válido
+            peso = form.cleaned_data['peso']
+            codigo = form.cleaned_data['codigo']
+            descripcion = form.cleaned_data['descripcion']
+            # Realizar acciones con los datos del formulario (guardar en la base de datos, etc.)
+            return redirect('turnos_confirmados')
+    else:
+        form = VacunacionForm()
+    
+    return render(request, 'formularios/formulario_simple.html', {'form': form , 'turno_id': turno_id})
+
+def acturalizar_modelos(turno_id):
+    turno = Turno.objects.filter(id = turno_id)[0]
+    if (turno.motivo =="Vacunación de tipo A"):
+        aplicacion_vacuna = Vacuna_tipoA(mascota=turno.mascota, fecha_aplicacion=turno.fecha)
+    else:
+        aplicacion_vacuna = Vacuna_tipoB(mascota=turno.mascota, fecha_aplicacion=turno.fecha)
+    aplicacion_vacuna.save()          
+
+def actualizar_turno(request, turno_id):
+    if request.method == 'POST':
+        turno = Turno.objects.filter(id = turno_id)[0]
+        if (turno.motivo == "Vacunación de tipo A") or (turno.motivo == "Vacunación de tipo B") :
+            acturalizar_modelos(turno_id)
+        turno.estado='As'
+        turno.save()
+    return redirect('turnos_confirmados')        

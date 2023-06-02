@@ -14,12 +14,26 @@
   </div>
   <div class="card-footer text-center">
     <p>
-
-      <form method="post" action="{% url 'Asistio_al_turno' object.id %}">
+      {% if object.motivo == "Vacunación de tipo A" or object.motivo == "Vacunación de tipo B" %}
+        <form method="post" action="{% url 'formulario_vacunación' object.id %}">
+          {% csrf_token %}
+          <input type="hidden" name="turno_id" value="{{ object.id }}">
+         <button class="btn btn-success" type="submit">Asistio</button>
+        </form>
+      {% elif object.motivo == "Desparasitación" %}
+        <form method="post" action="{% url 'formulario_desparasitación' object.id %}">
+          {% csrf_token %}
+          <input type="hidden" name="turno_id" value="{{ object.id }}">
+          <button class="btn btn-success" type="submit">Asistio</button>
+        </form>
+      {% else %}
+      <form method="post" action="{% url 'formulario_simple' object.id %}">
         {% csrf_token %}
         <input type="hidden" name="turno_id" value="{{ object.id }}">
         <button class="btn btn-success" type="submit">Asistio</button>
-      </form>
+      </form>  
+      {% endif %}  
+
       <form method="post" action="{% url 'Falto_al_turno' object.id %}">
         {% csrf_token %}
         <input type="hidden" name="turno_id" value="{{ object.id }}">
