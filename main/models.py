@@ -152,8 +152,6 @@ class Campana(models.Model):
     fecha_fin=models.DateTimeField()
     Total_donado =models.FloatField()
 
-    def __str__(self) -> str:
-        return self.nombre
             
 
 class Prestador_Servicios(models.Model):

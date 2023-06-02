@@ -405,6 +405,7 @@ def actualizar_turno(request, turno_id):
             acturalizar_modelos(turno_id)
         turno.estado='As'
         turno.save()
+        #aca se tiene que guardar el turno en la visita y en la libreta sanitaria   
     return redirect('turnos_confirmados') 
 
 def calcelar_turno(request, turno_id):
