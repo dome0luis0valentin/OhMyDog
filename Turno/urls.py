@@ -18,6 +18,7 @@ urlpatterns = [
     path('formulario_desparasitación/<int:turno_id>/',views.formulario_desparasitante, name="formulario_desparasitación"),
     path('formulario_vacunación/<int:turno_id>/',views.formulario_vacunacion, name="formulario_vacunación"),
     path('actualizar_turno/<int:turno_id>/', views.actualizar_turno, name='actualizar_turno'),
+    path('calcelar_turno/<int:turno_id>/', views.calcelar_turno, name='calcelar_turno'),
     path('ver_historial_de_visitas/<int:pk>',views.ver_historial_de_visitas, name="ver historial de visitas"),
 
 ]

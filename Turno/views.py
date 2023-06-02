@@ -49,15 +49,14 @@ def solicitar_turno(request):
         #Python no valida todo el condicional, si el form no es valido no valida la fecha
         if form.is_valid() and fecha_is_valid(fecha) and resultado_mascota_cumple[0]:
             
-            """
-            if Turno.objects.filter(cliente=cliente, mascota=mascota , motivo="Castración").exists():
-                messages.error(request, "La mascota ya fue castrada")
+            if Turno.objects.filter(cliente=cliente, mascota=mascota , motivo=motivo , estado="E").exists() or Turno.objects.filter(cliente=cliente, mascota=mascota , motivo=motivo , estado="A").exists():
+                if Turno.objects.filter(cliente=cliente, mascota=mascota , motivo="Castración").exists():
+                    messages.error(request, "La mascota ya fue castrada")
+                else:    
+                    messages.error(request, "Ya has solicitado un turno  para la mascota")
+                    messages.error(request, "Podras solicitar de nuevo un turno cuando finalise el turno solicitado o sea rechasado")
                 return redirect('solicitar turno')
-            
-            if Turno.objects.filter(cliente=cliente, mascota=mascota , motivo=motivo , estado="E").exists():
-                messages.error(request, "Ya has solicitado un turno pendiente")
-                return redirect('solicitar turno')
-            """    
+    
             turno = form.save(commit=False)
 
             #Aca obtengo el dueño al que pertenece el usuario
@@ -406,4 +405,11 @@ def actualizar_turno(request, turno_id):
             acturalizar_modelos(turno_id)
         turno.estado='As'
         turno.save()
-    return redirect('turnos_confirmados')        
+    return redirect('turnos_confirmados') 
+
+def calcelar_turno(request, turno_id):
+    if request.method == 'POST':
+        turno = Turno.objects.filter(id = turno_id)[0]
+        turno.estado='Ca'
+        turno.save()
+    return redirect('turnos_confirmados')          
