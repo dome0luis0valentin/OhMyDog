@@ -13,12 +13,12 @@ class FormularioSimple(forms.Form):
 
 
 class DesparasitanteForm(forms.Form):
-    peso = forms.DecimalField(label="Peso en Kg")
+    peso = forms.DecimalField(label="Peso en Kg", max_digits=6, decimal_places=3)
     codigo = forms.CharField(label="Código del desparasitante")
     cantidad = forms.IntegerField(label="Cantidad")
     descripcion = forms.CharField(label="Descripción", widget=forms.Textarea)
     
 class VacunacionForm(forms.Form):
-    peso = forms.DecimalField(label="Peso en Kg")
+    peso = forms.DecimalField(label="Peso en Kg", max_digits=6, decimal_places=3)
     codigo = forms.CharField(label="Código del desparasitante")
     descripcion = forms.CharField(label="Descripción", widget=forms.Textarea)    

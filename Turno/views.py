@@ -1,4 +1,4 @@
-from main.models import Mascota, Cliente,Turno, Prestador_Servicios, Persona , Vacuna_tipoA ,Vacuna_tipoB
+from main.models import Mascota, Cliente,Turno, Prestador_Servicios, Persona , Vacuna_tipoA ,Vacuna_tipoB, Visitas
 from .models import Veterinarias_de_turno
 from main.form import Red_SocialForm , TurnoForm, ServicioForm
 from .forms import VeterinariasForm , FormularioSimple , DesparasitanteForm ,VacunacionForm
@@ -20,7 +20,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 import csv 
     
-from .funciones import leer_archivo
+from .funciones import leer_archivo, registrar_visita
 @login_required
 def solicitar_turno(request):
     
@@ -320,7 +320,7 @@ def ver_historial_de_turnos(request):
     usuarios = Turno.objects.filter(cliente__usuario__email=request.user.email)
     #Tiene turnos
     if(usuarios.exists()):
-        data = Turno.objects.filter(cliente__usuario__email=request.user.email) 
+        data = Turno.objects.filter(mascota__usuario__email=request.user.email) 
         
     #No tiene turnos
     else:
@@ -331,16 +331,15 @@ def ver_historial_de_turnos(request):
 @login_required   
 def ver_historial_de_visitas(request, pk):
 
-    visitas = Visitas.objects.filter(cliente__usuario__email=request.user.email)
-    #Tiene turnos
-    if(usuarios.exists()):
-        data = Turno.objects.filter(cliente__usuario__email=request.user.email) 
-        
-    #No tiene turnos
+    visitas = Visitas.objects.filter(mascota__pk=pk)
+    #Tiene visitas
+    if(visitas.exists()):
+        data = visitas  
+    #No tiene visitas
     else:
         data = []
 
-    return render(request, 'historial/historial_turnos.html', {'data': data})
+    return render(request, 'historial/visitas.html', {'data': data})
 
 @login_required
 def formulario_simple(request, turno_id):
@@ -401,6 +400,9 @@ def acturalizar_modelos(turno_id):
 def actualizar_turno(request, turno_id):
     if request.method == 'POST':
         turno = Turno.objects.filter(id = turno_id)[0]
+
+        registrar_visita(turno, request)
+
         if (turno.motivo == "Vacunación de tipo A") or (turno.motivo == "Vacunación de tipo B") :
             acturalizar_modelos(turno_id)
         turno.estado='As'

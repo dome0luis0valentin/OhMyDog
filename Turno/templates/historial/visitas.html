@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center">
+  <h1>Historial de Visitas</h1>
+</div>
+{% if data %}
+    {% for visita in data %}
+    <div class="card mb-5 col-md-5">
+        <div class="card-header text-center">
+            <h4><strong>Visita:</strong> {{ visita.fecha }}</h4>
+        </div>
+        <div class="card-body p-2">
+            <p><strong>Motivo:</strong> {{ visita.motivo }}</p>
+            <p><strong>Observaciones:</strong> {{ visita.observaciones }}</p>
+        </div>
+    </div>
+    {% endfor %}
+
+{% else %}
+<p>Sin visitas registradas</p>
+{% endif %}
+{% endblock %}
