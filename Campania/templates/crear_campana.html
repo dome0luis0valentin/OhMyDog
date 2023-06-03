@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <title>Formulario de Campaña</title>
+</head>
+<body>
+    <h2>Formulario de Campaña</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Guardar">
+    </form>
+</body>
+ {% endblock %}

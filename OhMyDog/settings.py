@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
     'Turno.apps.TurnoConfig',
+    'Campania.apps.CampaniaConfig',
 ]
 
 MIDDLEWARE = [
@@ -65,7 +66,7 @@ ROOT_URLCONF = 'OhMyDog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ["templates" , "Turno/templates"],
+        'DIRS': ["templates" , "Turno/templates" , "Campania/templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

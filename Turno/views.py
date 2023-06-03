@@ -348,6 +348,7 @@ def formulario_simple(request, turno_id):
         if form.is_valid():
             # Realizar alguna acción con los datos ingresados, por ejemplo, guardarlos en la base de datos
             descripcion = form.cleaned_data['descripcion']
+            monto = form.cleaned_data['monto']
             # Realizar aquí las acciones que necesites con el texto ingresado
             
             return redirect('turnos_confirmados')
@@ -366,6 +367,7 @@ def formulario_desparasitante(request, turno_id):
             codigo = form.cleaned_data['codigo']
             cantidad = form.cleaned_data['cantidad']
             descripcion = form.cleaned_data['descripcion']
+            monto = form.cleaned_data['monto']
             # Realizar acciones con los datos del formulario (guardar en la base de datos, etc.)
             return redirect('turnos_confirmados')
     else:
@@ -382,6 +384,7 @@ def formulario_vacunacion(request, turno_id):
             peso = form.cleaned_data['peso']
             codigo = form.cleaned_data['codigo']
             descripcion = form.cleaned_data['descripcion']
+            monto = form.cleaned_data['monto']
             # Realizar acciones con los datos del formulario (guardar en la base de datos, etc.)
             return redirect('turnos_confirmados')
     else:
