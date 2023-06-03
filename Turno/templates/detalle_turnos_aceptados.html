@@ -37,7 +37,7 @@
       <form method="post" action="{% url 'Falto_al_turno' object.id %}">
         {% csrf_token %}
         <input type="hidden" name="turno_id" value="{{ object.id }}">
-        <button class="btn btn-danger" type="submit">Falto</button>
+        <button class="btn btn-danger" type="submit"> Falto </button>
       </form>
     </p>
   </div>
