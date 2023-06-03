@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
     'Turno.apps.TurnoConfig',
+    'mascotas_perdidas.apps.Mascotas_perdidasConfig',
 ]
 
 MIDDLEWARE = [
