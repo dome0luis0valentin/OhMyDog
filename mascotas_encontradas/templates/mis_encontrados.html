@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  {% if lista %}
+  <p class="text-center">
+    <img class="m-5" style="width: 80px;" src="https://files.cults3d.com/uploaders/14728184/illustration-file/e7344747-32a4-4f27-b460-f34ba9594bf7/PATA-PIES-CORAZON-ALMOHADA.png" alt="" srcset="">
+    <label class="h1">Perros en Perdidos</label>
+    <img class="m-5" style="width: 80px;" src="https://files.cults3d.com/uploaders/14728184/illustration-file/e7344747-32a4-4f27-b460-f34ba9594bf7/PATA-PIES-CORAZON-ALMOHADA.png" alt="" srcset="">
+  </p>
+  <div class="col-md-12 text-center row">
+    {% for perro in lista %}
+    <div class="col-md-4 mb-4 bg-light">
+      <div class="card">
+        
+        <p>
+          <strong>
+            Descripcion:
+          </strong>
+          {{perro.descripcion}}
+        </p>
+        <p>
+        
+          <table border="1" width="300" height="200">
+            <tr>
+              <td align="center" valign="middle">
+                <img src="{{ perro.foto.url }}" alt="Foto de la mascota" width="100%" height="auto">
+              </td>
+            </tr>
+          </table>
+
+        {% if perro.devuelto %}
+            <p class="m-2"><strong><label class="h4" style="color:#e87c09">Encontrado</label></strong></p>
+        {% endif %}
+
+        <form action="{% url 'marcar devuelto' pk=perro.pk %}" method="post" style="display:inline-block;">
+            {% csrf_token %}  
+            <button class="m-2 btn btn-success" type="submit" {% if perro.devuelto %}disabled{% endif %}>Marcar como Devuelto</button>
+        </form>
+         
+        </p>
+
+     
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+{% else %}
+<p>No hay mascotas Encontradas</p>
+<br>
+<form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/">
+  <input type="submit" value="Volver al Menu Principal" />
+</form>
+{% endif %}
+{% endblock %}
