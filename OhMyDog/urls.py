@@ -21,13 +21,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from Turno import urls
 from Campania import urls
-
+from mascotas_perdidas import urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
     path('', include('Turno.urls')),
     path('', include('Campania.urls')),
+    path('', include('mascotas_perdidas.urls')),
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) 
 

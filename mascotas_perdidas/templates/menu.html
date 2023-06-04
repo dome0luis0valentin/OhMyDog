@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="col-md-12 text-center" style="height: 370px;">
+        <img style="height: 350px;" src="https://media.discordapp.net/attachments/1083387546689605692/1090727675313795235/Logo1.png"
+            alt="Imagen de presentasión">
+    </div>
+
+    <!--Botones-->
+    <div class="dropdown" style="display: inline-block;"></div>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1"></ul>
+        <a class="m-2 btn btn-outline-success dropdown-item"
+            href="http://127.0.0.1:8000/publicar/">Publicar Mascota Perdidas</a>
+        
+        <a class="m-2 btn btn-outline-success dropdown-item"
+            href="http://127.0.0.1:8000/publicar_no_registrada/">Publicar Mascota No Registrada Perdida</a>
+        
+    </div>
+{% endblock %}

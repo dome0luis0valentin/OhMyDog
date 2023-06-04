@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card col-5">
+  <div class="card-header">
+    <h1>Nombre: {{ object.nombre }}</h1>
+  </div>
+  <div class="card-body">
+
+    <p><strong>Contacto:</strong> {{ object.contacto }}</p>
+    <p><strong>Raza:</strong> {{ object.raza }}</p>
+    <p><strong>Color:</strong> {{ object.color }}</p>
+    <p><strong>Visto la ultima vez:</strong> {{ object.ultimo_lugar }}</p>
+    <p><strong>Rasgos particulares:</strong> {{ object.rasgos_particulares }}</p>
+    <p><strong>Descripcion:</strong> {{ object.descripcion }}</p>
+    <p><strong>Fecha en la que se perdio:</strong> {{ object.fecha }}</p>
+    <p><strong>Descripcion:</strong> {{ object.descripcion }}</p>
+    <table border="1" width="300" height="200">
+      <tr>
+        <td align="center" valign="middle">
+          <img src="{{ object.foto.url }}" alt="Foto de la mascota" width="100%" height="auto">
+        </td>
+      </tr>
+    </table>
+
+    {% if object.encontrad %}<p><strong>Mascota ya encontrada</strong></p>{% endif %}
+  </div>
+</div>
+<div class="text-center">
+  <a href="http://127.0.0.1:8000/ver_perdidos/" class="btn btn-primary">Volver</a>
+</div>
+  
+{% endblock %}

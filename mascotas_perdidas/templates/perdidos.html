@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  {% if lista %}
+  <p class="text-center">
+    <img class="m-5" style="width: 80px;" src="https://files.cults3d.com/uploaders/14728184/illustration-file/e7344747-32a4-4f27-b460-f34ba9594bf7/PATA-PIES-CORAZON-ALMOHADA.png" alt="" srcset="">
+    <label class="h1">Perros en Perdidos</label>
+    <img class="m-5" style="width: 80px;" src="https://files.cults3d.com/uploaders/14728184/illustration-file/e7344747-32a4-4f27-b460-f34ba9594bf7/PATA-PIES-CORAZON-ALMOHADA.png" alt="" srcset="">
+  </p>
+  <div class="col-md-12 text-center row">
+    {% for perro in lista %}
+    <div class="col-md-4 mb-4 bg-light">
+      <div class="card">
+        {% if perro.encontrado %}
+            <p class="m-2"><strong><label class="h4" style="color:#09e82a">Encontrado</label></strong></p>
+        {% endif %}
+        <strong class="h3">
+          {{perro.nombre}}
+        </strong>
+        <p>
+          <strong>
+            Fecha:
+          </strong>
+          {{perro.fecha}}
+        </p>
+        <p>
+          <strong>
+            Contacto:
+          </strong>
+          
+          <table border="1" width="300" height="200">
+            <tr>
+              <td align="center" valign="middle">
+                <img src="{{ perro.foto.url }}" alt="Foto de la mascota" width="100%" height="auto">
+              </td>
+            </tr>
+          </table>
+         
+        </p>
+
+        <a class="mb-2" href="{{ perro.get_absolute_url }}">Detalle</a>
+     
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+{% else %}
+<p>No hay mascotas Perdidas</p>
+<br>
+<form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/">
+  <input type="submit" value="Volver al Menu Principal" />
+</form>
+{% endif %}
+{% endblock %}

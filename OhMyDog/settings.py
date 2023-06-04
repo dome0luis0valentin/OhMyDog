@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
     'Turno.apps.TurnoConfig',
-    'mascotas_perdidas.apps.Mascotas_perdidasConfig',
+    'mascotas_perdidas.apps.MascotasPerdidasConfig',
     'Campania.apps.CampaniaConfig',
 ]
 
@@ -67,7 +67,7 @@ ROOT_URLCONF = 'OhMyDog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ["templates" , "Turno/templates" , "Campania/templates"],
+        'DIRS': ["templates" , "Turno/templates" , "Campania/templates", "mascotas_perdidas/templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

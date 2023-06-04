@@ -246,12 +246,6 @@ def about(request):
 
 #Lista de Mascotas
 def lista_mascota(request):
-    #Forma basica:
-    #return render(request, "prueba_lista_mascotas.html")
-
-    #Esta seccion es compleja, lo que hace es mostrarte para cada usuario especifico sus 
-    #mascotas
-    #Aca tendría que filtrar todas las mascotas en adopcion
     lista = Mascota.objects.all()
     num_mascotas = Mascota.objects.filter(dueno__usuario__email = auth.user.email)
     main_data = {"lista": lista}
