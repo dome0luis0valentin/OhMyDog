@@ -149,7 +149,9 @@ class Campana(models.Model):
     id = models.AutoField(primary_key=True)
     nombre= models.CharField(max_length=50)
     motivo = models.CharField(max_length=50)
-    fecha_fin=models.DateTimeField()
+    fecha_fin=models.DateField(error_messages={
+            'invalid': 'Fecha incorrecta. Use el formato AAAA-MM-DD'
+        })
     Total_donado =models.FloatField()
 
             

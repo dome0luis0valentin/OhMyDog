@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <title>Lista de campañas</title>
+</head>
+<body>
+    <h1>Lista de campañas</h1>
+    <ul>
+    {% for campana in campanas %}
+        <li>{{ campana.nombre }}</li>
+        <!-- Mostrar otros campos de la campaña si es necesario -->
+        <!--<li>
+            <form action="{% url 'formulario_pago' campana.id %}" method="GET">
+                <button type="submit">Pagar</button>
+            </form>
+        </li> -->
+    {% empty %}
+        <li>No hay campañas disponibles</li>
+    {% endfor %}
+    </ul>
+</body>
+{% endblock %}

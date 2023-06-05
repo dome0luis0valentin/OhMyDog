@@ -5,10 +5,10 @@
 </head>
 <body>
     <h2>Formulario de Campaña</h2>
-    <form method="POST">
+    <form method="post" action="{% url 'crear_campana' %}">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Guardar">
+        <button type="submit">Guardar</button>
     </form>
 </body>
  {% endblock %}
