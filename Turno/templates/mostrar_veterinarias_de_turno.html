@@ -4,22 +4,37 @@
 {% block content %}
 <div class="container">
   <div class="justify-content-center">
-    <div class="card mx-auto col-md-6">
-      <div class="card-header text-center">
-        <title>Mostrar CSV</title>
-
+    <div class="card mx-auto col-md">
+      <div class="card text-center">
+        <p class="text-center">
+          <img class="m-5" style="width: 80px;" src="https://raw.githubusercontent.com/Vane-git/Imagenes/main/vetesturno.png" alt="" srcset="">
+          <label class="h1">Veterinarias de Turno</label>
+          <img class="m-5" style="width: 80px;" src="https://raw.githubusercontent.com/Vane-git/Imagenes/main/vetesturno.png" alt="" srcset="">
+        </p>
       </div>
-    <body>
-        <table>
-            {% for row in data %}
-                <tr>
-                    <td>{{ row.0 }}</td>
-                    <td>{{ row.1 }}</td>
-                </tr>
-            {% endfor %}
-        </table>
-    </body>
-</html>
+      <table class="text-center table table-striped ">
+        <tr class="fw-bold">
+          <td>
+            Fecha
+          </td>
+          <td>
+            Veterinaria
+          </td>
+          <td>
+            Direccion
+          </td>
+          
+        </tr>
+        {% for row in data %}
+        <tr>
+          <td>{{ row.0 }}</td>
+          <td>{{ row.1 }}</td>
+          <td>{{ row.2 }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      </html>
 
     </div>
   </div>
