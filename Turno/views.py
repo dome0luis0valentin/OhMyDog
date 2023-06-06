@@ -14,7 +14,7 @@ from Funciones import *
 from Mensaje import *
 from validate_email_address import validate_email
 from django.views import generic
-from .validaciones import archivo_is_valid, mascota_cumple
+from .validaciones import archivo_is_valid, mascota_cumple , descuento
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -351,14 +351,14 @@ def formulario_simple(request, turno_id):
             monto = form.cleaned_data['monto']
             # Realizar aquí las acciones que necesites con el texto ingresado
             
-            return redirect('turnos_confirmados')
+            return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
     else:
-        form = FormularioSimple()
-    
-    return render(request, 'formularios/formulario_simple.html', {'form': form , 'turno_id': turno_id})
+        form = FormularioSimple(request.POST)
+    return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
 
 @login_required
 def formulario_desparasitante(request, turno_id):
+    monto = 0
     if request.method == 'POST':
         form = DesparasitanteForm(request.POST)
         if form.is_valid():
@@ -369,14 +369,14 @@ def formulario_desparasitante(request, turno_id):
             descripcion = form.cleaned_data['descripcion']
             monto = form.cleaned_data['monto']
             # Realizar acciones con los datos del formulario (guardar en la base de datos, etc.)
-            return redirect('turnos_confirmados')
+            return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
     else:
-        form = DesparasitanteForm()
-    
-    return render(request, 'formularios/formulario_simple.html', {'form': form , 'turno_id': turno_id})
+        form = DesparasitanteForm()    
+    return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
 
 @login_required
 def formulario_vacunacion(request, turno_id):
+    monto = 0
     if request.method == 'POST':
         form = VacunacionForm(request.POST)
         if form.is_valid():
@@ -386,11 +386,12 @@ def formulario_vacunacion(request, turno_id):
             descripcion = form.cleaned_data['descripcion']
             monto = form.cleaned_data['monto']
             # Realizar acciones con los datos del formulario (guardar en la base de datos, etc.)
-            return redirect('turnos_confirmados')
+            # aca mando el monto 
+            return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
     else:
-        form = VacunacionForm()
-    
-    return render(request, 'formularios/formulario_simple.html', {'form': form , 'turno_id': turno_id})
+        form = VacunacionForm()    
+    return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
+
 
 def acturalizar_modelos(turno_id):
     turno = Turno.objects.filter(id = turno_id)[0]
@@ -400,17 +401,35 @@ def acturalizar_modelos(turno_id):
         aplicacion_vacuna = Vacuna_tipoB(mascota=turno.mascota, fecha_aplicacion=turno.fecha)
     aplicacion_vacuna.save()          
 
+
+@login_required
 def actualizar_turno(request, turno_id):
+    
     if request.method == 'POST':
         turno = Turno.objects.filter(id = turno_id)[0]
+        
+        info_turno=Turno.objects.get(id=turno_id)
+        cliente_id = info_turno.cliente_id
+        cliente = Cliente.objects.get(id = cliente_id)
+        usuario_id = cliente.usuario_id
+        usuario = User.objects.get(id = usuario_id)
 
         registrar_visita(turno, request)
 
+        monto = request.POST.get('monto')
+        
         if (turno.motivo == "Vacunación de tipo A") or (turno.motivo == "Vacunación de tipo B") :
             acturalizar_modelos(turno_id)
         turno.estado='As'
         turno.save()
-        #aca se tiene que guardar el turno en la visita y en la libreta sanitaria   
+        #aca se tiene que guardar el turno en la visita y en la libreta sanitaria 
+        
+        mascota= Mascota.objects.get(id = info_turno.mascota_id)
+        
+        context= {'servicio':info_turno.motivo , 'fecha_turno': info_turno.fecha , 'banda_horaria': info_turno.banda_horaria , 'mascota' : mascota.nombre , 'total_a_pagar':descuento(monto,usuario.descuento) , 'descuento':usuario.descuento , 'monto_a_cobrar':monto}
+        return render(request , 'factura.html' , context)
+        #messages.success(request, f'El total a pagar es de {descuento(monto,usuario.descuento)}' )
+                  
     return redirect('turnos_confirmados') 
 
 def calcelar_turno(request, turno_id):

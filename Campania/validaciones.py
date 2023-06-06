@@ -8,3 +8,6 @@ def fecha_is_valid(fecha):
     except:
         # El usuario no existe en la base de datos
         return False
+    
+def cacular_descuento(monto):
+    return round(monto * 0.20 )    
