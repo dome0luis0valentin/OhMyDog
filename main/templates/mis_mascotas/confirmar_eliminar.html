@@ -1,11 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>¿Estás seguro de que quieres {{accion}}?</h2>
-    <form style="display: inline-block;" action="{% url 'eliminar_mascota' id %}">
-        <input type="submit" class="m-2 btn btn-outline-success" value="Eliminar Mascota" />
-    </form>
-    <form style="display: inline-block;" action="http://127.0.0.1:8000/ver_mis_mascotas/">
-        <input type="submit" class="m-2 btn btn-outline-success" value="Cancelar" />
-    </form>
+<div class="container">
+    <div class="card text-center">
+        <div class="card-header">
+            <h2>¿Estás seguro de que quieres {{accion}}?</h2>
+        </div>
+        <div class="card-body">
+            <form style="display: inline-block;" action="{% url 'eliminar_mascota' id %}">
+                <input type="submit" class="m-2 btn btn-danger" value="Eliminar Mascota" />
+            </form>
+            <form style="display: inline-block;" action="http://127.0.0.1:8000/ver_mis_mascotas/">
+                <input type="submit" class="m-2 btn btn-success" value="Cancelar" />
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
