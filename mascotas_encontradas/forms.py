@@ -17,7 +17,7 @@ def validate_image(file):
 class MascotaEncontradaForm(forms.ModelForm):
     class Meta: 
         model = MascotasEncontradas
-        fields = ("descripcion","foto","contacto")
+        fields = ("descripcion","foto","contacto", "direccion")
 
         
 
