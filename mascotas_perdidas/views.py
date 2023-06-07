@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect
 from .forms import MascotaPerdidaForm, MascotaNoRegistradaPerdidaForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from main.models import Cliente
+from main.models import Cliente, Mascota
 from Funciones import fecha_anterior_is_valid
-from .registros import registrar_mascota_perdida
+from .registros import registrar_mascota_perdida,registrar_mascota_registrada_perdida
 from Mensaje import *
 from .funciones import agregar_errores
 from .models import MascotasPerdidas
 from django.views import generic
+from .validaciones import mascota_perdida
 # Create your views here.
  
 def menu(request):
@@ -17,32 +18,43 @@ def menu(request):
     return render(request, "menu.html" , context)
 
 @login_required
-def publicar(request):
-
-    cliente= Cliente.objects.get(usuario=request.user)
-    usuario = cliente.id 
-    form = MascotaPerdidaForm(usuario)
-    
+def publicar(request):  
     if request.method == "POST":
+        cliente= Cliente.objects.get(usuario=request.user)
+        usuario = cliente.id
+        email = cliente.usuario.email
+
         # Valido los datos  
-        form = MascotaPerdidaForm(usuario, request.POST, request.FILES)
+        form = MascotaPerdidaForm(usuario, email, request.POST, request.FILES)
         fecha_valida = fecha_anterior_is_valid(request.POST["fecha"])
-       
+        mascota = Mascota.objects.get(id=request.POST["mascota"])
+        if mascota.perdida:
+            esta_perdida= True
+        else:
+            mascota.perdida=True
+            mascota.save()
+            esta_perdida= False
+
+        print(esta_perdida)
         #Son correctos
-        if form.is_valid() and fecha_valida:
+        if form.is_valid() and fecha_valida and not(esta_perdida):
             
-            registrar_mascota_perdida(form, request.user.email, request.FILES["foto"])
+            registrar_mascota_registrada_perdida(form, request, request.FILES["foto"])
             messages.success(request, "Se publico la mascota")
             return redirect('menu')
         
         #Datos erroneos
         else: 
-            agregar_errores(form, fecha_valida)
+            agregar_errores(form, fecha_valida, esta_perdida)
 
             context = {'form': form, 'titulo': "Publicar Mascota Perdida"}
             return render(request, 'registro.html', context)
-    else:
+    else:   
+        cliente= Cliente.objects.get(usuario=request.user)
+        usuario = cliente.id 
+        email = cliente.usuario.email
         
+        form = MascotaPerdidaForm(usuario, email) 
         # Solicito los datos
         context = {'form': form, 'titulo': "Publicar Mascota Perdida"}
         return render(request, 'registro.html', context)
@@ -50,14 +62,10 @@ def publicar(request):
 
 @login_required
 def publicar_no_registrada(request):
-
-     
-    form = MascotaNoRegistradaPerdidaForm()
-    
     if request.method == "POST":
         # Valido los datos
        
-        form = MascotaNoRegistradaPerdidaForm(request.POST, request.FILES)
+        form = MascotaNoRegistradaPerdidaForm(request.user.email, request.POST, request.FILES)
         fecha_valida = fecha_anterior_is_valid(request.POST["fecha"])
        
         
@@ -75,7 +83,7 @@ def publicar_no_registrada(request):
             context = {'form': form, 'titulo': "Publicar Mascota Perdida"}
             return render(request, 'registro.html', context)
     else:
-        
+        form = MascotaNoRegistradaPerdidaForm(request.user.email)
         # Solicito los datos
         context = {'form': form, 'titulo': "Publicar Mascota Perdida"}
         return render(request, 'registro.html', context)

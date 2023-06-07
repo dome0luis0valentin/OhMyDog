@@ -19,30 +19,33 @@ class MascotaPerdidaForm(forms.ModelForm):
     mascota = forms.ModelChoiceField(queryset=Mascota.objects.none())
     foto = forms.ImageField(validators=[validate_image], required=False) 
     fecha = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)', 'class': 'datepicker'}))
-    
+
     class Meta: 
         model = MascotasPerdidas
-        fields = ("contacto", "ultimo_lugar", "rasgos_particulares","descripcion", "fecha", "nombre", "raza")
+        fields = ("contacto", "ultimo_lugar", "rasgos_particulares","descripcion", "fecha")
 
-    def __init__(self, usuario, *args, **kwargs):
+    def __init__(self, usuario, email, *args, **kwargs):
         super(MascotaPerdidaForm, self).__init__(*args, **kwargs)
         self.fields['contacto'].required = True
+        self.fields['contacto'].initial = email
         self.fields['ultimo_lugar'].required = True
-        self.fields['rasgos_particulares'].required = True
+        self.fields['rasgos_particulares'].required = False
         self.fields['descripcion'].required = True
         self.fields['fecha'].required = True
-        self.fields['nombre'].required = True
-        self.fields['raza'].required = True
+        self.fields['foto'].required = True
         self.fields['mascota'].queryset = Mascota.objects.filter(dueno_id = usuario)
         
 class MascotaNoRegistradaPerdidaForm(forms.ModelForm):
 
-    foto = forms.ImageField(validators=[validate_image], required=False) 
+    foto = forms.ImageField(validators=[validate_image], required=True) 
     fecha = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)', 'class': 'datepicker'}))
     
     class Meta: 
         model = MascotasPerdidas
         fields = ("contacto", "ultimo_lugar", "rasgos_particulares","descripcion", "fecha", "nombre", "raza")
-
+    
+    def __init__(self, usuario, *args, **kwargs):
+        super(MascotaNoRegistradaPerdidaForm, self).__init__(*args, **kwargs)
+        self.fields['contacto'].initial = usuario
         
 
