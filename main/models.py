@@ -54,6 +54,7 @@ class Mascota(models.Model):
     foto = models.ImageField(blank=True, upload_to='imagenes/', error_messages={
             'invalid': 'El archivo debe ser una imagen'
         })
+    perdida = models.BooleanField(default=False, blank=True)
 
     def __str__(self) -> str:
         return self.nombre
