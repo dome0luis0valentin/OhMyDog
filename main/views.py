@@ -197,7 +197,7 @@ def inicio_sesion(request):
             render(request, "index.html")
     else:            
         return render(request, 'registro/login.html')
-    return redirect('menu')
+    return redirect('/')
 
 def usuario_bloqueado(request):
     return render(request, 'usuario_bloqueado.html')
