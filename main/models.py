@@ -17,6 +17,7 @@ from django.core.validators import MinLengthValidator, MinValueValidator, MaxVal
 
 class User(AbstractUser):
     is_veterinario = models.BooleanField(null=True, default=False)
+    descuento = models.IntegerField(default=0, blank=True)
 
 class Persona(models.Model):
     nombre = models.CharField(max_length=50) 

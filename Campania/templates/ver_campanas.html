@@ -9,11 +9,11 @@
     {% for campana in campanas %}
         <li>{{ campana.nombre }}</li>
         <!-- Mostrar otros campos de la campaña si es necesario -->
-        <!--<li>
-            <form action="{% url 'formulario_pago' campana.id %}" method="GET">
-                <button type="submit">Pagar</button>
+        <li>
+            <form action="{% url 'formulario_pago' campana.id  user_id %}" method="GET">
+                <button type="submit">Donar</button>
             </form>
-        </li> -->
+        </li>
     {% empty %}
         <li>No hay campañas disponibles</li>
     {% endfor %}

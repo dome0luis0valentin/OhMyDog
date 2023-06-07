@@ -73,3 +73,7 @@ def mascota_cumple(mascota,fecha,fecha_nac,tipo):
     
     if (tipo != "A" and tipo != "B"):
         return [True,""]
+
+
+def descuento(monto,descuento):
+    return int(monto) - int(descuento)

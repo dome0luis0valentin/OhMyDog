@@ -10,7 +10,9 @@ class VeterinariasForm(forms.ModelForm):
 
 class FormularioSimple(forms.Form):
     descripcion = forms.CharField(label='descripcion', max_length=100)
-    monto = forms.DecimalField(label="Monto a pagar", max_digits=6, decimal_places=3)
+    monto = forms.DecimalField(label="monto", max_digits=6, decimal_places=3)
+    
+    
 
 
 class DesparasitanteForm(forms.Form):
@@ -18,10 +20,10 @@ class DesparasitanteForm(forms.Form):
     codigo = forms.CharField(label="Código del desparasitante")
     cantidad = forms.IntegerField(label="Cantidad")
     descripcion = forms.CharField(label="Descripción", widget=forms.Textarea)
-    monto = forms.DecimalField(label="Monto a pagar", max_digits=6, decimal_places=3)
+    monto = forms.DecimalField(label="monto", max_digits=6, decimal_places=3)
     
 class VacunacionForm(forms.Form):
     peso = forms.DecimalField(label="Peso en Kg", max_digits=6, decimal_places=3)
     codigo = forms.CharField(label="Código del desparasitante")
     descripcion = forms.CharField(label="Descripción", widget=forms.Textarea)
-    monto = forms.DecimalField(label="Monto a pagar", max_digits=6, decimal_places=3)    
+    monto = forms.DecimalField(label="monto", max_digits=6, decimal_places=3)    
