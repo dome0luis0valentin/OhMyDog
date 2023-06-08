@@ -21,4 +21,8 @@ urlpatterns = [
     path('calcelar_turno/<int:turno_id>/', views.calcelar_turno, name='calcelar_turno'),
     path('ver_historial_de_visitas/<int:pk>',views.ver_historial_de_visitas, name="ver historial de visitas"),
 
+    path('ver_libreta_sanitaria/<int:pk>',views.ver_libreta_sanitaria, name="ver libreta sanitaria"),
+
+
+
 ]

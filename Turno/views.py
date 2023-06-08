@@ -320,7 +320,7 @@ def ver_historial_de_turnos(request):
     usuarios = Turno.objects.filter(cliente__usuario__email=request.user.email)
     #Tiene turnos
     if(usuarios.exists()):
-        data = Turno.objects.filter(mascota__usuario__email=request.user.email) 
+        data = Turno.objects.filter(mascota__dueno__usuario__email=request.user.email) 
         
     #No tiene turnos
     else:
@@ -332,6 +332,19 @@ def ver_historial_de_turnos(request):
 def ver_historial_de_visitas(request, pk):
 
     visitas = Visitas.objects.filter(mascota__pk=pk)
+    #Tiene visitas
+    if(visitas.exists()):
+        data = visitas  
+    #No tiene visitas
+    else:
+        data = []
+
+    return render(request, 'historial/visitas.html', {'data': data})
+
+@login_required   
+def ver_libreta_sanitaria(request, pk):
+
+    libreta = Visitas.objects.filter(mascota__pk=pk, )
     #Tiene visitas
     if(visitas.exists()):
         data = visitas  
