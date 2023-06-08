@@ -358,7 +358,6 @@ def formulario_simple(request, turno_id):
 
 @login_required
 def formulario_desparasitante(request, turno_id):
-    monto = 0
     if request.method == 'POST':
         form = DesparasitanteForm(request.POST)
         if form.is_valid():
@@ -369,7 +368,6 @@ def formulario_desparasitante(request, turno_id):
             descripcion = form.cleaned_data['descripcion']
             monto = form.cleaned_data['monto']
             # Realizar acciones con los datos del formulario (guardar en la base de datos, etc.)
-            return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
     else:
         form = DesparasitanteForm()    
     return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
