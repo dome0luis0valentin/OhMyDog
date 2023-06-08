@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect
 from .forms import MascotaPerdidaForm, MascotaNoRegistradaPerdidaForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from main.models import Cliente
+from main.models import Cliente, Mascota
 from Funciones import fecha_anterior_is_valid
-from .registros import registrar_mascota_perdida
+from .registros import registrar_mascota_perdida,registrar_mascota_registrada_perdida
 from Mensaje import *
 from .funciones import agregar_errores
 from .models import MascotasPerdidas
 from django.views import generic
+from .validaciones import mascota_perdida, validar_existencia
 # Create your views here.
  
 def menu(request):
@@ -17,32 +18,40 @@ def menu(request):
     return render(request, "menu.html" , context)
 
 @login_required
-def publicar(request):
-
-    cliente= Cliente.objects.get(usuario=request.user)
-    usuario = cliente.id 
-    form = MascotaPerdidaForm(usuario)
-    
+def publicar(request):  
     if request.method == "POST":
+        cliente= Cliente.objects.get(usuario=request.user)
+        usuario = cliente.id
+        email = cliente.usuario.email
+
         # Valido los datos  
-        form = MascotaPerdidaForm(usuario, request.POST, request.FILES)
+        form = MascotaPerdidaForm(usuario, email, request.POST, request.FILES)
         fecha_valida = fecha_anterior_is_valid(request.POST["fecha"])
-       
+        mascota = Mascota.objects.get(id=request.POST["mascota"])
+
+        nombre_mascota = Mascota.objects.get(id=request.POST["mascota"])
+        existe_mascota = validar_existencia(email, nombre_mascota)
+
+        
         #Son correctos
-        if form.is_valid() and fecha_valida:
+        if form.is_valid() and fecha_valida and not(existe_mascota):
             
-            registrar_mascota_perdida(form, request.user.email, request.FILES["foto"])
+            registrar_mascota_registrada_perdida(form, request, request.FILES["foto"])
             messages.success(request, "Se publico la mascota")
             return redirect('menu')
         
         #Datos erroneos
         else: 
-            agregar_errores(form, fecha_valida)
+            agregar_errores(form, fecha_valida, existe_mascota)
 
             context = {'form': form, 'titulo': "Publicar Mascota Perdida"}
             return render(request, 'registro.html', context)
-    else:
+    else:   
+        cliente= Cliente.objects.get(usuario=request.user)
+        usuario = cliente.id 
+        email = cliente.usuario.email
         
+        form = MascotaPerdidaForm(usuario, email) 
         # Solicito los datos
         context = {'form': form, 'titulo': "Publicar Mascota Perdida"}
         return render(request, 'registro.html', context)
@@ -50,19 +59,17 @@ def publicar(request):
 
 @login_required
 def publicar_no_registrada(request):
-
-     
-    form = MascotaNoRegistradaPerdidaForm()
-    
     if request.method == "POST":
         # Valido los datos
        
-        form = MascotaNoRegistradaPerdidaForm(request.POST, request.FILES)
+        form = MascotaNoRegistradaPerdidaForm(request.user.email, request.POST, request.FILES)
         fecha_valida = fecha_anterior_is_valid(request.POST["fecha"])
+
+        existe_mascota = validar_existencia(request.user.email, nombre=request.POST["nombre"])
        
         
         #Son correctos
-        if form.is_valid() and fecha_valida:
+        if form.is_valid() and fecha_valida and not(existe_mascota):
             registrar_mascota_perdida(form, request.user.email, request.FILES["foto"])
 
             messages.success(request, "Se publico la mascota")
@@ -70,12 +77,12 @@ def publicar_no_registrada(request):
         
         #Datos erroneos
         else: 
-            agregar_errores(form, fecha_valida)
+            agregar_errores(form, fecha_valida, existe_mascota)
 
             context = {'form': form, 'titulo': "Publicar Mascota Perdida"}
             return render(request, 'registro.html', context)
     else:
-        
+        form = MascotaNoRegistradaPerdidaForm(request.user.email)
         # Solicito los datos
         context = {'form': form, 'titulo': "Publicar Mascota Perdida"}
         return render(request, 'registro.html', context)
@@ -105,9 +112,12 @@ class PerdidosDetailView(generic.DetailView):
 
 @login_required
 def marcar_encontrado(request, pk): 
+    print("Clave a borrar", pk)
     perro = MascotasPerdidas.objects.get(pk=pk)
     perro.encontrado = True
     perro.save()
+    print("estado: ")
+    print(perro.encontrado)
     return redirect('ver mis perididos')
 
 @login_required

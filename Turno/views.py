@@ -300,7 +300,7 @@ def cargar_veterinarias(request):
         context = {'form':form, 'titulo': "Cargar Veterinarias de Turno"}
         return render(request, "cargar_veterinarias.html", context)
 
-@login_required   
+ 
 def ver_veterinarias_de_turno(request):
 
     if(Veterinarias_de_turno.objects.exists()):

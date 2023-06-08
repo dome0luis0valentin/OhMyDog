@@ -5,6 +5,7 @@ from main.models import Cliente
 
 class MascotasEncontradas(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT, null=True)
+    direccion = models.CharField(max_length=200, null=True)
     contacto= models.CharField(max_length=100, null=True)
     descripcion = models.CharField(max_length=300) 
     foto = models.ImageField(blank=True, upload_to="mascotas_encontradas/")

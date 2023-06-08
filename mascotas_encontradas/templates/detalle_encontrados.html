@@ -3,7 +3,10 @@
 {% block content %}
 <div class="card col-5">
   <div class="card-header">
-    <h1>Nombre: {{ object.nombre }}</h1>
+    {% if object.devuelto %}
+            <p class="m-2"><strong><label class="h4" style="color:#09e81f">Devuelto</label></strong></p>
+    {% endif %}
+
   </div>
   <div class="card-body">
 
@@ -15,10 +18,10 @@
         <td align="center" valign="middle">
           <img src="{{ object.foto.url }}" alt="Foto de la mascota" width="100%" height="auto">
         </td>
-      </tr>
+      </tr> 
     </table>
 
-    {% if object.devuelto %}<p><strong>Mascota ya devuelta</strong></p>{% endif %}
+    
   </div>
 </div>
 <div class="text-center">

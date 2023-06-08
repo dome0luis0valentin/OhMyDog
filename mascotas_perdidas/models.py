@@ -9,7 +9,7 @@ class MascotasPerdidas(models.Model):
     fecha   = models.DateField(null= True)
     cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT)
     ultimo_lugar = models.CharField(max_length=100)
-    rasgos_particulares = models.CharField(max_length=200)
+    rasgos_particulares = models.CharField(max_length=200, blank=True)
     descripcion = models.CharField(max_length=300)
     foto = models.ImageField(blank=True, upload_to="mascotas_perdidas/")
     encontrado = models.BooleanField(default=False, blank=True)

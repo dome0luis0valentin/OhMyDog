@@ -1,48 +1,51 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card">
-  <div class="card-header">
-    <h1>Fecha: {{ object.fecha }}</h1>
-  </div>
-  <div class="card-body">
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card mt-3">
+        <div class="card-header text-center">
+          <h1 class="text-center">Fecha: {{ object.fecha }}</h1>
+        </div>
+        <div class="card-body">
+          <p><strong>Banda Horaria: </strong>{{ object.banda_horaria }}</p>
+          <p><strong>Cliente:</strong> {{ object.cliente.usuario.email }}</p>
+          <p><strong>Mascota:</strong> {{ mascota.nombre }}</p>
+          <p><strong>Motivo:</strong> {{ object.motivo }}</p>
+        </div>
+        <div class="card-footer justify-content-center btn-group">
+          {% if object.motivo == "Vacunación de tipo A" or object.motivo == "Vacunación de tipo B" %}
+          <form method="post" action="{% url 'formulario_vacunación' object.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="turno_id" value="{{ object.id }}">
+            <button class="m-2 btn btn-success" type="submit">Asistio</button>
+          </form>
+          {% elif object.motivo == "Desparasitación" %}
+          <form method="post" action="{% url 'formulario_desparasitación' object.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="turno_id" value="{{ object.id }}">
+            <button class="m-2 btn btn-success" type="submit">Asistio</button>
+          </form>
+          {% else %}
+          <form method="post" action="{% url 'formulario_simple' object.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="turno_id" value="{{ object.id }}">
+            <button class="m-2 btn btn-success" type="submit">Asistio</button>
+          </form>
+          {% endif %}
 
-    <p><strong>Banda Horaria: </strong>{{ object.banda_horaria }}</p>
-    <p><strong>Cliente:</strong> {{ object.cliente.usuario.email }}</p>
-    <p><strong>Mascota:</strong> {{ mascota.nombre }}</p>
-    <p><strong>Motivo:</strong> {{ object.motivo }}</p>
-  </div>
-  <div class="card-footer text-center">
-    <p>
-      {% if object.motivo == "Vacunación de tipo A" or object.motivo == "Vacunación de tipo B" %}
-        <form method="post" action="{% url 'formulario_vacunación' object.id %}">
-          {% csrf_token %}
-          <input type="hidden" name="turno_id" value="{{ object.id }}">
-         <button class="btn btn-success" type="submit">Asistio</button>
-        </form>
-      {% elif object.motivo == "Desparasitación" %}
-        <form method="post" action="{% url 'formulario_desparasitación' object.id %}">
-          {% csrf_token %}
-          <input type="hidden" name="turno_id" value="{{ object.id }}">
-          <button class="btn btn-success" type="submit">Asistio</button>
-        </form>
-      {% else %}
-      <form method="post" action="{% url 'formulario_simple' object.id %}">
-        {% csrf_token %}
-        <input type="hidden" name="turno_id" value="{{ object.id }}">
-        <button class="btn btn-success" type="submit">Asistio</button>
-      </form>  
-      {% endif %}  
-
-      <form method="post" action="{% url 'Falto_al_turno' object.id %}">
-        {% csrf_token %}
-        <input type="hidden" name="turno_id" value="{{ object.id }}">
-        <button class="btn btn-danger" type="submit"> Falto </button>
-      </form>
-    </p>
+          <form method="post" action="{% url 'Falto_al_turno' object.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="turno_id" value="{{ object.id }}">
+            <button class="m-2 btn btn-danger" type="submit"> Falto </button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-<div class="text-center">
+<div class="text-center mt-2">
   <a href="http://127.0.0.1:8000/turnos_confirmados/" class="btn btn-primary">Volver</a>
 </div>
 
