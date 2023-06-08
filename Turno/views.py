@@ -44,7 +44,6 @@ def solicitar_turno(request):
         fecha_nacimineto = mascota.fecha_nac
 
         resultado_mascota_cumple = mascota_cumple(mascota,fecha,fecha_nacimineto,motivo)
-        print(resultado_mascota_cumple)
 
         #Python no valida todo el condicional, si el form no es valido no valida la fecha
         if form.is_valid() and fecha_is_valid(fecha) and resultado_mascota_cumple[0]:
@@ -357,11 +356,15 @@ def ver_libreta_sanitaria(request, pk):
 @login_required
 def formulario_simple(request, turno_id):
     if request.method == 'POST':
+        
         form = FormularioSimple(request.POST)
+        
+        # aca cargo los dados
+        
         if form.is_valid():
             # Realizar alguna acción con los datos ingresados, por ejemplo, guardarlos en la base de datos
-            descripcion = form.cleaned_data['descripcion']
-            monto = form.cleaned_data['monto']
+            descripcion = form.cleaned_data['Descripción']
+            monto = form.cleaned_data['Monto a cobrar']
             # Realizar aquí las acciones que necesites con el texto ingresado
             
             return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
@@ -371,33 +374,30 @@ def formulario_simple(request, turno_id):
 
 @login_required
 def formulario_desparasitante(request, turno_id):
-    monto = 0
     if request.method == 'POST':
         form = DesparasitanteForm(request.POST)
         if form.is_valid():
             # Procesar los datos del formulario si es válido
-            peso = form.cleaned_data['peso']
-            codigo = form.cleaned_data['codigo']
-            cantidad = form.cleaned_data['cantidad']
-            descripcion = form.cleaned_data['descripcion']
-            monto = form.cleaned_data['monto']
+            peso = form.cleaned_data['Peso en Kg']
+            codigo = form.cleaned_data['Código del desparasitante']
+            cantidad = form.cleaned_data['Cantidad']
+            descripcion = form.cleaned_data['Descripción']
+            monto = form.cleaned_data['Monto a cobrar']
             # Realizar acciones con los datos del formulario (guardar en la base de datos, etc.)
-            return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
     else:
         form = DesparasitanteForm()    
     return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
 
 @login_required
 def formulario_vacunacion(request, turno_id):
-    monto = 0
     if request.method == 'POST':
         form = VacunacionForm(request.POST)
         if form.is_valid():
             # Procesar los datos del formulario si es válido
-            peso = form.cleaned_data['peso']
-            codigo = form.cleaned_data['codigo']
-            descripcion = form.cleaned_data['descripcion']
-            monto = form.cleaned_data['monto']
+            peso = form.cleaned_data['Peso en Kg']
+            codigo = form.cleaned_data['Código del la vacuna']
+            descripcion = form.cleaned_data['Descripción']
+            monto = form.cleaned_data['Monto a cobrar']
             # Realizar acciones con los datos del formulario (guardar en la base de datos, etc.)
             # aca mando el monto 
             return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
@@ -431,6 +431,23 @@ def actualizar_turno(request, turno_id):
 
         monto = request.POST.get('monto')
         
+        if (turno.motivo == "Vacunación de tipo A") or (turno.motivo == "Vacunación de tipo B")or(turno.motivo=="Desparasitación"):
+            peso=request.POST.get('peso')
+            if(es_numero_real_positivo(peso)):
+                
+                if (turno.motivo=="Desparasitación"):
+                    messages.info(request,"Desparasitación registrada")
+                else:
+                    messages.info(request,"Vacunación registrada")
+            else:
+                
+                messages.info(request,"El peso tiene que ser positivo")
+                
+                if (turno.motivo=="Desparasitación"):
+                    return redirect('formulario_desparasitación', turno_id=turno_id)
+                else:
+                    return redirect('formulario_vacunación', turno_id=turno_id)   
+        
         if (turno.motivo == "Vacunación de tipo A") or (turno.motivo == "Vacunación de tipo B") :
             acturalizar_modelos(turno_id)
         turno.estado='As'
@@ -440,9 +457,8 @@ def actualizar_turno(request, turno_id):
         mascota= Mascota.objects.get(id = info_turno.mascota_id)
         
         context= {'servicio':info_turno.motivo , 'fecha_turno': info_turno.fecha , 'banda_horaria': info_turno.banda_horaria , 'mascota' : mascota.nombre , 'total_a_pagar':descuento(monto,usuario.descuento) , 'descuento':usuario.descuento , 'monto_a_cobrar':monto}
-        return render(request , 'factura.html' , context)
-        #messages.success(request, f'El total a pagar es de {descuento(monto,usuario.descuento)}' )
-                  
+        return render(request , 'factura.html' , context) 
+                     
     return redirect('turnos_confirmados') 
 
 def calcelar_turno(request, turno_id):
@@ -450,4 +466,5 @@ def calcelar_turno(request, turno_id):
         turno = Turno.objects.filter(id = turno_id)[0]
         turno.estado='Ca'
         turno.save()
-    return redirect('turnos_confirmados')          
+        messages.info(request,"Registro cancelado")
+    return redirect('main')          

@@ -46,22 +46,25 @@
             <p>Fecha del turno: {{ fecha_turno }}</p>
             <p>Banda horaria: {{ banda_horaria }}</p>
             <p>Mascota: {{ mascota }}</p>
-            <p>Descuento: {{descuento}}
         </div>
         <table class="table">
             <thead>
                 <tr>
-                    <th>Descripción</th>
-                    <th>Monto</th>
+                    <th>Nombre de la campaña</th>
+                    <th>Monto donado</th>
+                    <th>Descuento obtenido</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>{{ servicio }}</td>
-                    <td>{{ monto_a_cobrar }}</td>
+                    <td></td>
+                    <td></td>
                 </tr>
             </tbody>
         </table>
+        <p>Descuento Total: {{descuento}} 
+        <p>Monto a cobrar: {{ monto_a_cobrar }}  
         <div class="total">
             <h3>Total a pagar: {{ total_a_pagar }}</h3>
         </div>

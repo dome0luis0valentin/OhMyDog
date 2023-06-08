@@ -82,3 +82,17 @@ def usuario_is_valid(username):
     except User.DoesNotExist:
         # El usuario no existe en la base de datos
         return False
+    
+   
+   
+# evalua si el dato ingresado en un numero real 
+def es_numero_real_positivo(dato):
+    try:
+        numero = float(dato)
+        if numero > 0:
+            return True
+        else:
+            return False
+    except ValueError:
+        return False
+

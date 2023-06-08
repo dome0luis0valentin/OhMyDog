@@ -1,6 +1,7 @@
 from datetime import date
+from django.contrib import messages
 from django.shortcuts import render , redirect
-from .forms import CampanaForm , PagoFrom
+from .forms import CampanaForm , PagoForm
 from main.models import Campana , User
 from django.contrib.auth.decorators import login_required
 from .validaciones import *
@@ -15,6 +16,7 @@ def crear_campana(request):
         fecha_fin = request.POST["fecha_fin"]
         
         if Campana.objects.filter(nombre=nombre).exists():
+            messages.info(request,'Ya Existe una campaña con ese nombre')  
             return redirect('crear_campana')
         
         if form.is_valid() and fecha_is_valid(fecha_fin):
@@ -26,7 +28,10 @@ def crear_campana(request):
             # Guardar el objeto en la base de datos
             campana.save()
             
-            return redirect('main')
+            return redirect('main')  
+        elif not fecha_is_valid(fecha_fin):
+            messages.info(request,'La Fecha tiene que ser mayor a la de hoy')
+            return redirect('crear_campana')
     else:
         form = CampanaForm()
     
@@ -41,10 +46,13 @@ def ver_campanas(request , user_id):
     return render(request, 'ver_campanas.html', context)
 
 def formulario_pago(request , campana_id , user_id):
-    form = PagoFrom(request.POST)
+    form = PagoForm(request.POST)
     if request.method == 'POST':
-        form = PagoFrom(request.POST)
+        form = PagoForm(request.POST)
         if form.is_valid():
+            
+            numero_de_tarjeta = request.POST["numero_de_tarjeta"]
+            cantidad = request.POST["cantidad"] 
             
             cantidad = float(request.POST["cantidad"])
             campana = Campana.objects.get(id=campana_id)
@@ -53,9 +61,19 @@ def formulario_pago(request , campana_id , user_id):
             # Guarda los cambios en la base de datos
             campana.save()
             
+            
+            
+            estado_pago = proceso_pago(numero_de_tarjeta,cantidad)
+            
+            if not estado_pago[0] :
+                messages.info(request,estado_pago[1])    
+                return redirect('formulario_pago',campana_id=campana_id, user_id=user_id)
+                
             user = User.objects.get(id=user_id)
             user.descuento+=cacular_descuento(cantidad)
             user.save()
+            
+            #crear un modelo donacion con campana_id , usuario_id y monto donado ; y guardar esos datos
             
             return render(request, 'confirmacion.html')
     return render(request, 'donar.html', {'form': form , 'user_id':user_id})
