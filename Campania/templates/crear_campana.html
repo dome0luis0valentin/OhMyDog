@@ -4,14 +4,26 @@
     <title>Formulario de Campaña</title>
 </head>
 <body>
-    <h2>Formulario de Campaña</h2>
-    <form method="post" action="{% url 'crear_campana' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Guardar</button>
-    </form>
-    <form action="{% url 'main' %}">
-        <button type="submit">Calncelar</button>
-    </form>
+    <div class="container">
+        <div class="justify-content-center">
+          <div class="card mx-auto col-md-5">
+            <div class="card-header text-center">
+                <h2>Crear Campaña de Donacion</h2>
+            </div>
+            <div class="">
+                <form method="post" action="{% url 'crear_campana' %}">
+                    <div class="m-3">
+
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                    </div>
+                    <div class="text-center justing-conten-center card-footer">
+                        <button class="btn btn-success" type="submit">Guardar</button>
+                        <a href="" class="btn btn-danger">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
  {% endblock %}
