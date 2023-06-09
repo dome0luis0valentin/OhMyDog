@@ -5,6 +5,8 @@ class CampanaForm(forms.Form):
     nombre = forms.CharField(max_length=100)
     motivo = forms.CharField(max_length=100)
     fecha_fin = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)', 'class': 'datepicker'}))
+    nombre = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder':'Nombre'}))
+    motivo = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder':'Motivo'}))
 
 from django.core.exceptions import ValidationError
 
@@ -22,6 +24,8 @@ class TarjetaCreditoField(forms.CharField):
 class PagoForm(forms.Form):
     numero_de_tarjeta = TarjetaCreditoField()
     cantidad = forms.DecimalField(max_digits=6, decimal_places=2)
+    numero_de_tarjeta = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder':'Numnero de tarjeta'}))
+    cantidad = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder':'Cantidad a donar'}))
 
 
 
