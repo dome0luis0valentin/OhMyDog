@@ -21,9 +21,11 @@
                     <label for="">Donaciones Hasta el: </label>{{ campana.fecha_fin }}
                 </div>
                 <div class="card-footer">
-                    <form action="{% url 'formulario_pago' campana.id  user_id %}" method="GET">
-                        <button class="btn btn-success" type="submit">Donar</button>
-                    </form>
+                    {% if campana.fecha_fin >= fecha_hoy %}
+                        <form action="{% url 'formulario_pago' campana.id  user_id %}" method="GET">
+                            <button class="btn btn-success" type="submit">Donar</button>
+                        </form>
+                    {% endif %}    
                 </div>
             </div>
             {% empty %}

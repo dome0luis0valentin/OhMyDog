@@ -39,11 +39,13 @@ def crear_campana(request):
     return render(request, 'crear_campana.html', {'form': form})
 
 def ver_campanas(request , user_id):
+    
+    hoy = datetime.now().date()
     # Obtener todas las campañas que no han finalizado
     campanas = Campana.objects.all()
 
     # Pasar las campañas a la plantilla para su visualización
-    context = {'campanas': campanas , 'user_id':user_id}
+    context = {'campanas': campanas , 'user_id':user_id , 'fecha_hoy':hoy}
     return render(request, 'ver_campanas.html', context)
 
 def formulario_pago(request , campana_id , user_id):
