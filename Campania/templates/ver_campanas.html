@@ -25,6 +25,8 @@
                         <form action="{% url 'formulario_pago' campana.id  user_id %}" method="GET">
                             <button class="btn btn-success" type="submit">Donar</button>
                         </form>
+                        {% else %}
+                            <p style="color: red;">Finalizada</p>  
                     {% endif %}    
                 </div>
             </div>
