@@ -16,19 +16,19 @@
         </div>
         <div class="card-footer justify-content-center btn-group">
           {% if object.motivo == "Vacunación de tipo A" or object.motivo == "Vacunación de tipo B" %}
-          <form method="post" action="{% url 'formulario_vacunación' object.id %}">
+          <form method="get" action="{% url 'formulario_vacunación' object.id %}">
             {% csrf_token %}
             <input type="hidden" name="turno_id" value="{{ object.id }}">
             <button class="m-2 btn btn-success" type="submit">Asistio</button>
           </form>
           {% elif object.motivo == "Desparasitación" %}
-          <form method="post" action="{% url 'formulario_desparasitación' object.id %}">
+          <form method="get" action="{% url 'formulario_desparasitante' object.id %}">
             {% csrf_token %}
             <input type="hidden" name="turno_id" value="{{ object.id }}">
             <button class="m-2 btn btn-success" type="submit">Asistio</button>
           </form>
           {% else %}
-          <form method="post" action="{% url 'formulario_simple' object.id %}">
+          <form method="get" action="{% url 'formulario_simple' object.id %}">
             {% csrf_token %}
             <input type="hidden" name="turno_id" value="{{ object.id }}">
             <button class="m-2 btn btn-success" type="submit">Asistio</button>

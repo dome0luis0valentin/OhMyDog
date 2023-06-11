@@ -4,6 +4,7 @@ from main.form import Red_SocialForm , TurnoForm, ServicioForm
 from .forms import VeterinariasForm , FormularioSimple , DesparasitanteForm ,VacunacionForm
 from django.urls import reverse
 from Campania.models import Donaciones
+from django.db.models import Q
 
 
 from datetime import datetime , timedelta , date
@@ -273,6 +274,8 @@ def Asistio_al_turno(request, turno_id):
     if request.method == 'POST':
         #aceptar
         turno = Turno.objects.filter(id = turno_id)[0]
+        print("_____________________________")
+        print(request.method)
         url = reverse(turno.motivo,{'turno_id': turno_id})
         return redirect(url)
 
@@ -344,30 +347,43 @@ def ver_historial_de_visitas(request, pk):
 @login_required   
 def ver_libreta_sanitaria(request, pk):
 
-    libreta = Visitas.objects.filter(mascota__pk=pk, )
+    libreta = Visitas.objects.filter(
+        Q(mascota__pk=pk) &
+        (Q(motivo='Vacunación de tipo A') | Q(motivo='Vacunación de tipo B') | Q(motivo='Desparasitación'))
+    )
+
+    for i in libreta:
+        print(i)
+        print(i.peso)
+        print(i.cant_desparacitante)
+        print(i.codigo)
+
     #Tiene visitas
-    if(visitas.exists()):
-        data = visitas  
+    if(libreta.exists()):
+        data = libreta  
     #No tiene visitas
     else:
         data = []
 
-    return render(request, 'historial/visitas.html', {'data': data})
+    return render(request, 'historial/historial_turnos.html', {'data': data})
 
 @login_required
 def formulario_simple(request, turno_id):
+    print("Entro a simple")
+    print(request.method)
     if request.method == 'POST':
-        
+        print("Entro a post")
         form = FormularioSimple(request.POST)
         
-        # aca cargo los dados
-        
         if form.is_valid():
-            # Realizar alguna acción con los datos ingresados, por ejemplo, guardarlos en la base de datos
-            descripcion = form.cleaned_data['Descripción']
-            monto = form.cleaned_data['Monto a cobrar']
-            # Realizar aquí las acciones que necesites con el texto ingresado
-            
+            descripcion = request.POST["descripcion"]
+            monto = request.POST["monto"]
+            turno = Turno.objects.filter(id = turno_id)[0]
+            print("Registro")
+            registrar_visita_simple(descripcion, monto, turno)
+
+            return redirect('actualizar_turno', turno_id=turno_id, monto=str(monto))
+        else:
             return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
     else:
         form = FormularioSimple(request.POST)
@@ -377,38 +393,43 @@ def formulario_simple(request, turno_id):
 def formulario_desparasitante(request, turno_id):
     if request.method == 'POST':
         form = DesparasitanteForm(request.POST)
-        if form.is_valid():
-            # Procesar los datos del formulario si es válido
-            peso = form.cleaned_data['Peso en Kg']
-            codigo = form.cleaned_data['Código del desparasitante']
-            cantidad = form.cleaned_data['Cantidad']
-            descripcion = form.cleaned_data['Descripción']
-            monto = form.cleaned_data['Monto a cobrar']
-            # Realizar acciones con los datos del formulario (guardar en la base de datos, etc.)
+        peso = request.POST["peso"]
+
+        if form.is_valid() and es_numero_real_positivo(peso):
+            turno = Turno.objects.filter(id = turno_id)[0]
+
+            registrar_visita_desparacitacion(turno, request)
+            messages.info(request,"Desparasitación registrada")
+            monto =  str(request.POST["monto"])
+            return redirect('actualizar_turno',turno_id=turno_id, monto=monto)  
+        else: 
+            form.errors["peso"]=["El peso tiene que ser positivo"]
+            return render(request, 'formularios/formulario_desparacitante.html', {'form': form, 'turno_id': turno_id})
     else:
-        form = DesparasitanteForm()    
+        form = DesparasitanteForm()
+        return render(request, 'formularios/formulario_desparacitante.html', {'form': form, 'turno_id': turno_id})
     return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
 
 @login_required
 def formulario_vacunacion(request, turno_id):
+
     if request.method == 'POST':
         form = VacunacionForm(request.POST)
         if form.is_valid():
-            # Procesar los datos del formulario si es válido
-            peso = form.cleaned_data['Peso en Kg']
-            codigo = form.cleaned_data['Código del la vacuna']
-            descripcion = form.cleaned_data['Descripción']
-            monto = form.cleaned_data['Monto a cobrar']
-            # Realizar acciones con los datos del formulario (guardar en la base de datos, etc.)
-            # aca mando el monto 
-            return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
+            turno = Turno.objects.filter(id = turno_id)[0]
+            registrar_visita_vacunacion(turno, request)
+            acturalizar_modelos(turno)
+            messages.info(request,"Vacunación registrada")
+            monto =  str(request.POST["monto"])
+            return redirect('actualizar_turnos', turno_id=turno_id, monto=monto)
+        else:
+            return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})   
     else:
         form = VacunacionForm()    
     return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
 
-
-def acturalizar_modelos(turno_id):
-    turno = Turno.objects.filter(id = turno_id)[0]
+@login_required
+def acturalizar_modelos(turno):
     if (turno.motivo =="Vacunación de tipo A"):
         aplicacion_vacuna = Vacuna_tipoA(mascota=turno.mascota, fecha_aplicacion=turno.fecha)
     else:
@@ -417,9 +438,9 @@ def acturalizar_modelos(turno_id):
 
 
 @login_required
-def actualizar_turno(request, turno_id):
-    
-    if request.method == 'POST':
+def actualizar_turno(request, turno_id, monto):
+    print(request.method)
+    if True:
         turno = Turno.objects.filter(id = turno_id)[0]
         
         info_turno=Turno.objects.get(id=turno_id)
@@ -428,29 +449,10 @@ def actualizar_turno(request, turno_id):
         usuario_id = cliente.usuario_id
         usuario = User.objects.get(id = usuario_id)
 
-        registrar_visita(turno, request)
-
-        monto = request.POST.get('monto')
+        #monto = request.POST.get('monto')
+        monto = 10
+        print(f'turno.motivo = {turno.motivo}')
         
-        if (turno.motivo == "Vacunación de tipo A") or (turno.motivo == "Vacunación de tipo B")or(turno.motivo=="Desparasitación"):
-            peso=request.POST.get('peso')
-            if(es_numero_real_positivo(peso)):
-                
-                if (turno.motivo=="Desparasitación"):
-                    messages.info(request,"Desparasitación registrada")
-                else:
-                    messages.info(request,"Vacunación registrada")
-            else:
-                
-                messages.info(request,"El peso tiene que ser positivo")
-                
-                if (turno.motivo=="Desparasitación"):
-                    return redirect('formulario_desparasitación', turno_id=turno_id)
-                else:
-                    return redirect('formulario_vacunación', turno_id=turno_id)   
-        
-        if (turno.motivo == "Vacunación de tipo A") or (turno.motivo == "Vacunación de tipo B") :
-            acturalizar_modelos(turno_id)
         turno.estado='As'
         turno.save()
         #aca se tiene que guardar el turno en la visita y en la libreta sanitaria 
@@ -473,9 +475,9 @@ def actualizar_turno(request, turno_id):
         
         usuario.save()
         
-        return render(request , 'factura.html' , context) 
-                     
-    return redirect('turnos_confirmados') 
+        return render(request, 'factura.html' , context)
+    else:                  
+        return redirect('turnos_confirmados') 
 
 def calcelar_turno(request, turno_id):
     if request.method == 'POST':

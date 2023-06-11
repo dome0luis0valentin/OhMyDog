@@ -15,9 +15,9 @@ urlpatterns = [
     path('ver_veterinarias_de_turno/',views.ver_veterinarias_de_turno, name="ver veterinarias de turno"),
     path('ver_historial_de_turnos/',views.ver_historial_de_turnos, name="ver historial de turnos"),
     path('formulario_simple/<int:turno_id>/',views.formulario_simple, name="formulario_simple"),
-    path('formulario_desparasitación/<int:turno_id>/',views.formulario_desparasitante, name="formulario_desparasitación"),
+    path('formulario_desparasitante/<int:turno_id>/',views.formulario_desparasitante, name="formulario_desparasitante"),
     path('formulario_vacunación/<int:turno_id>/',views.formulario_vacunacion, name="formulario_vacunación"),
-    path('actualizar_turno/<int:turno_id>/', views.actualizar_turno, name='actualizar_turno'),
+    path('actualizar_turno/<int:turno_id>/<str:monto>/', views.actualizar_turno, name='actualizar_turno'),
     path('calcelar_turno/<int:turno_id>/', views.calcelar_turno, name='calcelar_turno'),
     path('ver_historial_de_visitas/<int:pk>',views.ver_historial_de_visitas, name="ver historial de visitas"),
 
