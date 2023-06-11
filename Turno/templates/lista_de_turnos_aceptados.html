@@ -17,7 +17,7 @@
     <p><strong>Cliente:</strong> {{ turno.cliente.usuario.email }}</p>
   </div>
   <div class="text-center card-footer">
-    <a href="{% url 'detalle de turno confirmado' pk=turno.pk %}">Detalle</a>
+    <a href="{% url 'detalle de turno confirmado' pk=turno.pk tipo=tipo %}">Detalle</a>
   </div>
 
 

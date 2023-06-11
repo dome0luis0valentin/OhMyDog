@@ -220,7 +220,7 @@ def turno_detail_view(request, pk):
     )
 
 @login_required   
-def turno_confirmado_detail_view(request, pk):
+def turno_confirmado_detail_view(request, pk,tipo):
     turno = get_object_or_404(Turno, pk=pk)
     print(turno.mascota)
     mascota = get_object_or_404(Mascota, pk=turno.mascota.id)
@@ -228,7 +228,7 @@ def turno_confirmado_detail_view(request, pk):
     return render(
         request,
         'detalle_turnos_aceptados.html',
-        context={'object': turno, 'mascota': mascota}
+        context={'object': turno, 'mascota': mascota , 'tipo':tipo}
     )    
     
 @login_required
@@ -254,9 +254,16 @@ def aceptar_turno(request, turno_id):
 @login_required
 def turnos_confirmados(request):
     fecha_actual = date.today()
-    turnos_confirmados = Turno.objects.filter(fecha=fecha_actual, estado="A")
-    contexto = {'turnos_confirmados': turnos_confirmados}
-    return render(request, "lista_de_turnos_aceptados.html", contexto)    
+    turnos_confirmados_fecha = Turno.objects.filter(fecha=fecha_actual, estado="A")
+    contexto = {'turnos_confirmados': turnos_confirmados_fecha , 'tipo' : "C"}
+    return render(request, "lista_de_turnos_aceptados.html", contexto)  
+
+
+@login_required
+def turnos_solo_confirmados(request):
+    turnos_confirmados = Turno.objects.filter(estado="A") 
+    contexto = {'turnos_confirmados': turnos_confirmados , 'tipo' : "S"}
+    return render(request, "lista_de_turnos_aceptados.html", contexto )  
     
 @login_required    
 def Falto_al_turno(request, turno_id):
