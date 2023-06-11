@@ -5,10 +5,68 @@ from pyexcel_ods3 import get_data
 
 from main.models import Visitas, Turno, Cliente, Mascota
 
+def registrar_visita_vacunacion(turno, datos):
+    descripcion = datos.POST["descripcion"]
+    
+    cliente = Cliente.objects.get(pk=turno.cliente.pk)
+    mascota = Mascota.objects.get(pk=turno.mascota.pk)
+    codigo = datos.POST["codigo"]
+    peso = datos.POST["peso"]
+    monto= datos.POST["monto"]
+
+    visita = Visitas.objects.create(fecha=turno.fecha,
+                            motivo=turno.motivo,
+                            observaciones=descripcion,
+                            cliente=cliente, 
+                            mascota=mascota,
+                            codigo=codigo,
+                            peso=peso,
+                            monto=monto)
+    visita.save()
+  
+
+
+def registrar_visita_desparacitacion(turno, datos):
+    descripcion = datos.POST["descripcion"]
+    
+    cliente = Cliente.objects.get(pk=turno.cliente.pk)
+    mascota = Mascota.objects.get(pk=turno.mascota.pk)
+    codigo = datos.POST["codigo"]
+    peso = datos.POST["peso"]
+    cantidad = datos.POST["cantidad"]
+    monto= datos.POST["monto"]
+
+    visita = Visitas.objects.create(fecha=turno.fecha,
+                            motivo=turno.motivo,
+                            observaciones=descripcion,
+                            cliente=cliente, 
+                            mascota=mascota,
+                            codigo=codigo,
+                            peso=peso,
+                            cant_desparacitante=cantidad,
+                            monto= monto)
+    visita.save()
+  
+
+def registrar_visita_simple(descripcion, monto, turno):   
+    cliente = Cliente.objects.get(pk=turno.cliente.pk)
+    mascota = Mascota.objects.get(pk=turno.mascota.pk)
+
+    visita = Visitas.objects.create(fecha=turno.fecha,
+                            motivo=turno.motivo,
+                            observaciones=descripcion,
+                            cliente=cliente, 
+                            mascota=mascota,
+                            monto=monto)
+    visita.save()
+
+    print("Visita registrada")
+
+
 def registrar_visita(turno, datos):
 
     descripcion = datos.POST["descripcion"]
-    print(turno.cliente.pk.__class__)
+    
     cliente = Cliente.objects.get(pk=turno.cliente.pk)
     mascota = Mascota.objects.get(pk=turno.mascota.pk)
 
@@ -18,12 +76,19 @@ def registrar_visita(turno, datos):
                             cliente=cliente, 
                             mascota=mascota)
     
-    if ("Vacunación" in turno.motivo) or ("Desparacitación" in turno.motivo):
+    print("Registrando")
+
+    if ("Vacunación" in turno.motivo):
         visita.peso = datos.POST["peso"]
         visita.codigo = datos.POST["codigo"]
-        if ("Desparacitación" in turno.motivo):
-            visita.cant_desparacitante = datos.POST["cantidad"]
     
+    elif ("Desparacitación" in turno.motivo):
+            print("Se registro la desparacitacion")
+            visita.codigo = datos.POST["codigo"]
+            visita.cant_desparacitante = datos.POST["cantidad"]
+            visita.peso = datos.POST["peso"]
+    print("Termino")
+
     visita.save()
 
 

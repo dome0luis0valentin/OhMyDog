@@ -12,31 +12,28 @@
           <p><strong>Color:</strong> {{ object.color }}</p>
           <p><strong>Raza:</strong> {{ object.raza }}</p>
           <p><strong>Fecha De Nacimiento:</strong> {{ object.fecha_nac }}</p>
-          <p><strong>Foto: </strong></p><br>
+          <p><strong>Foto: </strong></p><br>  
           {%if object.foto %}
-          <div class="text-center">
-            <img src="{{ object.foto.url }}" alt="Foto de la mascota">
-          </div>
+          <img src="{{ object.foto.url }}" alt="Foto de la mascota">
           {%else%}
           <label for="" class="text-danger fw-bold">
             No tiene foto
           </label>
-          
-          {%endif%}
         </div>
-
+        {%endif%}
         <div class="card-footer justify-content-center btn-group">
           <form method="post" action="{% url 'confirmar_eliminar_mascota' object.id %}">
             {% csrf_token %}
             <input type="hidden" name="mascota_id" value="{{ object.id }}">
             <button class="m-2 btn btn-danger" type="submit">Eliminar Mascota</button>
-            <a class="m-2 btn btn-success" href="http://127.0.0.1:8000/ver_historial_de_visitas/{{ object.id  }}">Ver
-              Historial de Visitas</a>
+            <a class="m-2 btn btn-success" href="http://127.0.0.1:8000/ver_historial_de_visitas/{{ object.id  }}">Ver Historial de Visitas</a>
+            <a class="m-2 btn btn-success" href="http://127.0.0.1:8000/ver_libreta_sanitaria/{{ object.id  }}">Ver Libreta Sanitaria</a>
           </form>
-          <!-- <div class="card-footer">
-            <button type="button" onclick="return false;">Ver historial de turnos</button>
-          </div> -->
         </div>
+        <!-- <div class="card-footer">
+      <button type="button" onclick="return false;">Ver historial de turnos</button>
+        <button type="button" onclick="return false;">Ver historial de visitas</button>
+    </div> -->
       </div>
     </div>
   </div>

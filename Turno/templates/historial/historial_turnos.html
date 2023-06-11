@@ -2,17 +2,23 @@
 
 {% block content %}
 <div class="text-center">
-  <h1>Historial de Turnos</h1>
+  <h1>Libreta Sanitaria</h1>
 </div>
 {% if data %}
     {% for turno in data %}
     <div class="card mb-5 col-md-5">
         <div class="card-header text-center">
-            <h4><strong>Turno:</strong> {{ turno.fecha }}</h4>
+            <h4><strong>Motivo:</strong> {{ turno.motivo }}</h4>
         </div>
         <div class="card-body p-2">
-            <p><strong>Banda Horaria:</strong> {{ turno.banda_horaria }}</p>
-            <p><strong>Estado:</strong> {{ turno.estado }}</p>
+            <p><strong>Fecha:</strong> {{ turno.fecha }}</p>
+            <p><strong>Peso:</strong> {{ turno.peso }}</p>
+            <br>
+            <p><strong>Cantidad:</strong> {{ turno.cant_desparacitante }}</p>
+            <p><strong>Codigo:</strong> {{ turno.codigo }}</p>
+            <br>
+            <p><strong>Observaciones:</strong> {{ turno.observaciones }}</p>
+            
         </div>
     </div>
     {% endfor %}

@@ -76,4 +76,4 @@ def mascota_cumple(mascota,fecha,fecha_nac,tipo):
 
 
 def descuento(monto,descuento):
-    return int(monto) - int(descuento)
+    return float(monto) - float(descuento)

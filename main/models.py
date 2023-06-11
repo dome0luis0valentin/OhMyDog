@@ -194,11 +194,18 @@ class Intentos(models.Model):
     estado = models.CharField(max_length=1, choices=ESTADO_USUARIO, default='n')
 
 class Visitas(models.Model):
+    #Datos del turno
     fecha   = models.DateField(null=True)
     motivo  = models.CharField(max_length=45, null=True)
-    observaciones= models.CharField(max_length=500, null=True)
     cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT, null=True)
     mascota = models.ForeignKey(Mascota, on_delete=models.PROTECT , null=True)
+
+    #Datos comunes
+    observaciones= models.CharField(max_length=500, null=True)
+    monto = models.DecimalField(max_digits=6, decimal_places=3, null=True)
+    
+    #Particulares Opcionales de Vacu. o Desp.
     peso    = models.DecimalField(max_digits=6, decimal_places=3,null=True, blank=True)
     codigo  = models.CharField(max_length=20, blank=True)
     cant_desparacitante= models.DecimalField(max_digits=6, decimal_places=3,null=True, blank=True)
+    
