@@ -18,10 +18,12 @@
                 </div>
                 <div class="card-body">
                     <h5 class="">{{ campana.motivo }}</h5>
-                    <label for="">Donaciones Hasta el: </label>{{ campana.fecha_fin }}
+                    {% if campana.nombre != "Donaciones a Refugio"%}
+                        <label for="">Donaciones Hasta el: </label>{{ campana.fecha_fin }}
+                    {% endif %}  
                 </div>
                 <div class="card-footer">
-                    {% if campana.fecha_fin >= fecha_hoy %}
+                    {% if campana.fecha_fin >= fecha_hoy or campana.nombre == "Donaciones a Refugio"%}
                         <form action="{% url 'formulario_pago' campana.id  user_id %}" method="GET">
                             <button class="btn btn-success" type="submit">Donar</button>
                         </form>
