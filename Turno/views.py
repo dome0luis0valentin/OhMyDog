@@ -3,6 +3,7 @@ from .models import Veterinarias_de_turno
 from main.form import Red_SocialForm , TurnoForm, ServicioForm
 from .forms import VeterinariasForm , FormularioSimple , DesparasitanteForm ,VacunacionForm
 from django.urls import reverse
+from Campania.models import Donaciones
 
 
 from datetime import datetime , timedelta , date
@@ -20,7 +21,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 import csv 
     
-from .funciones import leer_archivo, registrar_visita
+from .funciones import *
 @login_required
 def solicitar_turno(request):
     
@@ -456,7 +457,22 @@ def actualizar_turno(request, turno_id):
         
         mascota= Mascota.objects.get(id = info_turno.mascota_id)
         
-        context= {'servicio':info_turno.motivo , 'fecha_turno': info_turno.fecha , 'banda_horaria': info_turno.banda_horaria , 'mascota' : mascota.nombre , 'total_a_pagar':descuento(monto,usuario.descuento) , 'descuento':usuario.descuento , 'monto_a_cobrar':monto}
+        donaciones=Donaciones.objects.filter(usuario_id=usuario_id)
+        nombres_campanias = [donacion.campania for donacion in donaciones]
+        monto_de_cada_campania = [donacion.monto for donacion in donaciones]
+        lista_descuentos = [cacular_descuento(int(donacion.monto)) for donacion in donaciones]
+        donaciones_usuario= zip(nombres_campanias,monto_de_cada_campania,lista_descuentos)
+        donaciones.delete()
+
+        
+        context= {'servicio':info_turno.motivo , 'fecha_turno': info_turno.fecha , 'banda_horaria': info_turno.banda_horaria , 
+                  'mascota' : mascota.nombre , 'total_a_pagar':descuento(monto,usuario.descuento) , 
+                  'descuento':usuario.descuento , 'monto_a_cobrar':monto , 'donaciones_usuario':donaciones_usuario}
+        
+        usuario.descuento = 0
+        
+        usuario.save()
+        
         return render(request , 'factura.html' , context) 
                      
     return redirect('turnos_confirmados') 

@@ -56,11 +56,13 @@
                 </tr>
             </thead>
             <tbody>
+                {% for nombre_campania, monto_campania, descuento_campania in donaciones_usuario %}
                 <tr>
-                    <td>{{ servicio }}</td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ nombre_campania }}</td>
+                    <td>{{ monto_campania }}</td>
+                    <td>{{ descuento_campania }}</td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
         <p>Descuento Total: {{descuento}} 

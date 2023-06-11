@@ -1,11 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" name="action" value="pagar">Pagar</button>
-</form>
-<form action="{% url 'ver_campanas' user_id%}" method="GET">
-    <button type="submit">Cancelar</button>
-</form>
+<div class="container">
+    <div class="justify-content-center">
+        <div class="card mx-auto col-md-5">
+            <div class="card-header text-center h1">
+                Realizar Donacion
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    
+                    <div class="card-footer justify-content-center text-center btn-group">
+                        <button class="btn btn-success m-2" type="submit" name="action" value="pagar">Pagar</button>
+                    </div>
+                </form>
+                <form action="{% url 'ver_campanas' user_id%}" method="GET">
+                    <button class="btn btn-danger m-2" type="submit">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

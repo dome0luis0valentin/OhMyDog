@@ -53,3 +53,6 @@ def leer_archivo(archivo):
         data = []
 
     return data
+
+def cacular_descuento(monto):
+    return round(monto * 0.20 )

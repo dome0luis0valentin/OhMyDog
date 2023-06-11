@@ -1,22 +1,39 @@
 {% extends "base.html" %}
 {% block content %}
+
 <head>
     <title>Lista de campañas</title>
 </head>
+
 <body>
-    <h1>Lista de campañas</h1>
-    <ul>
-    {% for campana in campanas %}
-        <li>{{ campana.nombre }}</li>
-        <!-- Mostrar otros campos de la campaña si es necesario -->
-        <li>
-            <form action="{% url 'formulario_pago' campana.id  user_id %}" method="GET">
-                <button type="submit">Donar</button>
-            </form>
-        </li>
-    {% empty %}
-        <li>No hay campañas disponibles</li>
-    {% endfor %}
-    </ul>
+    <div>
+        <h1 class="text-center">Lista de campañas</h1>
+    </div>
+    <div class="container">
+        <div class="justing-conten-center">
+            {% for campana in campanas %}
+            <div class="card mx-auto col-md-5 text-center mt-5">
+                <div class="card-header">
+                    <h3 class="">{{ campana.nombre }}</h3>
+                </div>
+                <div class="card-body">
+                    <h5 class="">{{ campana.motivo }}</h5>
+                    <label for="">Donaciones Hasta el: </label>{{ campana.fecha_fin }}
+                </div>
+                <div class="card-footer">
+                    <form action="{% url 'formulario_pago' campana.id  user_id %}" method="GET">
+                        <button class="btn btn-success" type="submit">Donar</button>
+                    </form>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center">
+                <label for="" class="text-danger h1">
+                    No hay campañas disponibles
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </body>
 {% endblock %}

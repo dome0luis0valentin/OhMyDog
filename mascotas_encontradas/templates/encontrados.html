@@ -3,35 +3,40 @@
 {% block content %}
 <div class="container">
   {% if lista %}
+
   <p class="text-center">
-    <img class="m-5" style="width: 80px;" src="https://files.cults3d.com/uploaders/14728184/illustration-file/e7344747-32a4-4f27-b460-f34ba9594bf7/PATA-PIES-CORAZON-ALMOHADA.png" alt="" srcset="">
-    <label class="h1">Perros en Encontrados</label>
-    <img class="m-5" style="width: 80px;" src="https://files.cults3d.com/uploaders/14728184/illustration-file/e7344747-32a4-4f27-b460-f34ba9594bf7/PATA-PIES-CORAZON-ALMOHADA.png" alt="" srcset="">
+    <img class="m-5" style="width: 80px;"
+      src="https://files.cults3d.com/uploaders/14728184/illustration-file/e7344747-32a4-4f27-b460-f34ba9594bf7/PATA-PIES-CORAZON-ALMOHADA.png"
+      alt="" srcset="">
+    <label class="h1">Perros Encontrados</label>
+    <img class="m-5" style="width: 80px;"
+      src="https://files.cults3d.com/uploaders/14728184/illustration-file/e7344747-32a4-4f27-b460-f34ba9594bf7/PATA-PIES-CORAZON-ALMOHADA.png"
+      alt="" srcset="">
   </p>
   <div class="col-md-12 text-center row">
     {% for perro in lista %}
     <div class="col-md-4 mb-4 bg-light">
       <div class="card">
         {% if perro.devuelto %}
-            <p class="m-2"><strong><label class="h4" style="color:#09e82a">Devuelto</label></strong></p>
+        <p class="m-2"><strong><label class="h4" style="color:#09e82a">Devuelto</label></strong></p>
         {% endif %}
         <strong class="h3">
           {{perro.descripcion}}
         </strong>
-        
+
         <p>
-          <table border="1" width="300" height="200">
-            <tr>
-              <td align="center" valign="middle">
-                <img src="{{ perro.foto.url }}" alt="Foto de la mascota" width="100%" height="auto">
-              </td>
-            </tr>
-          </table>
-         
+        <table>
+          <tr>
+            <td valign="middle">
+              <img src="{{ perro.foto.url }}" alt="Foto de la mascota" wwidth="300" height="200">
+            </td>
+          </tr>
+        </table>
+
         </p>
 
         <a class="mb-2" href="{{ perro.get_absolute_url }}">Detalle</a>
-     
+
       </div>
     </div>
     {% endfor %}
@@ -40,10 +45,13 @@
 
 
 {% else %}
-<p>No hay mascotas Encontradas</p>
-<br>
-<form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/">
-  <input type="submit" value="Volver al Menu Principal" />
-</form>
+<div class="text-center justify-content-center">
+  <label class="h2">No hay mascotas Encontradas</label>
+</div>
+<div class="text-center">
+  <form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/menu_principal/">
+    <input class="btn btn-primary" type="submit" value="Volver" />
+  </form>
+</div>
 {% endif %}
 {% endblock %}
