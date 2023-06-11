@@ -7,13 +7,13 @@
                 Realizar Donacion
             </div>
             <div class="card-body">
-
-                {% csrf_token %}
-                {{ form.as_p }}
-            </div>
-            <div class="card-footer justify-content-center text-center btn-group">
                 <form method="POST">
-                    <button class="btn btn-success m-2" type="submit" name="action" value="pagar">Pagar</button>
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    
+                    <div class="card-footer justify-content-center text-center btn-group">
+                        <button class="btn btn-success m-2" type="submit" name="action" value="pagar">Pagar</button>
+                    </div>
                 </form>
                 <form action="{% url 'ver_campanas' user_id%}" method="GET">
                     <button class="btn btn-danger m-2" type="submit">Cancelar</button>

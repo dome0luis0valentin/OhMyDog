@@ -5,6 +5,7 @@ from .forms import CampanaForm , PagoForm
 from main.models import Campana , User
 from django.contrib.auth.decorators import login_required
 from .validaciones import *
+from .models import *
 
 @login_required
 def crear_campana(request):
@@ -74,6 +75,10 @@ def formulario_pago(request , campana_id , user_id):
             user.save()
             
             #crear un modelo donacion con campana_id , usuario_id y monto donado ; y guardar esos datos
+            
+            donacion = Donaciones(campania=campana.nombre,usuario=user, monto=cantidad)
+            donacion.save()
+            
             
             return render(request, 'confirmacion.html')
     return render(request, 'donar.html', {'form': form , 'user_id':user_id})
