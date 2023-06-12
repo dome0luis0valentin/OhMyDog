@@ -50,7 +50,7 @@ def solicitar_turno(request):
         #Python no valida todo el condicional, si el form no es valido no valida la fecha
         if form.is_valid() and fecha_is_valid(fecha) and resultado_mascota_cumple[0]:
             
-            if Turno.objects.filter(cliente=cliente, mascota=mascota , motivo=motivo , estado="E").exists() or Turno.objects.filter(cliente=cliente, mascota=mascota , motivo=motivo , estado="A").exists():
+            if Turno.objects.filter(cliente=cliente, mascota=mascota , motivo=motivo , estado="E").exists() or Turno.objects.filter(cliente=cliente, mascota=mascota , motivo=motivo , estado="A").exists() or Turno.objects.filter(cliente=cliente, mascota=mascota , motivo=motivo , estado="As").exists():
                 if Visitas.objects.filter(cliente=cliente, mascota=mascota , motivo="Castración").exists():
                     messages.error(request, "La mascota ya fue castrada")
                 else:    
