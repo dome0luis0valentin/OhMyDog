@@ -104,9 +104,12 @@ class Turno(models.Model):
     cliente= models.ForeignKey(Cliente,on_delete=models.CASCADE)
 
     ESTADO = (
-        ('Esperando Confirmacion','Esperando Confirmacion'),
-        ('Aceptado','Aceptado'),
-        ('Rechazado','Rechazado'),
+        ('E','Esperando Confirmacion'),
+        ('A','Aceptado'),
+        ('R','Rechazado'),
+        ('As', 'Asistio'),
+        ('Ca', 'Cancelado'),
+        ('F', 'Falto')
     )
 
     MOTIVO = (

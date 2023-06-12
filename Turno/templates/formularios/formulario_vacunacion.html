@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="post" action="{% url 'formulario_vacunacion' turno_id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Pagar Servicio</button>
+</form>
+<form method="post" action="{% url 'calcelar_turno' turno_id  %}">
+    {% csrf_token %}
+    <button type="submit">Cancelar</button>
+</form>
+{% endblock %}
+

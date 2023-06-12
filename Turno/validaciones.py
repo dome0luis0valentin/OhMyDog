@@ -47,7 +47,7 @@ def mascota_cumple(mascota,fecha,fecha_nac,tipo):
         
         if Vacuna_tipoA.objects.filter(mascota_id = mascota.id).exists() :
             
-            vacuna = Vacuna_tipoA.objects.get(mascota_id = mascota.id) 
+            vacuna = Vacuna_tipoA.objects.filter(mascota_id = mascota.id)[0] 
                       
             if edad_meses > 2 and edad_meses < 4 :
                 return [(fecha_ingresada > (vacuna.fecha_aplicacion + timedelta(days=21))),"No se puede aplicar la vacuna por que no an pasado los 21 dias de espera"]

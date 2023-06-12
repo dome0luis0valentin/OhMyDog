@@ -10,8 +10,8 @@ from django.core.paginator import Paginator
 
 from datetime import datetime
 
-from .models import Mascota,Intentos, Cliente, Mascota_Adopcion, Red_Social, Turno, Prestador_Servicios, Vacuna_tipoA , Vacuna_tipoB
-from .form import UrgenciaForm,UsuarioForm, MascotaAdopcionForm,Red_SocialForm , MascotaForm, TurnoForm, ServicioForm
+from .models import Mascota,Intentos,Visitas, Cliente, Mascota_Adopcion, Red_Social, Turno, Prestador_Servicios, Vacuna_tipoA , Vacuna_tipoB
+from .form import UrgenciaForm,UsuarioForm,FormularioAdopcionForm, MascotaAdopcionForm,Red_SocialForm , MascotaForm, TurnoForm, ServicioForm
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -61,6 +61,8 @@ def generar_contrasena():
     contrasena = ''.join(random.choice(caracteres) for _ in range(10))
     return contrasena
 
+def mascota_repetida(nombre, email):
+    return Mascota.objects.filter(nombre=nombre, dueno__usuario__email=email).exists()
 
 def enviar_nueva_contraseña(user, asunto):
     remitente = 'grupo21ing2@gmail.com'  # Dirección de correo electrónico del remitente
@@ -143,6 +145,8 @@ MENSAJE_FECHA_INVALIDA = 'Verifique que la fecha tenga el formato DD/MM/AAAA y q
 MENSAJE_USUARIO_INVALIDO = 'Usuario incorrecto, revise que el email sea correcto y que el cliente este registrado'
 MENSAJE_SOLO_LETRAS = 'Solo se permiten letras, no ingrese numeros, ni simbolos como #,$,/, etc.'
 MENSAJE_SOLO_NUMEROS = "Solo se permiten números, no ingrese simbolos como .,-, /, etc."
+MENSAJE_MASCOTA_REPETIDA = "Ya tiene una mascota registrada con este nombre, si desea continuar con el registro, cambie el nombre de la mascota"
+
 # iniciar Sesion
 
 def inicio_sesion(request):
@@ -261,6 +265,11 @@ def confirmar_eliminar_mascota(request, mascota_id):
 def eliminar_mascota(request, mascota_id):
     mascota = get_object_or_404(Mascota, id=mascota_id)
     messages.success(request, f'Se ha dado de baja a : "{mascota.nombre}" ')
+    turnos_de_mascota = Turno.objects.filter(mascota=mascota)
+    
+    turnos_de_mascota.delete()
+    visitas_mascota = Visitas.objects.filter(mascota=mascota)
+    visitas_mascota.delete()
     mascota.delete()
     return redirect('Ver mis Mascotas')    
 
@@ -272,7 +281,73 @@ def marcar_adopcion(request, pk):
 
 
 def formulario_adopcion(request):
-    return render(request,"formulario_adopcion.html")
+    print("Por lo menos estoy aca")
+    if request.method == 'POST':
+        form = FormularioAdopcionForm(request.POST)
+        
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            nombre = cleaned_data['nombre']
+            apellido = cleaned_data['apellido']
+            dni = cleaned_data['dni']
+            correo = cleaned_data['correo']
+            telefono = cleaned_data['telefono']
+            motivo = cleaned_data['motivo']
+
+            ingreso_solo_letras = todos_cadenas(nombre, apellido)
+            ingreso_solo_numeros = todos_numeros(telefono, dni)
+            correo_existe = validate_email(correo, verify=True)
+
+            if ingreso_solo_letras and ingreso_solo_numeros and correo_existe:
+                # Renderizar la plantilla de correo electrónico
+                html_message = render_to_string('email_template.html', {'nombre': nombre, 'apellido': apellido, 'dni': dni, 'correo': correo, 'telefono': telefono, 'motivo': motivo})
+                plain_message = strip_tags(html_message)
+
+                # Enviar el correo electrónico
+                send_mail(
+                    'Formulario de adopción',
+                    plain_message,
+                    correo,
+                    ['grupo21ing2@gmail.com'],
+                    html_message=html_message,
+                )
+
+                messages.success(request, "Solicitud enviada")
+                return redirect('adopciones')
+            else:
+                if not ingreso_solo_letras:
+                    messages.info(request, "El nombre y apellido deben contener solo letras")
+                if not ingreso_solo_numeros:
+                    messages.info(request, "El DNI y teléfono deben contener solo números")
+                if not correo_existe:
+                    messages.info(request, "La dirección de correo electrónico no existe")
+
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.info(request, f"Error en el campo {field}: {error}")
+
+        return redirect('adopciones')
+
+    else:
+        initial_data = {}
+        if request.user.is_authenticated:
+                cliente = Cliente.objects.get(usuario__email=request.user.email)
+                cliente = cliente.datos
+                nombre = cliente.nombre
+                apellido = cliente.apellido
+                dni = cliente.dni
+                correo = request.user.email
+                telefono = cliente.telefono
+                initial_data = {'nombre': cliente.nombre,
+                                'apellido': cliente.apellido,
+                                'dni': cliente.dni,
+                                'correo' :cliente.correo,
+                                'telefono' : cliente.telefono}        
+        form = FormularioAdopcionForm(initial=initial_data)
+
+        return render(request, "formulario_adopcion_auto.html", {'form': form})
+
 
 
 def enviar_formulario_adopcion(request):
@@ -300,6 +375,7 @@ def enviar_formulario_adopcion(request):
 
         correo_existe = (True == validate_email(correo, verify=True)) 
 
+        
         if (ingreso_solo_letras and ingreso_solo_numeros and correo_existe):
             # Renderizar la plantilla de correo electrónico
             html_message = render_to_string('email_template.html', {'nombre': nombre, 'apellido': apellido, 'dni': dni, 'correo': correo, 'telefono': telefono, 'motivo': motivo})
@@ -341,11 +417,17 @@ def enviar_formulario_adopcion(request):
 
 class AdopcionListView(generic.ListView):
     
-    model = Mascota_Adopcion # Modelo al que le va a consultar los datos
+    model = Mascota_Adopcion 
 
     context_object_name = 'lista_mascotas_adopcion'   # your own name for the list as a template variable
-    queryset = Mascota_Adopcion.objects.all() #Metodo que devuelve las mascotas, se puede poner un filter
+    #queryset = Mascota_Adopcion.objects.filter(dueno__usuario__email != request.user.email) #Metodo que devuelve las mascotas, se puede poner un filter
     template_name = 'adopcion/lista_mascotas_adopcion.html'  # Specify your own template name/location
+
+    def get_queryset(self):
+        user_email = self.request.user.email
+        queryset = super().get_queryset()
+        queryset = queryset.exclude(dueno__usuario__email=user_email)
+        return queryset
 
 class MascotaListView(LoginRequiredMixin, generic.ListView):
     model = Mascota # Modelo al que le va a consultar los datos
@@ -648,7 +730,9 @@ def registrar_mascota(request):
 
         ingreso_solo_letras = todos_cadenas(nombre, color, raza)
         fecha_es_anterior_a_hoy = fecha_anterior_is_valid(fecha)
-        if form.is_valid() and fecha_es_anterior_a_hoy  and ingreso_solo_letras:
+        repetida = mascota_repetida(nombre, request.user.email)
+
+        if form.is_valid() and fecha_es_anterior_a_hoy  and ingreso_solo_letras and not(repetida):
             
             mascota = form.save(commit=False)
 
@@ -675,6 +759,9 @@ def registrar_mascota(request):
         
         if not cadena_is_valid(color):
             form.errors['color'] = [MENSAJE_SOLO_LETRAS]
+
+        if repetida:
+            form.errors['nombre']= [MENSAJE_MASCOTA_REPETIDA]
 
         if form.errors:
             for field_name, errors in form.errors.items():

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center">
+  <h1>Libreta Sanitaria</h1>
+</div>
+{% if data %}
+    {% for turno in data %}
+    <div class="card mb-5 col-md-5">
+        <div class="card-header text-center">
+            <h4><p><strong>Fecha:</strong> {{ turno.fecha }}</p></h4>
+        </div>
+        <div class="card-body p-2">
+            <br>
+            <strong>Banda Horaria:</strong> {{ turno.banda_horaria }}
+            <br>
+            <strong>Motivo:</strong> {{ turno.motivo }}
+            <br>
+            <p><strong>Estado:</strong> {{ turno.get_estado_display }}</p>
+            <br>
+        
+            
+        </div>
+    </div>
+    {% endfor %}
+
+{% else %}
+<p>Sin turnos solicitados</p>
+{% endif %}
+{% endblock %}
