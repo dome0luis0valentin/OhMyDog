@@ -138,9 +138,9 @@
                             <li><a class="btn btn-outline-success dropdown-item"
                                 href="http://127.0.0.1:8000/confirmar_turnos/">Confirmar Turnos</a></li>
                             <li><a class="btn btn-outline-success dropdown-item"
-                                    href="http://127.0.0.1:8000/turnos_confirmadosHasta/">Confirmados</a></li>
+                                    href="http://127.0.0.1:8000/turnos_confirmadosHasta/">Turnos Confirmados</a></li>
                             <li><a class="mbtn btn-outline-success dropdown-item"
-                                    href="http://127.0.0.1:8000/turnos_confirmados/">Confirmados Del dia</a></li>
+                                    href="http://127.0.0.1:8000/turnos_confirmados/">Ver Turnos Programados</a></li>
                         </ul>
                     </li>
                     <li><a class="m-2 btn btn-outline-success dropdown-item"
@@ -178,6 +178,9 @@
             {% else %}
             <form style="display: inline-block;" action="http://127.0.0.1:8000/adopcion/">
                 <input type="submit" class="m-2 btn btn-outline-success" value="Mascotas en Adopción" />
+            </form>
+            <form style="display: inline-block;" action="http://127.0.0.1:8000/ver_campanas/">
+                <input type="submit" class="m-2 btn btn-outline-success" value="Campañas" />
             </form>
 
             <div class="dropdown" style="display: inline-block;">

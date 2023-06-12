@@ -77,9 +77,9 @@ def solicitar_turno(request):
         else:
             if not (fecha_is_valid(fecha)):
                 if not fecha_anterior_is_valid(fecha):
-                    messages.info(request, MENSAJE_FECHA_ANTERIOR)
-                else:    
                     messages.info(request, MENSAJE_FECHA_INVALIDA)
+                else:    
+                    messages.info(request, MENSAJE_FECHA_ANTERIOR)
             else:
                 messages.info(request,resultado_mascota_cumple[1])    
             
@@ -403,7 +403,7 @@ def formulario_desparasitante(request, turno_id):
         peso = request.POST["peso"]
 
         if form.is_valid() and es_numero_real_positivo(peso):
-            turno = Turno.objects.filter(id = turno_id)[0]
+            turno = Turno.objects.get(id = turno_id)
 
             registrar_visita_desparacitacion(turno, request)
             messages.info(request,"Desparasitación registrada")
@@ -415,8 +415,6 @@ def formulario_desparasitante(request, turno_id):
     else:
         form = DesparasitanteForm()
         return render(request, 'formularios/formulario_desparacitante.html', {'form': form, 'turno_id': turno_id})
-    return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
-
 @login_required
 def formulario_vacunacion(request, turno_id):
 
@@ -456,10 +454,6 @@ def actualizar_turno(request, turno_id, monto):
         usuario_id = cliente.usuario_id
         usuario = User.objects.get(id = usuario_id)
 
-        #monto = request.POST.get('monto')
-        monto = 10
-        print(f'turno.motivo = {turno.motivo}')
-        
         turno.estado='As'
         turno.save()
         #aca se tiene que guardar el turno en la visita y en la libreta sanitaria 

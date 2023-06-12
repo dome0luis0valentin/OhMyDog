@@ -495,7 +495,7 @@ def registrar_adopcion(request):
             # Verificar errores y mostrar mensajes personalizados
 
             if not fecha_es_anterior_a_hoy:
-                form.errors['fecha_nac'] = [MENSAJE_FECHA_INVALIDA]
+                form.errors['fecha_nac'] = [MENSAJE_FECHA_POSTERIOR]
 
             if not cadena_is_valid(nombre):
                 form.errors['nombre'] = [MENSAJE_SOLO_LETRAS]
@@ -665,7 +665,7 @@ def registrar_mascota(request):
         # Verificar errores y mostrar mensajes personalizados
 
         if not fecha_es_anterior_a_hoy:
-            form.errors['fecha_nac'] = [MENSAJE_FECHA_INVALIDA]
+            form.errors['fecha_nac'] = [MENSAJE_FECHA_POSTERIOR]
 
         if not cadena_is_valid(nombre):
             form.errors['nombre'] = [MENSAJE_SOLO_LETRAS]

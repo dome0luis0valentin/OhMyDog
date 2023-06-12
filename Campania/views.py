@@ -1,7 +1,7 @@
 from datetime import date
 from django.contrib import messages
 from django.shortcuts import render , redirect
-from .forms import CampanaForm , PagoForm
+from .forms import CampanaForm , PagoForm , PagoFormVisita
 from main.models import Campana , User
 from django.contrib.auth.decorators import login_required
 from .validaciones import *
@@ -43,9 +43,19 @@ def ver_campanas(request , user_id):
     hoy = datetime.now().date()
     # Obtener todas las campañas que no han finalizado
     campanas = Campana.objects.all()
+    tipo_usuario="U"
+    # Pasar las campañas a la plantilla para su visualización
+    context = {'campanas': campanas , 'user_id':user_id , 'fecha_hoy':hoy ,'tipo_usuario':tipo_usuario}
+    return render(request, 'ver_campanas.html', context)
+
+def ver_campanas_visitante(request):
+    
+    hoy = datetime.now().date()
+    # Obtener todas las campañas que no han finalizado
+    campanas = Campana.objects.all()
 
     # Pasar las campañas a la plantilla para su visualización
-    context = {'campanas': campanas , 'user_id':user_id , 'fecha_hoy':hoy}
+    context = {'campanas': campanas ,'fecha_hoy':hoy, 'tipo':"V" }
     return render(request, 'ver_campanas.html', context)
 
 def formulario_pago(request , campana_id , user_id):
@@ -83,4 +93,40 @@ def formulario_pago(request , campana_id , user_id):
             
             
             return render(request, 'confirmacion.html')
-    return render(request, 'donar.html', {'form': form , 'user_id':user_id})
+    return render(request, 'donar.html', {'form': form , 'user_id':user_id , 'tipo':"U"})
+
+
+#usuario visitante 
+def formulario_pago_visitante(request , campana_id ):
+    form = PagoFormVisita(request.POST)
+    if request.method == 'POST':
+        form = PagoFormVisita(request.POST)
+        if form.is_valid():
+            
+            numero_de_tarjeta = request.POST["numero_de_tarjeta"]
+            cantidad = request.POST["cantidad"]
+            correo = request.POST["correo"] 
+            
+            cantidad = float(request.POST["cantidad"])
+            campana = Campana.objects.get(id=campana_id)
+            # Actualiza el campo Total_donado
+            campana.Total_donado += cantidad
+            # Guarda los cambios en la base de datos
+            campana.save()
+            
+            
+            
+            estado_pago = proceso_pago(numero_de_tarjeta,cantidad)
+            
+            if not estado_pago[0] :
+                messages.info(request,estado_pago[1])    
+                return redirect('formulario_pago_visitante',campana_id=campana_id)
+                            
+            #crear un modelo donacion con campana_id , usuario_id y monto donado ; y guardar esos datos
+            
+            donacion = DonacionesVisitantes(campania=campana.nombre,correo=correo, monto=cantidad)
+            donacion.save()
+            
+            
+            return render(request, 'confirmacion.html')
+    return render(request, 'donar.html', {'form': form , 'tipo':"V"})

@@ -24,11 +24,17 @@
                 </div>
                 <div class="card-footer">
                     {% if campana.fecha_fin >= fecha_hoy or campana.nombre == "Donaciones a Refugio"%}
-                        <form action="{% url 'formulario_pago' campana.id  user_id %}" method="GET">
-                            <button class="btn btn-success" type="submit">Donar</button>
-                        </form>
-                        {% else %}
-                            <p style="color: red;">Finalizada</p>  
+                        {% if tipo_usuario == "U" %}
+                            <form action="{% url 'formulario_pago' campana.id  user_id %}" method="GET">
+                                <button class="btn btn-success" type="submit">Donar</button>
+                            </form>
+                        {% else %} 
+                            <form action="{% url 'formulario_pago_visitante' campana.id %}" method="GET">
+                                <button class="btn btn-success" type="submit">Donar</button>
+                            </form>     
+                        {% endif %}  
+                    {% else %}
+                        <p style="color: red;">Finalizada</p>  
                     {% endif %}    
                 </div>
             </div>

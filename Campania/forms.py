@@ -27,6 +27,12 @@ class PagoForm(forms.Form):
     numero_de_tarjeta = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder':'Numnero de tarjeta'}))
     cantidad = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder':'Cantidad a donar'}))
 
+class PagoFormVisita(forms.Form):
+    numero_de_tarjeta = TarjetaCreditoField()
+    cantidad = forms.DecimalField(max_digits=6, decimal_places=2)
+    numero_de_tarjeta = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder':'Numnero de tarjeta'}))
+    cantidad = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder':'Cantidad a donar'}))
+    correo = forms.EmailField(widget=forms.widgets.EmailInput(attrs={'class': 'col-5','placeholder':'ejemplo@gmail.com'}))
 
 
 '''

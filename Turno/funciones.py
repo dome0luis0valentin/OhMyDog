@@ -1,4 +1,5 @@
 import csv
+import decimal
 import os
 from openpyxl import load_workbook
 from pyexcel_ods3 import get_data
@@ -14,7 +15,7 @@ def registrar_visita_vacunacion(turno, datos):
     peso = datos.POST["peso"]
     monto= datos.POST["monto"]
 
-    visita = Visitas.objects.create(fecha=turno.fecha,
+    visita = Visitas(fecha=turno.fecha,
                             motivo=turno.motivo,
                             observaciones=descripcion,
                             cliente=cliente, 
@@ -34,9 +35,10 @@ def registrar_visita_desparacitacion(turno, datos):
     codigo = datos.POST["codigo"]
     peso = datos.POST["peso"]
     cantidad = datos.POST["cantidad"]
-    monto= datos.POST["monto"]
+    monto = decimal.Decimal(datos.POST["monto"])
+    #monto= datos.POST["monto"]
 
-    visita = Visitas.objects.create(fecha=turno.fecha,
+    visita = Visitas(fecha=turno.fecha,
                             motivo=turno.motivo,
                             observaciones=descripcion,
                             cliente=cliente, 
@@ -52,7 +54,7 @@ def registrar_visita_simple(descripcion, monto, turno):
     cliente = Cliente.objects.get(pk=turno.cliente.pk)
     mascota = Mascota.objects.get(pk=turno.mascota.pk)
 
-    visita = Visitas.objects.create(fecha=turno.fecha,
+    visita = Visitas(fecha=turno.fecha,
                             motivo=turno.motivo,
                             observaciones=descripcion,
                             cliente=cliente, 

@@ -9,4 +9,13 @@ class Donaciones(models.Model):
 
     def __str__(self):
         return f"Donacion de {self.usuario} a la campaña {self.campania}"
+    
+    
+class DonacionesVisitantes(models.Model):
+    campania = models.CharField(max_length=255)
+    correo = models.EmailField()
+    monto = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"Donacion de {self.correo} a la campaña {self.campania}"    
 

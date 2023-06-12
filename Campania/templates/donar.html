@@ -15,9 +15,15 @@
                         <button class="btn btn-success m-2" type="submit" name="action" value="pagar">Pagar</button>
                     </div>
                 </form>
-                <form action="{% url 'ver_campanas' user_id%}" method="GET">
-                    <button class="btn btn-danger m-2" type="submit">Cancelar</button>
-                </form>
+                {% if tipo == "U" %}
+                    <form action="{% url 'ver_campanas' user_id%}" method="GET">
+                        <button class="btn btn-danger m-2" type="submit">Cancelar</button>
+                    </form>
+                {% else %}
+                    <form action="{% url 'ver_campanas' %}" method="GET">
+                        <button class="btn btn-danger m-2" type="submit">Cancelar</button>
+                    </form>
+                {% endif %}        
             </div>
         </div>
     </div>
