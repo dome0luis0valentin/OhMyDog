@@ -87,7 +87,6 @@ def publicar_no_registrada(request):
         context = {'form': form, 'titulo': "Publicar Mascota Perdida"}
         return render(request, 'registro.html', context)
 
-@login_required
 def ver_perdidos(request):
     lista = MascotasPerdidas.objects.all()
     return render(request, "perdidos.html", {"lista":lista})

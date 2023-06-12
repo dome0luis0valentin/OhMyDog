@@ -4,6 +4,7 @@ from django.shortcuts import render , redirect
 from .forms import CampanaForm , PagoForm , PagoFormVisita
 from main.models import Campana , User
 from django.contrib.auth.decorators import login_required
+from validate_email_address import validate_email
 from .validaciones import *
 from .models import *
 
@@ -74,7 +75,9 @@ def formulario_pago(request , campana_id , user_id):
             # Guarda los cambios en la base de datos
             campana.save()
             
-            
+            if int(cantidad) <= 0:
+                messages.info(request,"la cantidad a abonar tiene que ser mayor a 0 ")    
+                return redirect('formulario_pago',campana_id=campana_id, user_id=user_id)   
             
             estado_pago = proceso_pago(numero_de_tarjeta,cantidad)
             
@@ -114,14 +117,17 @@ def formulario_pago_visitante(request , campana_id ):
             # Guarda los cambios en la base de datos
             campana.save()
             
-            
+            #correo_existe = (True == validate_email(correo, verify=True))
             
             estado_pago = proceso_pago(numero_de_tarjeta,cantidad)
             
             if not estado_pago[0] :
                 messages.info(request,estado_pago[1])    
                 return redirect('formulario_pago_visitante',campana_id=campana_id)
-                            
+            
+            if len(correo) < 15:
+                messages.info(request,"El correo ingresado es inavalido o no existe")    
+                return redirect('formulario_pago_visitante',campana_id=campana_id)            
             #crear un modelo donacion con campana_id , usuario_id y monto donado ; y guardar esos datos
             
             donacion = DonacionesVisitantes(campania=campana.nombre,correo=correo, monto=cantidad)

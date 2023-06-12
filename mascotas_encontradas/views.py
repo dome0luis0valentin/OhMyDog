@@ -38,7 +38,7 @@ def publicar(request):
         context = {'form': form, 'titulo': "Publicar Mascota Encontrada"}
         return render(request, 'registro.html', context)
 
-@login_required
+
 def ver_encontrados(request):
     lista = MascotasEncontradas.objects.all()
     return render(request, "encontrados.html", {"lista":lista})
