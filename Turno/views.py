@@ -51,7 +51,7 @@ def solicitar_turno(request):
         if form.is_valid() and fecha_is_valid(fecha) and resultado_mascota_cumple[0]:
             
             if Turno.objects.filter(cliente=cliente, mascota=mascota , motivo=motivo , estado="E").exists() or Turno.objects.filter(cliente=cliente, mascota=mascota , motivo=motivo , estado="A").exists():
-                if Turno.objects.filter(cliente=cliente, mascota=mascota , motivo="Castración").exists():
+                if Visitas.objects.filter(cliente=cliente, mascota=mascota , motivo="Castración").exists():
                     messages.error(request, "La mascota ya fue castrada")
                 else:    
                     messages.error(request, "Ya has solicitado un turno  para la mascota")
@@ -336,7 +336,7 @@ def ver_historial_de_turnos(request):
     else:
         data = []
 
-    return render(request, 'historial/historial_turnos.html', {'data': data})
+    return render(request, 'historial/turnos_solicitados.html', {'data': data})
 
 @login_required   
 def ver_historial_de_visitas(request, pk):
@@ -387,6 +387,7 @@ def formulario_simple(request, turno_id):
             monto = request.POST["monto"]
             turno = Turno.objects.filter(id = turno_id)[0]
             print("Registro")
+           
             registrar_visita_simple(descripcion, monto, turno)
 
             return redirect('actualizar_turno', turno_id=turno_id, monto=str(monto))
@@ -415,36 +416,38 @@ def formulario_desparasitante(request, turno_id):
     else:
         form = DesparasitanteForm()
         return render(request, 'formularios/formulario_desparacitante.html', {'form': form, 'turno_id': turno_id})
+    
 @login_required
 def formulario_vacunacion(request, turno_id):
-
+    print("Entro a Vacunacion")
     if request.method == 'POST':
         form = VacunacionForm(request.POST)
         if form.is_valid():
+            print("Formulario valido")
             turno = Turno.objects.filter(id = turno_id)[0]
             registrar_visita_vacunacion(turno, request)
             acturalizar_modelos(turno)
             messages.info(request,"Vacunación registrada")
             monto =  str(request.POST["monto"])
-            return redirect('actualizar_turnos', turno_id=turno_id, monto=monto)
+            return redirect('actualizar_turno', turno_id=turno_id, monto=monto)
         else:
-            return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})   
+            return render(request, 'formularios/formulario_vacunacion.html', {'form': form, 'turno_id': turno_id})   
     else:
         form = VacunacionForm()    
-    return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
+    return render(request, 'formularios/formulario_vacunacion.html', {'form': form, 'turno_id': turno_id})
 
-@login_required
 def acturalizar_modelos(turno):
+    print("Se actualizo la vacunacion")
     if (turno.motivo =="Vacunación de tipo A"):
-        aplicacion_vacuna = Vacuna_tipoA(mascota=turno.mascota, fecha_aplicacion=turno.fecha)
+        aplicacion_vacuna = Vacuna_tipoA.objects.create(mascota=turno.mascota, fecha_aplicacion=turno.fecha)
     else:
-        aplicacion_vacuna = Vacuna_tipoB(mascota=turno.mascota, fecha_aplicacion=turno.fecha)
+        aplicacion_vacuna = Vacuna_tipoB.objects.create(mascota=turno.mascota, fecha_aplicacion=turno.fecha)
     aplicacion_vacuna.save()          
 
 
 @login_required
 def actualizar_turno(request, turno_id, monto):
-    print(request.method)
+    print(request.method, "Actualizando turno")
     if True:
         turno = Turno.objects.filter(id = turno_id)[0]
         

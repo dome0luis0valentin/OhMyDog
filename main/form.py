@@ -6,6 +6,8 @@ from .models import Cliente, Persona, Red_Social, Mascota_Adopcion, Mascota, Tur
 
 from django.contrib.auth.forms import UserCreationForm
 
+from django import forms
+
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -20,6 +22,16 @@ def validate_image(file):
             _('El archivo subido no es una imagen válida.')
         )
     
+
+class FormularioAdopcionForm(forms.Form):
+    nombre = forms.CharField(max_length=100)
+    apellido = forms.CharField(max_length=100)
+    dni = forms.CharField(max_length=100)
+    correo = forms.EmailField()
+    telefono = forms.CharField(max_length=100)
+    motivo = forms.CharField(widget=forms.Textarea)
+
+
 class CustomPasswordChangeForm(PasswordChangeForm):
     error_messages = {
         'password_mismatch': _("Las contraseñas no coinciden."),
