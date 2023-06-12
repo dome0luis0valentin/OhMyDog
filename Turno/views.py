@@ -40,7 +40,7 @@ def solicitar_turno(request):
         mascota_id = request.POST["mascota"]
         
         mascota = get_object_or_404(Mascota, id=mascota_id)
-        
+        print("Mascota que solicita el turno", mascota)
         motivo = request.POST["motivo"]
 
         fecha_nacimineto = mascota.fecha_nac
