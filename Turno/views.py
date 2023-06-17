@@ -21,7 +21,10 @@ from .validaciones import archivo_is_valid, mascota_cumple , descuento
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 import csv 
-    
+
+from django.core.paginator import Paginator
+
+
 from .funciones import *
 @login_required
 def solicitar_turno(request):
@@ -88,6 +91,29 @@ def solicitar_turno(request):
     context = {'form':form, 'titulo': "Solicitud de Turno"}
 
     return render(request, "registro.html", context)
+
+def detalle_visita(request, id):
+    visita = get_object_or_404(Visitas, id=id)
+
+    return render(request, 'detalle_visita.html', {'visita': visita})
+def ver_todas_las_visitas(request):
+    
+    visitas = Visitas.objects.all().order_by('fecha')
+    #Tiene visitas
+    if(visitas.exists()):
+        data = visitas  
+    #No tiene visitas
+    else:
+        data = []
+
+    
+    # Divide las mascotas en páginas, con 10 mascotas por página
+    paginator = Paginator(data, 10)  
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'historial/todas_visitas.html', {'data': data, 'titulo': "Ver Todas las Visitas",'mensaje_no_hay':"Sin visitas registradas", 'page_obj':page_obj})
 
 
 @login_required

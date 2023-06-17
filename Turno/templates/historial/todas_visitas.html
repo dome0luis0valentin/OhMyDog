@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center">
+  <h1>{{ titulo }}</h1>
+</div>
+{% if data %}
+    {% for visita in page_obj %}
+
+
+    <div class="card mb-5 col-md-5">
+        <div class="card-header text-center">
+            <h4><strong>Visita:</strong> {{ visita.fecha }}</h4>
+        </div>
+        <div class="card-body p-2">
+            <p><strong>Perro:</strong> {{ visita.mascota.nombre }}</p>
+            <p><strong>Cliente:</strong> {{ visita.cliente.usuario.email }}</p>
+            <a href="{% url 'detalle visita' visita.id %}"> Detalle </a>
+        </div>
+        
+    </div>
+
+
+    {% endfor %}
+    <div class="pagination">
+        <span class="step-links">
+          {% if page_obj.has_previous %}
+              <a href="?page=1">&laquo; Primera</a>
+              <a href="?page={{ page_obj.previous_page_number }}"> Anterior</a>
+          {% endif %}
+      
+          <span class="current-page">{{ page_obj.number }}</span>
+      
+          {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}"> Siguiente</a>
+              <a href="?page={{ page_obj.paginator.num_pages }}"> Última &raquo;</a>
+          {% endif %}
+        </span>
+      </div>
+
+{% else %}
+<p>{{ mensaje_no_hay }}</p>
+{% endif %}
+{% endblock %}
