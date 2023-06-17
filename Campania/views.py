@@ -59,6 +59,14 @@ def ver_campanas_visitante(request):
     context = {'campanas': campanas ,'fecha_hoy':hoy, 'tipo':"V" }
     return render(request, 'ver_campanas.html', context)
 
+@login_required
+def ver_mis_donaciones(request): 
+    donaciones = Donaciones.objects.filter(usuario__email = request.user.email)
+
+    # Pasar las campañas a la plantilla para su visualización
+    context = {'donaciones': donaciones}
+    return render(request, 'ver_mis_donaciones.html', context)
+
 def formulario_pago(request , campana_id , user_id):
     form = PagoForm(request.POST)
     if request.method == 'POST':
@@ -97,7 +105,6 @@ def formulario_pago(request , campana_id , user_id):
             
             return render(request, 'confirmacion.html')
     return render(request, 'donar.html', {'form': form , 'user_id':user_id , 'tipo':"U"})
-
 
 #usuario visitante 
 def formulario_pago_visitante(request , campana_id ):

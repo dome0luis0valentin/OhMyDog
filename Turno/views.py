@@ -228,7 +228,7 @@ def turno_confirmado_detail_view(request, pk,tipo):
     return render(
         request,
         'detalle_turnos_aceptados.html',
-        context={'object': turno, 'mascota': mascota , 'tipo':tipo}
+        context={'object': turno, 'mascota': mascota , 'tipo':tipo, 'titulo': "Turnos Programados"}
     )    
     
 @login_required
@@ -252,17 +252,17 @@ def aceptar_turno(request, turno_id):
         return redirect('confirmar_turnos')    
 
 @login_required
-def turnos_confirmados(request):
+def turnos_programados(request):
     fecha_actual = date.today()
-    turnos_confirmados_fecha = Turno.objects.filter(fecha=fecha_actual, estado="A")
-    contexto = {'turnos_confirmados': turnos_confirmados_fecha , 'tipo' : "C"}
+    turnos_programados = Turno.objects.filter(fecha=fecha_actual, estado="A")
+    contexto = {'turnos': turnos_programados , 'tipo' : "C", 'titulo': "Turnos Programados", 'no_hay': "No hay turnos programados para hoy"}
     return render(request, "lista_de_turnos_aceptados.html", contexto)  
 
 
 @login_required
 def turnos_solo_confirmados(request):
     turnos_confirmados = Turno.objects.filter(estado="A") 
-    contexto = {'turnos_confirmados': turnos_confirmados , 'tipo' : "S"}
+    contexto = {'turnos': turnos_confirmados , 'tipo' : "S", 'titulo': "Turnos Confirmados", 'no_hay': "No hay turnos confirmados"}
     return render(request, "lista_de_turnos_aceptados.html", contexto )  
     
 @login_required    
@@ -349,21 +349,16 @@ def ver_historial_de_visitas(request, pk):
     else:
         data = []
 
-    return render(request, 'historial/visitas.html', {'data': data})
+    return render(request, 'historial/visitas.html', {'data': data, 'titulo': "Ver Historial de Visitas",'mensaje_no_hay':MENSAJE_SIN_TURNOS})
 
 @login_required   
 def ver_libreta_sanitaria(request, pk):
 
+    #Me trae solo las visitas de ese tipo, y de ese usuario
     libreta = Visitas.objects.filter(
         Q(mascota__pk=pk) &
         (Q(motivo='Vacunación de tipo A') | Q(motivo='Vacunación de tipo B') | Q(motivo='Desparasitación'))
     )
-
-    for i in libreta:
-        print(i)
-        print(i.peso)
-        print(i.cant_desparacitante)
-        print(i.codigo)
 
     #Tiene visitas
     if(libreta.exists()):
@@ -372,7 +367,7 @@ def ver_libreta_sanitaria(request, pk):
     else:
         data = []
 
-    return render(request, 'historial/historial_turnos.html', {'data': data})
+    return render(request, 'historial/visitas.html', {'data': data, 'titulo':"Ver Libreta Sanitatia", 'mensaje_no_hay':MENSAJE_SIN_VISITAS})
 
 @login_required
 def formulario_simple(request, turno_id):

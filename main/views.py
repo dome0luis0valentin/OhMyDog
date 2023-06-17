@@ -51,7 +51,7 @@ from validate_email_address import validate_email
 
 import random
 import string
-
+from django.db.models import Q
 
 from .form import CustomPasswordChangeForm
 
@@ -265,11 +265,15 @@ def confirmar_eliminar_mascota(request, mascota_id):
 def eliminar_mascota(request, mascota_id):
     mascota = get_object_or_404(Mascota, id=mascota_id)
     messages.success(request, f'Se ha dado de baja a : "{mascota.nombre}" ')
-    turnos_de_mascota = Turno.objects.filter(mascota=mascota)
+    #Me trae solo las visitas de ese tipo, y de ese usuario
+    turnos_sin_asistir = Turno.objects.filter(
+        Q(mascota=mascota) &
+        (Q(estado='E') | Q(estado='A') | Q(estado='R'))
+    )
     
-    turnos_de_mascota.delete()
-    visitas_mascota = Visitas.objects.filter(mascota=mascota)
-    visitas_mascota.delete()
+    turnos_sin_asistir.delete()
+    #visitas_mascota = Visitas.objects.filter(mascota=mascota)
+    #visitas_mascota.delete()
     mascota.delete()
     return redirect('Ver mis Mascotas')    
 
@@ -424,9 +428,12 @@ class AdopcionListView(generic.ListView):
     template_name = 'adopcion/lista_mascotas_adopcion.html'  # Specify your own template name/location
 
     def get_queryset(self):
-        user_email = self.request.user.email
-        queryset = super().get_queryset()
-        queryset = queryset.exclude(dueno__usuario__email=user_email)
+        if self.request.user.is_authenticated:
+            user_email = self.request.user.email
+            queryset = super().get_queryset()
+            queryset = queryset.exclude(dueno__usuario__email=user_email)
+        else:
+            queryset = super().get_queryset()
         return queryset
 
 class MascotaListView(LoginRequiredMixin, generic.ListView):
