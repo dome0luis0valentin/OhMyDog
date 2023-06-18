@@ -424,9 +424,13 @@ class AdopcionListView(generic.ListView):
     template_name = 'adopcion/lista_mascotas_adopcion.html'  # Specify your own template name/location
 
     def get_queryset(self):
-        user_email = self.request.user.email
-        queryset = super().get_queryset()
-        queryset = queryset.exclude(dueno__usuario__email=user_email)
+        if self.request.user.is_authenticated:
+            user_email = self.request.user.email
+            queryset = super().get_queryset()
+            queryset = queryset.exclude(dueno__usuario__email=user_email)
+        else:
+            queryset = Mascota_Adopcion.objects.all()    
+            
         return queryset
 
 class MascotaListView(LoginRequiredMixin, generic.ListView):

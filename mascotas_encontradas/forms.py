@@ -18,6 +18,13 @@ class MascotaEncontradaForm(forms.ModelForm):
     class Meta: 
         model = MascotasEncontradas
         fields = ("descripcion","foto","contacto", "direccion")
+        labels = {
+            'cliente': 'Ingrese el nombre del cliente',
+            'descripcion': 'Ingrese la descripción de la mascota',
+            'foto': 'Seleccione una foto',
+            'contacto': 'Ingrese la información de contacto',
+            'direccion': 'Ingrese la dirección',
+        }  
 
         
 
