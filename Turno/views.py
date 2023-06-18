@@ -21,7 +21,10 @@ from .validaciones import archivo_is_valid, mascota_cumple , descuento
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 import csv 
-    
+
+from django.core.paginator import Paginator
+
+
 from .funciones import *
 @login_required
 def solicitar_turno(request):
@@ -89,6 +92,29 @@ def solicitar_turno(request):
     context = {'form':form, 'titulo': "Solicitud de Turno"}
 
     return render(request, "registro.html", context)
+
+def detalle_visita(request, id):
+    visita = get_object_or_404(Visitas, id=id)
+
+    return render(request, 'detalle_visita.html', {'visita': visita})
+def ver_todas_las_visitas(request):
+    
+    visitas = Visitas.objects.all().order_by('fecha')
+    #Tiene visitas
+    if(visitas.exists()):
+        data = visitas  
+    #No tiene visitas
+    else:
+        data = []
+
+    
+    # Divide las mascotas en páginas, con 10 mascotas por página
+    paginator = Paginator(data, 10)  
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'historial/todas_visitas.html', {'data': data, 'titulo': "Ver Todas las Visitas",'mensaje_no_hay':"Sin visitas registradas", 'page_obj':page_obj})
 
 
 @login_required
@@ -229,7 +255,7 @@ def turno_confirmado_detail_view(request, pk,tipo):
     return render(
         request,
         'detalle_turnos_aceptados.html',
-        context={'object': turno, 'mascota': mascota , 'tipo':tipo}
+        context={'object': turno, 'mascota': mascota , 'tipo':tipo, 'titulo': "Turnos Programados"}
     )    
     
 @login_required
@@ -253,17 +279,17 @@ def aceptar_turno(request, turno_id):
         return redirect('confirmar_turnos')    
 
 @login_required
-def turnos_confirmados(request):
+def turnos_programados(request):
     fecha_actual = date.today()
-    turnos_confirmados_fecha = Turno.objects.filter(fecha=fecha_actual, estado="A")
-    contexto = {'turnos_confirmados': turnos_confirmados_fecha , 'tipo' : "C"}
+    turnos_programados = Turno.objects.filter(fecha=fecha_actual, estado="A")
+    contexto = {'turnos': turnos_programados , 'tipo' : "C", 'titulo': "Turnos Programados", 'no_hay': "No hay turnos programados para hoy"}
     return render(request, "lista_de_turnos_aceptados.html", contexto)  
 
 
 @login_required
 def turnos_solo_confirmados(request):
     turnos_confirmados = Turno.objects.filter(estado="A") 
-    contexto = {'turnos_confirmados': turnos_confirmados , 'tipo' : "S"}
+    contexto = {'turnos': turnos_confirmados , 'tipo' : "S", 'titulo': "Turnos Confirmados", 'no_hay': "No hay turnos confirmados"}
     return render(request, "lista_de_turnos_aceptados.html", contexto )  
     
 @login_required    
@@ -350,21 +376,16 @@ def ver_historial_de_visitas(request, pk):
     else:
         data = []
 
-    return render(request, 'historial/visitas.html', {'data': data})
+    return render(request, 'historial/visitas.html', {'data': data, 'titulo': "Ver Historial de Visitas",'mensaje_no_hay':MENSAJE_SIN_TURNOS})
 
 @login_required   
 def ver_libreta_sanitaria(request, pk):
 
+    #Me trae solo las visitas de ese tipo, y de ese usuario
     libreta = Visitas.objects.filter(
         Q(mascota__pk=pk) &
         (Q(motivo='Vacunación de tipo A') | Q(motivo='Vacunación de tipo B') | Q(motivo='Desparasitación'))
     )
-
-    for i in libreta:
-        print(i)
-        print(i.peso)
-        print(i.cant_desparacitante)
-        print(i.codigo)
 
     #Tiene visitas
     if(libreta.exists()):
@@ -373,7 +394,7 @@ def ver_libreta_sanitaria(request, pk):
     else:
         data = []
 
-    return render(request, 'historial/historial_turnos.html', {'data': data})
+    return render(request, 'historial/visitas.html', {'data': data, 'titulo':"Ver Libreta Sanitatia", 'mensaje_no_hay':MENSAJE_SIN_VISITAS})
 
 @login_required
 def formulario_simple(request, turno_id):

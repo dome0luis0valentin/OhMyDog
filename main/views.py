@@ -51,7 +51,7 @@ from validate_email_address import validate_email
 
 import random
 import string
-
+from django.db.models import Q
 
 from .form import CustomPasswordChangeForm
 
@@ -62,7 +62,7 @@ def generar_contrasena():
     return contrasena
 
 def mascota_repetida(nombre, email):
-    return Mascota.objects.filter(nombre=nombre, dueno__usuario__email=email).exists()
+    return Mascota.objects.filter(nombre=nombre, dueno__usuario__email=email, viva=True).exists()
 
 def enviar_nueva_contraseña(user, asunto):
     remitente = 'grupo21ing2@gmail.com'  # Dirección de correo electrónico del remitente
@@ -235,7 +235,7 @@ def confirmar_cerrar_sesion(request):
 #Mi perfil
 def perfil(request):
     cliente = Cliente.objects.filter(usuario__email=request.user.email)[0]
-    mascotas = Mascota.objects.filter(dueno__usuario__email =request.user.email)
+    mascotas = Mascota.objects.filter(dueno__usuario__email =request.user.email, viva=True)
     return render(request, "perfil.html", {'cliente': cliente, 'mascotas': mascotas})
 
 # Menu principal
@@ -250,8 +250,8 @@ def about(request):
 
 #Lista de Mascotas
 def lista_mascota(request):
-    lista = Mascota.objects.all()
-    num_mascotas = Mascota.objects.filter(dueno__usuario__email = auth.user.email)
+    lista = Mascota.objects.filter(viva=True)
+    num_mascotas = Mascota.objects.filter(dueno__usuario__email = auth.user.email, viva=True)
     main_data = {"lista": lista}
     return render(request, "lista_mascota.html", {"cantidad": num_mascotas, "lista":lista})
    
@@ -265,12 +265,17 @@ def confirmar_eliminar_mascota(request, mascota_id):
 def eliminar_mascota(request, mascota_id):
     mascota = get_object_or_404(Mascota, id=mascota_id)
     messages.success(request, f'Se ha dado de baja a : "{mascota.nombre}" ')
-    turnos_de_mascota = Turno.objects.filter(mascota=mascota)
+    #Me trae solo las visitas de ese tipo, y de ese usuario
+    turnos_sin_asistir = Turno.objects.filter(
+        Q(mascota=mascota) &
+        (Q(estado='E') | Q(estado='A') | Q(estado='R'))
+    )
     
-    turnos_de_mascota.delete()
-    visitas_mascota = Visitas.objects.filter(mascota=mascota)
-    visitas_mascota.delete()
-    mascota.delete()
+    turnos_sin_asistir.delete()
+    #visitas_mascota = Visitas.objects.filter(mascota=mascota)
+    #visitas_mascota.delete()
+    mascota.viva= False
+    mascota.save()
     return redirect('Ver mis Mascotas')    
 
 def marcar_adopcion(request, pk):
@@ -429,8 +434,12 @@ class AdopcionListView(generic.ListView):
             queryset = super().get_queryset()
             queryset = queryset.exclude(dueno__usuario__email=user_email)
         else:
+<<<<<<< HEAD
             queryset = Mascota_Adopcion.objects.all()    
             
+=======
+            queryset = super().get_queryset()
+>>>>>>> 7a3b402464f48a8006900960e77882012940b5d6
         return queryset
 
 class MascotaListView(LoginRequiredMixin, generic.ListView):
@@ -439,7 +448,7 @@ class MascotaListView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'lista_mascotas'   # your own name for the list as a template variable
 
     def get_queryset(self):
-        return Mascota.objects.filter(dueno__usuario__email=self.request.user.email)
+        return Mascota.objects.filter(dueno__usuario__email=self.request.user.email, viva=True)
     queryset = get_queryset
     template_name = 'mis_mascotas/lista_mascotas.html'  # Specify your own template name/location
     paginate_by = 6

@@ -2,12 +2,12 @@
 
 {% block content %}
 <div class="text-center">
-  <h1>Listado de Turnos confirmados</h1>
+  <h1>{{ titulo }}</h1>
 </div>
 
-{% if turnos_confirmados %}
+{% if turnos %}
 
-{% for turno in turnos_confirmados %}
+{% for turno in turnos %}
 <div class="card mb-5 col-md-5">
   <div class="card-header text-center">
     <h4><strong>Turno:</strong> {{ turno.fecha }}</h4>
@@ -25,6 +25,6 @@
 {% endfor %}
 
 {% else %}
-<p>No hay turnos pendientes por el momento</p>
+<p>{{ no_hay }}</p>
 {% endif %}
 {% endblock %}

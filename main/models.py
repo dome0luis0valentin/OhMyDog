@@ -56,6 +56,7 @@ class Mascota(models.Model):
             'invalid': 'El archivo debe ser una imagen'
         })
     perdida = models.BooleanField(default=False, blank=True)
+    viva = models.BooleanField(default=True, blank=True, null = True)
 
     def __str__(self) -> str:
         return self.nombre

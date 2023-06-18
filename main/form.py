@@ -115,7 +115,7 @@ class TurnoForm(forms.ModelForm):
         self.fields['fecha'].required = True
         self.fields['banda_horaria'].required = True
         self.fields['motivo'].required = True
-        self.fields['mascota'].queryset = Mascota.objects.filter(dueno_id = dueño_cliente)
+        self.fields['mascota'].queryset = Mascota.objects.filter(dueno_id = dueño_cliente, viva=True)
 
 class UrgenciaForm(forms.ModelForm):
     cliente = forms.EmailField(widget=forms.widgets.EmailInput(attrs={'class': 'col-5','placeholder':'ejemplo@gmail.com'}))
