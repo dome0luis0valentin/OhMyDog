@@ -434,12 +434,8 @@ class AdopcionListView(generic.ListView):
             queryset = super().get_queryset()
             queryset = queryset.exclude(dueno__usuario__email=user_email)
         else:
-<<<<<<< HEAD
             queryset = Mascota_Adopcion.objects.all()    
             
-=======
-            queryset = super().get_queryset()
->>>>>>> 7a3b402464f48a8006900960e77882012940b5d6
         return queryset
 
 class MascotaListView(LoginRequiredMixin, generic.ListView):

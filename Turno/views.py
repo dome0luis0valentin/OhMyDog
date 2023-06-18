@@ -55,7 +55,7 @@ def solicitar_turno(request):
             
             # tengo que validar que el cliente  no tenga un turno para la mascota con el mismo motivo 
             if Turno.objects.filter(cliente=cliente, mascota=mascota , motivo=motivo , estado="E").exists() or Turno.objects.filter(cliente=cliente, mascota=mascota , motivo=motivo , estado="A").exists():
-                if Visitas.objects.filter(cliente=cliente, mascota=mascota , motivo="Castración").exists():
+                if Visitas.objects.filter(cliente=cliente, mascota=mascota , motivo="Castración").exists() and motivo =="Castración" :
                     messages.error(request, "La mascota ya fue castrada")
                 else:    
                     messages.error(request, "Ya has solicitado un turno  para la mascota")
