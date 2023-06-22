@@ -14,14 +14,18 @@
   </p>
   <div class="col-md-12 text-center row">
     {% for donacion in donaciones %}
-    <div class="col-md-4 mb-4 bg-light">
-      <div clvscode-file://vscode-app/c:/Users/usuario/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.htmlass="card">
-        <strong class="h3">
-          {{donacion.campania}}
-        </strong>
-        <p>
-          <strong> Monto:</strong>{{donacion.monto}}
-        </p>
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <div class="card-header">
+          <strong class="h3">
+            {{donacion.campania}}
+          </strong>
+        </div>
+        <div class="card-body">
+          <p>
+            <strong> Monto:</strong>{{donacion.monto}}
+          </p>
+        </div>
 
       </div>
     </div>
@@ -33,16 +37,16 @@
 {% else %}
 <div class="text-center justify-content-center">
   <label class="h2">Mis Donaciones</label>
-  
+
 </div>
 <div>
-    Sin donaciones realizadas
-  </div>
-<div class="text-center">
-  <form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/menu_principal/">
-    <input class="btn btn-primary" type="submit" value="Volver" />
-  </form>
+  Sin donaciones realizadas
 </div>
 
 {% endif %}
+<div class="text-center">
+  <form style="display:inline-block; border: teal;" action="http://127.0.0.1:8000/perfil/">
+    <input class="btn btn-primary" type="submit" value="Volver" />
+  </form>
+</div>
 {% endblock %}

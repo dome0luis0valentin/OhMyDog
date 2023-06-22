@@ -10,20 +10,15 @@
                 <form method="POST">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    
-                    <div class="card-footer justify-content-center text-center btn-group">
+                    <div class="justify-content-center text-center">
                         <button class="btn btn-success m-2" type="submit" name="action" value="pagar">Pagar</button>
+                        {% if tipo == "U" %}
+                        <a class="m-2 btn btn-danger" href="{% url 'ver_campanas' user_id%}">Cancelar</a>
+                        {% else %}
+                        <a class="m-2 btn btn-danger" href="{% url 'ver_campanas' %}">Cancelar</a>
+                        {% endif %}
                     </div>
                 </form>
-                {% if tipo == "U" %}
-                    <form action="{% url 'ver_campanas' user_id%}" method="GET">
-                        <button class="btn btn-danger m-2" type="submit">Cancelar</button>
-                    </form>
-                {% else %}
-                    <form action="{% url 'ver_campanas' %}" method="GET">
-                        <button class="btn btn-danger m-2" type="submit">Cancelar</button>
-                    </form>
-                {% endif %}        
             </div>
         </div>
     </div>
