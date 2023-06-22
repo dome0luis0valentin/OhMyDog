@@ -10,21 +10,18 @@
         <div class="card-header text-center">
             <h4><p><strong>Fecha:</strong> {{ turno.fecha }}</p></h4>
         </div>
-        <div class="card-body p-2">
-            <br>
-            <strong>Banda Horaria:</strong> {{ turno.banda_horaria }}
-            <br>
-            <strong>Motivo:</strong> {{ turno.motivo }}
-            <br>
-            <p><strong>Estado:</strong> {{ turno.get_estado_display }}</p>
-            <br>
-        
-            
+        <div class="card-body m-6">
+            <p><strong>Banda Horaria:</strong> {{ turno.banda_horaria }}</p>
+            <p><strong>Mascota:</strong> {{ turno.mascota.nombre }}</p>
+            <p><strong>Motivo:</strong> {{ turno.motivo}}</p>
+            <p><strong>Estado:</strong> {{ turno.get_estado_display }}  </p>
         </div>
     </div>
     {% endfor %}
-
 {% else %}
 <p>Sin turnos solicitados</p>
 {% endif %}
+<div class="text-center">
+    <a class="btn btn-primary" href="http://127.0.0.1:8000/perfil">Volver</a>
+</div>
 {% endblock %}
