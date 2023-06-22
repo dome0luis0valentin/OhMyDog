@@ -3,13 +3,27 @@
 
 
 {% block content %}
-  <h2>{{titulo}}</h2>
-  <form method="post"  enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" name="email_de_cliente" value="{{email_de_cliente}}">Aceptar</button>
-  </form>
-  <form style="display: inline-block; " action="http://127.0.0.1:8000/menu_principal/">
-    <input type="submit" value="Cancelar" />
-</form>
+<div class="container">
+  <div class="justify-content-center">
+    <div class="card mx-auto col-md-6">
+      <div class="card-header text-center">
+        <h1>{{titulo}}</h1>
+      </div>
+      <div class="card-body p-4">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <div class="text-center">
+
+            <button class="btn btn-success" type="submit" name="email_de_cliente"
+              value="{{email_de_cliente}}">Aceptar</button>
+            <form action="http://127.0.0.1:8000/menu_principal/">
+              <input class="btn btn-danger" type="submit" value="Cancelar" />
+            </form>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
 {% endblock %}
