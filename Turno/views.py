@@ -114,7 +114,7 @@ def ver_todas_las_visitas(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'historial/todas_visitas.html', {'data': data, 'titulo': "Ver Todas las Visitas",'mensaje_no_hay':"Sin visitas registradas", 'page_obj':page_obj})
+    return render(request, 'historial/todas_visitas.html', {'data': data, 'titulo': "Todas las Visitas",'mensaje_no_hay':"Sin visitas registradas", 'page_obj':page_obj})
 
 
 @login_required
