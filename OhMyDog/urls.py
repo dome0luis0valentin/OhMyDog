@@ -31,6 +31,7 @@ urlpatterns = [
     path('', include('Campania.urls')),
     path('', include('mascotas_perdidas.urls')),
     path('', include('mascotas_encontradas.urls')),
+    path('', include('tinder.urls')),
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) 
 

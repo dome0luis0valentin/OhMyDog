@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'mascotas_perdidas.apps.MascotasPerdidasConfig',
     'Campania.apps.CampaniaConfig',
     'mascotas_encontradas.apps.MascotasEncontradasConfig',
+    'tinder.apps.TinderConfig'
 ]
 
 MIDDLEWARE = [
