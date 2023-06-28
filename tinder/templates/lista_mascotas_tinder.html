@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <h1 class="text-center mb-4">Mis Perros</h1>
+  {% if mascotas %}
+  <div class="col-md-12 text-center row">
+      {% for perro in mascotas %}
+      <div class="col-md-4 mb-4">
+        <div class="card p-2 bg-light">
+          <p class="text-center">
+            <img style="width: 270px;" src="{{ perro.foto.url }}" alt="" srcset="">
+          </p>
+          <p>
+            <strong>Nombre:</strong> {{ perro.nombre }}
+          </p>
+          <p>
+            <strong>Color:</strong> {{ perro.color }}
+          </p>
+          <p>
+            <strong>Fecha de nacimiento:</strong> {{ perro.fecha_nac }}
+          </p>
+          <form method="post" action="{% url 'dar de baja mascota tinder' perro.pk %}">
+            {% csrf_token %}
+            <input type="submit" value="Dar de baja de la aplicación" class="btn btn-danger">
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    
+  {% else %}
+    <p>No tiene perros registrados</p>
+    <form style="display: inline-block; width: 100px;" action="http://127.0.0.1:8000/registrar_mascota_tinder/" >
+    <input type="submit" value="Registrar Mascota" />
+    </form>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

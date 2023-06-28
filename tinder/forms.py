@@ -1,6 +1,6 @@
 from django import forms
 from .models import UsuarioTinder
-from main.models import Mascota
+from main.models import Mascota , Cliente
 
 
 #En su inicialización se necesita una instancia de cliente y un email

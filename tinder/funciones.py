@@ -11,12 +11,13 @@ def agregar_errores(form, fecha, registrada):
     if registrada:
         form.errors['mascota'] = [MENSAJE_MASCOTA_REGISTRADA]
 
-def registrar_mascota_tinder(form, mascota, hembra):
+def registrar_mascota_tinder(form, mascota, hembra , dueno_p):
     mascota = Mascota.objects.get(id= mascota)
     mascota = UsuarioTinder.objects.create(mascota = mascota,
                                             hembra = hembra,
                                             fecha_de_celo = form.cleaned_data['fecha_de_celo'],
-                                            contacto = form.cleaned_data['contacto'])
+                                            contacto = form.cleaned_data['contacto'],
+                                            dueno = dueno_p)
     mascota.save()
     return mascota
 
@@ -41,3 +42,10 @@ def enviar_notificaciones(coincidencias, datos_mascota):
     for perro in coincidencias:
         usuario = perro.mascota.dueno.usuario.email
         enviar_notificación(usuario, datos)
+ 
+def cargar_datos_mascota(mascotas_tinder):
+    mascotas_datos = []
+    for mascota_tinder in mascotas_tinder:
+        mascota= Mascota.objects.get( id = mascota_tinder.mascota_id ) 
+        mascotas_datos.append((mascota.nombre,mascota.color,mascota.fecha_nac,mascota.foto,mascota.id))
+    return mascotas_datos    

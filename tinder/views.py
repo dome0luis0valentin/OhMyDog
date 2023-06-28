@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from .forms import UsuarioTinderForm
 from main.models import Cliente, Mascota
 from .models import UsuarioTinder
 from .validaciones import validar_existencia
-from .funciones import agregar_errores, registrar_mascota_tinder, obtener_coincidencias, enviar_notificaciones
+from .funciones import *
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
@@ -28,7 +28,7 @@ def registrar(request):
 
         #Son correctos
         if form.is_valid() and not(existe_mascota) and not(fecha_celo_faltante):
-            mascota_tinder = registrar_mascota_tinder(form, mascota, hembra)
+            mascota_tinder = registrar_mascota_tinder(form, mascota, hembra , usuario)
             messages.success(request, "Se publico la mascota")
 
             coincidencias = obtener_coincidencias(mascota, hembra)      
@@ -48,11 +48,25 @@ def registrar(request):
         context = {'form': form, 'titulo':"Registro de Mascota a Tinder de Perros"}
         return render(request, 'registro.html', context)
 
+@login_required
 def ver_mis_mascotas(request):
-    pass
+    email =  request.user.email
+    usuario = Cliente.objects.get(usuario__email = email)
+    mascotas_Tinder= UsuarioTinder.objects.filter( dueno_id = usuario.id )
+    mascotas_datos = cargar_datos_mascota(mascotas_Tinder)
+    
+    mascotas = []
+    for mascota_data in mascotas_datos:
+        mascota = Mascota(nombre=mascota_data[0], color=mascota_data[1], fecha_nac=mascota_data[2], foto=mascota_data[3] , pk=mascota_data[4])
+        mascotas.append(mascota)
+    
+
+    return render(request, "lista_mascotas_tinder.html", {'mascotas':mascotas})
 
 def dar_de_baja(request, id_mascota):
-    pass
+    mascota = get_object_or_404(UsuarioTinder, pk=id_mascota)
+    mascota.delete()
+    return redirect('ver mis mascotas tinder')
 
 def ver_mascotas(request):
     pass
