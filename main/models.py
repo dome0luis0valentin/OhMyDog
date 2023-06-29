@@ -206,7 +206,7 @@ class Visitas(models.Model):
 
     #Datos comunes
     observaciones= models.CharField(max_length=500, null=True)
-    monto = models.DecimalField(max_digits=60, decimal_places=30, null=True)
+    monto = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     
     #Particulares Opcionales de Vacu. o Desp.
     peso    = models.DecimalField(max_digits=6, decimal_places=3,null=True, blank=True)
