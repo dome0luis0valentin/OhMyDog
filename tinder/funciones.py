@@ -12,12 +12,18 @@ def agregar_errores(form, fecha, registrada):
         form.errors['mascota'] = [MENSAJE_MASCOTA_REGISTRADA]
 
 def registrar_mascota_tinder(form, mascota, hembra , dueno_p):
-    mascota = Mascota.objects.get(id= mascota)
-    mascota = UsuarioTinder.objects.create(mascota = mascota,
-                                            hembra = hembra,
-                                            fecha_de_celo = form.cleaned_data['fecha_de_celo'],
-                                            contacto = form.cleaned_data['contacto'],
-                                            dueno = dueno_p)
+
+    if UsuarioTinder.objects.filter(mascota__id = mascota).exists():
+        mascota = UsuarioTinder.objects.get(mascota__id = mascota)
+        mascota.activa = True
+
+    else:
+        mascota = Mascota.objects.get(id= mascota)
+        mascota = UsuarioTinder.objects.create(mascota = mascota,
+                                                hembra = hembra,
+                                                fecha_de_celo = form.cleaned_data['fecha_de_celo'],
+                                                contacto = form.cleaned_data['contacto'],
+                                                dueno = dueno_p)
     mascota.save()
     return mascota
 
@@ -47,5 +53,11 @@ def cargar_datos_mascota(mascotas_tinder):
     mascotas_datos = []
     for mascota_tinder in mascotas_tinder:
         mascota= Mascota.objects.get( id = mascota_tinder.mascota_id ) 
-        mascotas_datos.append((mascota.nombre,mascota.color,mascota.fecha_nac,mascota.foto,mascota.id))
+        mascotas_datos.append((mascota.nombre,mascota.color,mascota.fecha_nac,mascota.foto,mascota.id, mascota_tinder.pk))
     return mascotas_datos    
+
+def borrar_mascota_tinder(pk):
+    if (UsuarioTinder.objects.filter(pk=pk).exists()):
+        mascota= UsuarioTinder.objects.get(pk=pk)
+        mascota.activa = False
+        mascota.save()

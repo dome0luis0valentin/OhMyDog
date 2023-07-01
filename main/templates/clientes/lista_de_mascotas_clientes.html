@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center">
+  <h1>Mascotas</h1>
+</div>
+
+{% if lista %}
+
+{% for mascota in lista %}
+<div class="card mb-5 col-md-5">
+  <div class="card-header text-center">
+    <h4><strong>Nombre:</strong> {{ mascota.nombre }} </h4>
+  </div>
+  <div class="card-body p-2">
+    {% if mascota.viva == False %}
+        <p class="m-2"><strong><label class="h4" style="color:#e80914">Eliminada</label></strong></p>
+    {% endif %}
+    <div class="text-center card-footer">
+        <a href="{% url 'Ver detalle mascotas clientes' pk=mascota.pk %}">Detalle</a>
+    </div>
+    
+    
+  </div>
+</div>
+{% endfor %}
+
+{% else %}
+<p>{{ no_hay }}</p>
+{% endif %}
+{% endblock %}

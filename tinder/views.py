@@ -50,22 +50,12 @@ def registrar(request):
 
 @login_required
 def ver_mis_mascotas(request):
-    email =  request.user.email
-    usuario = Cliente.objects.get(usuario__email = email)
-    mascotas_Tinder= UsuarioTinder.objects.filter( dueno_id = usuario.id )
-    mascotas_datos = cargar_datos_mascota(mascotas_Tinder)
-    
-    mascotas = []
-    for mascota_data in mascotas_datos:
-        mascota = Mascota(nombre=mascota_data[0], color=mascota_data[1], fecha_nac=mascota_data[2], foto=mascota_data[3] , pk=mascota_data[4])
-        mascotas.append(mascota)
-    
-
+    mascotas = UsuarioTinder.objects.filter(dueno__usuario__email = request.user.email, activa = True)
     return render(request, "lista_mascotas_tinder.html", {'mascotas':mascotas})
 
-def dar_de_baja(request, id_mascota):
-    mascota = get_object_or_404(UsuarioTinder, pk=id_mascota)
-    mascota.delete()
+def dar_de_baja(request, pk):
+    borrar_mascota_tinder(pk)
+    messages.success(request, "Baja exitosa")
     return redirect('ver mis mascotas tinder')
 
 def ver_mascotas(request):

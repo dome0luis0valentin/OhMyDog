@@ -45,7 +45,15 @@ urlpatterns = [
     path('ver_servicios/<int:pk>',views.servicio_detail_view, name="detalle servicio"), 
     path('favicon.ico', RedirectView.as_view(url='/main/static/img/favicon.ico')),
 
-    #path('registrar_urgencia/', views.registrar_urgencia, name = 'registrar urgencia'),
+    #Clientes
+    path('ver_clientes/', views.ver_clientes, name= "Ver clientes"),   
+    path('ver_mascotas_clientes/<int:pk>/', views.ver_mascotas_clientes, name= "Ver mascotas clientes"), 
+    path('ver_turnos_clientes/<int:pk>/', views.ver_turnos_clientes, name= "Ver turnos clientes"), 
+    path('ver_detalle_mascotas_clientes/<int:pk>/', views.ver_detalle_mascotas_clientes, name= "Ver detalle mascotas clientes"), 
+    
+    #Mach Perruno
+    path('ver_machs/', views.ver_machs, name= "Ver machs"),   
+   
 
 ]
 

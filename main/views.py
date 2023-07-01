@@ -12,6 +12,8 @@ from datetime import datetime
 
 from .models import Mascota,Intentos,Visitas, Cliente, Mascota_Adopcion, Red_Social, Turno, Prestador_Servicios, Vacuna_tipoA , Vacuna_tipoB
 from .form import UrgenciaForm,UsuarioForm,FormularioAdopcionForm, MascotaAdopcionForm,Red_SocialForm , MascotaForm, TurnoForm, ServicioForm
+from tinder.models import UsuarioTinder
+
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -55,6 +57,7 @@ from django.db.models import Q
 
 from .form import CustomPasswordChangeForm
 
+from Mensaje import *
 
 def generar_contrasena():
     caracteres = string.ascii_letters + string.digits + string.punctuation
@@ -138,14 +141,6 @@ def usuario_is_valid(username):
         # El usuario no existe en la base de datos
         return False
 
-MENSAJE_USARIO_YA_EXISTE = 'Este correo electrónico ya se encuentra ocupado por otro usuario, si desea continuar con el registro, cambie el correo'
-MENSAJE_FECHA_POSTERIOR = 'Fecha invalida NO debe ser una fecha posterior a la de hoy'
-MENSAJE_FECHA_ANTERIOR = 'Fecha invalida debe ser una fecha posterior a la de hoy'
-MENSAJE_FECHA_INVALIDA = 'Verifique que la fecha tenga el formato DD/MM/AAAA y que sea un dia valido. Ejemplo: 01/01/2023'
-MENSAJE_USUARIO_INVALIDO = 'Usuario incorrecto, revise que el email sea correcto y que el cliente este registrado'
-MENSAJE_SOLO_LETRAS = 'Solo se permiten letras, no ingrese numeros, ni simbolos como #,$,/, etc.'
-MENSAJE_SOLO_NUMEROS = "Solo se permiten números, no ingrese simbolos como .,-, /, etc."
-MENSAJE_MASCOTA_REPETIDA = "Ya tiene una mascota registrada con este nombre, si desea continuar con el registro, cambie el nombre de la mascota"
 
 # iniciar Sesion
 
@@ -933,3 +928,31 @@ def registrar_primera_mascota(request, email_de_cliente):
                     
     context = {'form':form, 'titulo': "Registro de Mascota", 'email_de_cliente':email_de_cliente}
     return render(request, "registro/registrar_primer_mascota.html", context)
+
+@login_required
+def ver_clientes(request):
+    lista =  Cliente.objects.all()
+
+    return render(request, "clientes/lista_de_clientes.html", {'lista': lista, 'no_hay': MENSAJE_NO_HAY_CLIENTES})
+
+@login_required
+def ver_turnos_clientes(request, pk):
+    pass
+
+@login_required
+def ver_mascotas_clientes(request, pk):
+    lista =  Mascota.objects.filter(dueno = pk)
+
+    return render(request, "clientes/lista_de_mascotas_clientes.html", {'lista': lista, 'no_hay': MENSAJE_NO_HAY_MASCOTAS})
+
+@login_required
+def ver_detalle_mascotas_clientes(request, pk):
+    mascota = Mascota.objects.get(pk = pk)
+
+    return render(request, "clientes/detalle_mascotas_clientes.html", {'mascota':mascota})
+
+@login_required
+def ver_machs(request):
+    lista = UsuarioTinder.objects.all()
+
+    return render(request, "tinder/ver_machs.html", {'lista':lista})

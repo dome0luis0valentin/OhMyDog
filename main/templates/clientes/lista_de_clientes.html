@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center">
+  <h1>Clientes Registrados</h1>
+</div>
+
+{% if lista %}
+
+{% for cliente in lista %}
+<div class="card mb-5 col-md-5">
+  <div class="card-header text-center">
+    <h4><strong>Cliente:</strong> {{ cliente.usuario.email }}</h4>
+  </div>
+  <div class="card-body p-2">
+
+    <p><strong>Apellido:</strong> {{ cliente.datos.apellido }}</p>
+    <p><strong>Nombre:</strong> {{ cliente.datos.nombre}}</p>
+
+    <div class="text-center card-footer">
+        <a href="{% url 'Ver mascotas clientes' pk=cliente.pk %}">Ver Mascotas</a>
+    </div>
+    <div class="text-center card-footer">
+        <a href="{% url 'Ver turnos clientes' pk=cliente.pk %}">Ver historial de Turnos</a>
+    </div>
+    
+  </div>
+</div>
+{% endfor %}
+
+{% else %}
+<p>{{ no_hay }}</p>
+{% endif %}
+{% endblock %}

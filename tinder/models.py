@@ -9,3 +9,4 @@ class UsuarioTinder(models.Model):
     hembra = models.BooleanField()
     fecha_de_celo = models.CharField(max_length = 100, blank = True)
     contacto = models.CharField(max_length = 100)
+    activa = models.BooleanField(default=True, blank = True)
