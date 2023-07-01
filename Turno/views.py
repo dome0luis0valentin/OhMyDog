@@ -3,7 +3,7 @@ from .models import Veterinarias_de_turno
 from main.form import Red_SocialForm , TurnoForm, ServicioForm
 from .forms import VeterinariasForm , FormularioSimple , DesparasitanteForm ,VacunacionForm
 from django.urls import reverse
-from Campania.models import Donaciones
+from Campania.models import Donaciones, DonacionesVisitantes
 from django.db.models import Q
 
 
@@ -398,22 +398,21 @@ def ver_libreta_sanitaria(request, pk):
 
 @login_required
 def formulario_simple(request, turno_id):
-    print("Entro a simple")
-    print(request.method)
+
     if request.method == 'POST':
-        print("Entro a post")
         form = FormularioSimple(request.POST)
         
         if form.is_valid():
             descripcion = request.POST["descripcion"]
             monto = request.POST["monto"]
             turno = Turno.objects.filter(id = turno_id)[0]
-            print("Registro")
            
             registrar_visita_simple(descripcion, monto, turno)
 
             return redirect('actualizar_turno', turno_id=turno_id, monto=str(monto))
         else:
+            if 'monto' in form.errors:    
+                form.errors['monto'] = [MENSAJE_DECIMAL]
             return render(request, 'formularios/formulario_simple.html', {'form': form, 'turno_id': turno_id})
     else:
         form = FormularioSimple(request.POST)
@@ -469,7 +468,7 @@ def acturalizar_modelos(turno):
 
 @login_required
 def actualizar_turno(request, turno_id, monto):
-    print(request.method, "Actualizando turno")
+
     if True:
         turno = Turno.objects.filter(id = turno_id)[0]
         
@@ -497,6 +496,8 @@ def actualizar_turno(request, turno_id, monto):
                   'mascota' : mascota.nombre , 'total_a_pagar':descuento(monto,usuario.descuento) , 
                   'descuento':usuario.descuento , 'monto_a_cobrar':monto , 'donaciones_usuario':donaciones_usuario}
         
+        registrar_cobro(context, usuario.email, info_turno.motivo)
+
         usuario.descuento = 0
         
         usuario.save()
@@ -505,6 +506,7 @@ def actualizar_turno(request, turno_id, monto):
     else:                  
         return redirect('turnos_confirmados') 
 
+@login_required
 def calcelar_turno(request, turno_id):
     if request.method == 'POST':
         turno = Turno.objects.filter(id = turno_id)[0]
@@ -512,3 +514,23 @@ def calcelar_turno(request, turno_id):
         turno.save()
         messages.info(request,"Registro cancelado")
     return redirect('main')          
+
+@login_required
+def ver_cobros(request):
+    lista = Cobro.objects.all()
+
+    return render(request, "lista_de_cobros.html", {'lista': lista, 'no_hay': MENSAJE_NO_HAY_COBROS})
+
+from itertools import chain
+@login_required
+def ver_donaciones(request):
+    
+
+    # Obtener los QuerySets individuales
+    queryset1 = Donaciones.objects.all()
+    queryset2 = DonacionesVisitantes.objects.all()
+
+    # Combinar los QuerySets en una única lista
+    lista = list(chain(queryset1, queryset2))
+
+    return render(request, "lista_de_donaciones.html", {'lista': lista, 'no_hay': MENSAJE_NO_HAY_DONACIONES})

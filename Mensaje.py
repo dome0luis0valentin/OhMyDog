@@ -11,7 +11,14 @@ MENSAJE_IMAGEN_INVALIDA = "Imagen invalida, verifique que el archivo sea de tipo
 MENSAJE_MASCOTA_YA_PERDIDA = "Esta mascota ya esta registrada en mascotas perdidas"
 MENSAJE_SIN_VISITAS= "Sin vacunaciones o desparasitaciones registradas"
 MENSAJE_SIN_TURNOS = "Sin turnos solicitados"
+MENSAJE_DECIMAL = "Asegurece de que no el monto ingresado no tenga más de 9 digitos"
 
 #Mensajes de Tinder
 MENSAJE_MASCOTA_REGISTRADA = "Esta mascota ya esta registrada"
 MENSAJE_FECHA_FALTANTE = "Si la mascota es hembra debe ingresar una fecha aproximada de celo"
+
+#Mensaje de cobro
+MENSAJE_NO_HAY_COBROS = "No hay cobros registrados"
+
+#Donaciones
+MENSAJE_NO_HAY_DONACIONES = "No hay donaciones realizadas"

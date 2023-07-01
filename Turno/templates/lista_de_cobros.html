@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center">
+  <h1>Cobros Realizados</h1>
+</div>
+
+{% if lista %}
+
+{% for cobro in lista %}
+<div class="card mb-5 col-md-5">
+  <div class="card-header text-center">
+    <h4><strong>Turno:</strong> {{ cobro.fecha }}</h4>
+  </div>
+  <div class="card-body p-2">
+
+    <p><strong>Cliente:</strong> {{ cobro.cliente }}</p>
+    <p><strong>Mascota:</strong> {{ cobro.mascota }}</p>
+    <p><strong>Monto:</strong> {{ cobro.monto }}</p>
+    <p><strong>Descuento:</strong> {{ cobro.descuento }}</p>
+    <p><strong>Motivo:</strong> {{ cobro.motivo }}</p>
+
+  </div>
+</div>
+{% endfor %}
+
+{% else %}
+<p>{{ no_hay }}</p>
+{% endif %}
+{% endblock %}

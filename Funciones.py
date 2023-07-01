@@ -2,6 +2,7 @@ import re,string,random
 from django.core.mail import EmailMessage
 from datetime import datetime
 from main.models import User
+from Turno.models import Cobro
 
 
 def generar_contrasena():
@@ -95,4 +96,16 @@ def es_numero_real_positivo(dato):
             return False
     except ValueError:
         return False
+    
+
+def registrar_cobro(context, correo, motivo):
+    
+    cobro = Cobro.objects.create(monto   = context['monto_a_cobrar'],
+                        descuento= context['descuento']  ,
+                        cliente  = correo,
+                        fecha    = context['fecha_turno']   ,
+                        mascota  = context['mascota'] , 
+                        motivo   = motivo)
+    cobro.save()
+
 

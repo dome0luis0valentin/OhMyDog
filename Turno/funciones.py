@@ -62,8 +62,6 @@ def registrar_visita_simple(descripcion, monto, turno):
                             monto=monto)
     visita.save()
 
-    print("Visita registrada")
-
 
 def registrar_visita(turno, datos):
 

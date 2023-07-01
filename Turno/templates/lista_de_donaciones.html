@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center">
+  <h1>Donaciones Realizadas</h1>
+</div>
+
+{% if lista %}
+
+{% for donacion in lista %}
+<div class="card mb-5 col-md-5">
+  <div class="card-header text-center">
+    <h4><strong>Turno:</strong> {{ donacion.campania}}</h4>
+  </div>
+  <div class="card-body p-2">
+    {% if donacion.correo%}
+        <p><strong>Donante:</strong> {{ donacion.correo }}</p>
+    {% else %}
+        <p><strong>Donante:</strong> {{ donacion.usuario.email }}</p>
+    {% endif %}
+    <p><strong>Monto:</strong> {{ donacion.monto }}</p>
+    
+
+  </div>
+</div>
+{% endfor %}
+
+{% else %}
+<p>{{ no_hay }}</p>
+{% endif %}
+{% endblock %}
