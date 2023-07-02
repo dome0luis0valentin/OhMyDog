@@ -17,7 +17,7 @@ urlpatterns = [
     path('usuario_bloqueado/', views.usuario_bloqueado, name='usuario bloqueado'),
     
     path('perfil/', views.perfil, name='perfil'),
-    path('adm/', views.adm, name='adm'),
+    path('administrar/', views.administrar, name='administrar'),
     path('cambiar_contraseña/', views.cambiar_contraseña, name='cambiar_contraseña'),
     path('confirmar_cambiar_contraseña/', views.confirmar_cambiar_contraseña, name='confirmar_cambiar_contraseña'),
 
