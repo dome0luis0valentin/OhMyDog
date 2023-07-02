@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="text-center">
+    <a href="http://127.0.0.1:8000/otro/#Servicios">Servicios</a>
+    <a href="http://127.0.0.1:8000/otro/#Mascota">Mascota</a>
+    <a href="http://127.0.0.1:8000/otro/#Perdidas">Perdidas</a>
+    <a href="http://127.0.0.1:8000/otro/#Visitas">Visitas</a>
+    <a href="http://127.0.0.1:8000/otro/#Servicios">Encontradas</a>
+  </div>
+<div class="card text-center">
+  <table class="table">
+    <label for="" class="h2 card-header" >Mascotas Tinder</label>
+    <tr>
+      <th>Nombre</th>
+      <th>Color</th>
+      <th>Raza</th>
+      <th>Dueno</th>
+      <th>Hembra</th>
+      <th>Fecha_de_celo</th>
+      <th>Contacto</th>
+      <th>Activa</th>
+      <th>Alta</th>
+      <th>Baja</th>
+    </tr>
+    {% for mascotaT in mascotasTinder %}
+    <tr>
+      <td>{{mascotaT.mascota.nombre}}</td>
+      <td>{{mascotaT.mascota.color}}</td>
+      <td>{{mascotaT.mascota.raza}}</td>
+      <td>{{mascotaT.dueno}}</td>
+      <td>{{mascotaT.hembra}}</td>
+      <td>{{mascotaT.fecha_de_celo}}</td>
+      <td>{{mascotaT.contacto}}</td>
+      <td>{{mascotaT.activa}}</td>
+            <td><a href="{% url 'dar de baja mascota tinder' mascotaT.pk %}" class="btn btn-success">Alta</a></td>
+
+      <td><a href="{% url 'dar de baja mascota tinder' mascotaT.pk %}" class="btn btn-danger">Baja</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <table class="table">
+    <label for="" class="h2 card-header" >Mascotas Perdidas</label>
+    <tr>
+      <th>nombre</th>
+      <th>raza</th>
+      <th>contacto</th>
+      <th>fecha</th>
+      <th>cliente</th>
+      <th>ultimo_lugar</th>
+      <th>rasgos_particulares</th>
+      <th>Alta</th>
+      <th>Baja</th>
+    </tr>
+    {% for mascotasp in mascotasper %}
+    <tr>
+      <td>{{mascotasp.nombre}}</td>
+      <td>{{mascotasp.raza}}</td>
+      <td>{{mascotasp.contacto}}</td>
+      <td>{{mascotasp.fecha}}</td>
+      <td>{{mascotasp.cliente}}</td>
+      <td>{{mascotasp.ultimo_lugar}}</td>
+      <td>{{mascotasp.rasgos_particulares}}</td>
+            <td><a href="" class="btn btn-success">Alta</a></td>
+
+      <td><a href="" class="btn btn-danger">Baja</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <div class="text-center">
+    <a class="btn btn-primary" href="http://127.0.0.1:8000/otro">Volver</a>
+  </div>   
+  <table class="table">
+    <label for="" class="h2 card-header">Mascotas Encontradas</label>
+    <tr>
+      <th>cliente</th>
+      <th>direccion</th>
+      <th>contacto</th>
+      <th>descripcion</th>
+      <th>devuelto</th>
+      <th>Alta</th>
+      <th>Baja</th>
+    </tr>
+    {% for mascotase in mascotasEnc %}
+    <tr>
+      <td>{{mascotase.cliente}}</td>
+      <td>{{mascotase.direccion}}</td>
+      <td>{{mascotase.contacto}}</td>
+      <td>{{mascotase.descripcion}}</td>
+      <td>{{mascotase.devuelto}}</td>
+            <td><a href="" class="btn btn-success">Alta</a></td>
+
+      <td><a href="" class="btn btn-danger">Baja</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <div class="text-center">
+    <a class="btn btn-primary" href="http://127.0.0.1:8000/otro">Volver</a>
+  </div>
+  <table class="table">
+    <label for="" class="h2 card-header" id="Visitas" name="Visitas">Visitas</label>
+    <tr>
+      <th>fecha</th>
+      <th>motivo</th>
+      <th>cliente</th>
+      <th>observaciones</th>
+      <th>monto</th>
+      <th>Alta</th>
+      <th>Baja</th>
+    </tr>
+    {% for visita in visitas %}
+    <tr>
+      <td>{{visita.fecha}}</td>
+      <td>{{visita.motivo}}</td>
+      <td>{{visita.cliente}}</td>
+      <td>{{visita.observaciones}}</td>
+      <td>{{visita.monto}}</td>
+      <td>
+        <form method="post" action="">
+          {% csrf_token %}
+          <input type="hidden" name="mascota_id">
+          <button class="m-2 btn btn-success" type="submit">Alta</button>
+        </form>
+      </td>
+      <td>
+        <form method="post" action="">
+          {% csrf_token %}
+          <input type="hidden" name="mascota_id">
+          <button class="m-2 btn btn-danger" type="submit">Baja</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <div class="text-center">
+    <a class="btn btn-primary" href="http://127.0.0.1:8000/otro">Volver</a>
+  </div>
+  <table class="table">
+    <label for="" class="h2 card-header" id="Servicios" name="Servicios">Servicios</label>
+    <tr>
+      <th>Tipo Servicio</th>
+      <th>nombre</th>
+      <th>apellido</th>
+      <th>dni</th>
+      <th>direccion</th>
+      <th>correo</th>
+      <th>telefono</th>
+      <th>zona</th>
+      <th>Alta</th>
+      <th>Baja</th>
+    </tr>
+    {% for servidor in servicios %}
+    <tr>
+      {% if servidor.tipo == 'c' %}
+      <td>Cuidador</td>
+      {% else %}
+      <td>Paseador</td>
+      {% endif %}
+      <td>{{servidor.datos.nombre}}</td>
+      <td>{{servidor.datos.apellido}}</td>
+      <td>{{servidor.datos.dni}}</td>
+      <td>{{servidor.datos.direccion}}</td>
+      <td>{{servidor.datos.correo}}</td>
+      <td>{{servidor.datos.telefono}}</td>
+      <td>{{servidor.zona}}</td>
+            <td><a href="" class="btn btn-success">Alta</a></td>
+
+      <td><a href="" class="btn btn-danger">Baja</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+<div class="text-center">
+  <a class="btn btn-primary" href="http://127.0.0.1:8000/otro">Volver</a>
+</div>
+{% endblock %}
