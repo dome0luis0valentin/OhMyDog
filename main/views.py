@@ -233,6 +233,14 @@ def perfil(request):
     mascotas = Mascota.objects.filter(dueno__usuario__email =request.user.email, viva=True)
     return render(request, "perfil.html", {'cliente': cliente, 'mascotas': mascotas})
 
+def adm(request):
+    visitas = Visitas.objects.all
+    servicios = Prestador_Servicios.objects.all
+    mascotasEnc = MascotasEncontradas.objects.all
+    mascotasper = MascotasPerdidas.objects.all
+    mascotasTinder = UsuarioTinder.objects.all
+    return render(request, "adm.html", {'servicios': servicios, 'visitas': visitas, 'mascotasEnc': mascotasEnc, 'mascotasTinder': mascotasTinder, 'mascotasper': mascotasper})
+
 # Menu principal
 def main(request):
     user = "visitor"
