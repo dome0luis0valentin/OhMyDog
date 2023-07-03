@@ -337,6 +337,13 @@ def cargar_veterinarias(request):
         context = {'form':form, 'titulo': "Cargar Veterinarias de Turno"}
         return render(request, "cargar_veterinarias.html", context)
 
+def confirmar_borrar_veterinarias_de_turno(request):
+    return render(request,'veterinarias_de_turno/confirmar_borrar_veterinarias_de_turno.html',{'accion': "Borrar el archivo de veterinarias de turno"})
+
+def borrar_veterinarias_de_turno(request):
+    Veterinarias_de_turno.objects.all().delete()
+    messages.success(request, "Se ha eliminado el archivo de veterinarias de turno")
+    return redirect("main")
  
 def ver_veterinarias_de_turno(request):
 

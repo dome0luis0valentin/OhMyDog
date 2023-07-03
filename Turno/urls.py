@@ -12,8 +12,15 @@ urlpatterns = [
     path('turnos_confirmados/<int:pk>/<str:tipo>', views.turno_confirmado_detail_view , name='detalle de turno confirmado'),
     path('Asistio_al_turno/<int:turno_id>', views.Asistio_al_turno, name='Asistio_al_turno'),
     path('Falto_al_turno/<int:turno_id>', views.Falto_al_turno, name='Falto_al_turno'),
+    
+    #Veterinarias de turno
+    
     path('cargar_veterinarias/',views.cargar_veterinarias, name="cargar veterinarias de turno"),
     path('ver_veterinarias_de_turno/',views.ver_veterinarias_de_turno, name="ver veterinarias de turno"),
+    path('confirmar_borrar_veterinarias_de_turno/',views.confirmar_borrar_veterinarias_de_turno, name="confirmar borrar veterinarias de turno"),
+    path('borrar_veterinarias_de_turno/',views.borrar_veterinarias_de_turno, name="borrar veterinarias de turno"),
+    
+    
     path('ver_historial_de_turnos/',views.ver_historial_de_turnos, name="ver historial de turnos"),
     path('formulario_simple/<int:turno_id>/',views.formulario_simple, name="formulario_simple"),
     path('formulario_desparasitante/<int:turno_id>/',views.formulario_desparasitante, name="formulario_desparasitante"),

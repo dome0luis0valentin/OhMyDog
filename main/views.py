@@ -142,7 +142,8 @@ def usuario_is_valid(username):
         return False
 
 
-# iniciar Sesion
+def administrar(request):
+    return render(request, "index.html")
 
 def inicio_sesion(request):
     if request.method == 'POST':
