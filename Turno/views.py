@@ -341,8 +341,11 @@ def confirmar_borrar_veterinarias_de_turno(request):
     return render(request,'veterinarias_de_turno/confirmar_borrar_veterinarias_de_turno.html',{'accion': "Borrar el archivo de veterinarias de turno"})
 
 def borrar_veterinarias_de_turno(request):
-    Veterinarias_de_turno.objects.all().delete()
-    messages.success(request, "Se ha eliminado el archivo de veterinarias de turno")
+    if Veterinarias_de_turno.objects.exists():
+        Veterinarias_de_turno.objects.all().delete()
+        messages.success(request, "Se ha eliminado el archivo de veterinarias de turno")
+    else:
+        messages.error(request, "No hay archivos cargados")
     return redirect("main")
  
 def ver_veterinarias_de_turno(request):
