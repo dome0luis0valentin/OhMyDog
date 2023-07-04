@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center">
+  <h1>Historial de Turnos</h1>
+</div>
+{% if data %}
+    {% for turno in data %}
+    <div class="card mb-5 col-md-5">
+        <div class="card-header text-center">
+            <h4><p><strong>Fecha:</strong> {{ turno.fecha }}</p></h4>
+        </div>
+        <div class="card-body m-6">
+            <p><strong>Banda Horaria:</strong> {{ turno.banda_horaria }}</p>
+            <p><strong>Mascota:</strong> {{ turno.mascota.nombre }}</p>
+            <p><strong>Motivo:</strong> {{ turno.motivo}}</p>
+            <p><strong>Estado:</strong> {{ turno.get_estado_display }}  </p>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+<p>{{no_hay}}</p>
+{% endif %}
+<div class="text-center">
+    <a class="btn btn-primary" href="http://127.0.0.1:8000/ver_clientes/">Volver</a>
+</div>
+{% endblock %}

@@ -35,3 +35,4 @@ MENSAJE_MASCOTA_REPETIDA = "Ya tiene una mascota registrada con este nombre, si 
     #CLIENTES
 MENSAJE_NO_HAY_CLIENTES = "No hay clientes registrados"
 MENSAJE_NO_HAY_MASCOTAS= "Sin mascotas registradas"
+MENSAJE_NO_HAY_TURNOS = "Sin turnos solicitados"

@@ -134,17 +134,26 @@
                     Veterinario
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="m-2 btn btn-outline-success dropdown-item"
-                            href="http://127.0.0.1:8000/registro/">Registrar Usuario</a></li>
-                    <li><a class="m-2 btn btn-outline-success dropdown-item"
-                        href="http://127.0.0.1:8000/ver_cobros/">Ver Cobros</a></li>
-                    <li><a class="m-2 btn btn-outline-success dropdown-item"
-                        href="http://127.0.0.1:8000/ver_donaciones/">Ver Donaciones</a></li>    
-                    <li><a class="m-2 btn btn-outline-success dropdown-item"
-                        href="http://127.0.0.1:8000/ver_clientes/">Ver Clientes</a></li>    
-                    <li><a class="m-2 btn btn-outline-success dropdown-item"
-                        href="http://127.0.0.1:8000/ver_machs/">Mascotas en Mach Perruno</a></li>    
-                            
+                    <li>
+                        <a class="m-2 dropdown-item dropdown-toggle" href="#">Consultar Información</a>
+                        <ul class="dropdown-menu dropdown-submenu">
+                            <li><a class="m-2 btn btn-outline-success dropdown-item" href="http://127.0.0.1:8000/ver_clientes/">Ver Clientes</a></li>
+                            <li><a class="m-2 btn btn-outline-success dropdown-item" href="http://127.0.0.1:8000/ver_cobros/">Ver Cobros</a></li>
+                            <li><a class="m-2 btn btn-outline-success dropdown-item" href="http://127.0.0.1:8000/ver_donaciones/">Ver Donaciones</a></li>
+                            <li><a class="m-2 btn btn-outline-success dropdown-item" href="http://127.0.0.1:8000/ver_machs/">Ver Mascotas en Mach Perruno</a></li>
+                            <li><a class="m-2 btn btn-outline-success dropdown-item" href="http://127.0.0.1:8000/ver_todas_las_visitas/">Ver todas las visitas</a></li>
+                        </ul>
+                    </li>
+                    <li><a class="m-2 btn btn-outline-success dropdown-item" href="http://127.0.0.1:8000/crear_campana/">Crear Campaña</a></li>
+                    <li>
+                        <a class="m-2 dropdown-item dropdown-toggle" href="#">Registrar</a>
+                            <ul class="dropdown-menu dropdown-submenu">
+                                <li><a class="m-2 btn btn-outline-success dropdown-item"
+                                        href="http://127.0.0.1:8000/registro/">Registrar Usuario</a></li>
+                                <li><a class="m-2 btn btn-outline-success dropdown-item"
+                                        href="http://127.0.0.1:8000/registrar_servicio/">Registrar Paseadores/Cuidadores</a></li>
+                            </ul>
+                        </li>
                     <li>
                         <a class="m-2 dropdown-item dropdown-toggle" href="#">Turnos</a>
                         <ul class="dropdown-menu dropdown-submenu">
@@ -156,19 +165,18 @@
                                     href="http://127.0.0.1:8000/turnos_programados/">Ver Turnos Programados</a></li>
                         </ul>
                     </li>
-                    <li><a class="m-2 btn btn-outline-success dropdown-item"
-                        href="http://127.0.0.1:8000/crear_campana/">Crear Campaña</a></li>
-                    <li><a class="m-2 btn btn-outline-success dropdown-item"
-                            href="http://127.0.0.1:8000/registrar_servicio/">Registrar Paseadores/Cuidadores</a></li>
-                    <li><a class="m-2 btn btn-outline-success dropdown-item"
-                            href="http://127.0.0.1:8000/cargar_veterinarias/">Cargar Veterinarias de Turno</a></li>
-                    <li><a class="m-2 btn btn-outline-success dropdown-item"
-                            href="http://127.0.0.1:8000/borrar_veterinarias_de_turno/">Borrar Veterinarias de Turno</a></li>
-                    <li><a class="m-2 btn btn-outline-success dropdown-item"
-                            href="http://127.0.0.1:8000/ver_todas_las_visitas/">Ver todas las visitas</a></li>
+                    
+                    
                     <li>
-                    <li><a class="m-2 btn btn-outline-success dropdown-item"
-                            href="http://127.0.0.1:8000/administrar/">Administrar</a></li>
+                        <a class="m-2 dropdown-item dropdown-toggle" href="#">Veterinarias de Turno</a>
+                            <ul class="dropdown-menu dropdown-submenu">
+                                <li><a class="m-2 btn btn-outline-success dropdown-item"
+                                    href="http://127.0.0.1:8000/cargar_veterinarias/">Cargar Veterinarias de Turno</a></li>
+                                <li><a class="m-2 btn btn-outline-success dropdown-item"
+                                    href="http://127.0.0.1:8000/borrar_veterinarias_de_turno/">Borrar Veterinarias de Turno</a></li>
+                            </ul>      
+                    </li>
+                    
                     <li>
                 </ul>
             </div>

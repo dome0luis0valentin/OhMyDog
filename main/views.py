@@ -59,6 +59,12 @@ from .form import CustomPasswordChangeForm
 
 from Mensaje import *
 
+
+def cancelar_turnos(lista):
+    for turno in lista:
+        turno.estado = "Ca"
+        turno.save()
+
 def generar_contrasena():
     caracteres = string.ascii_letters + string.digits + string.punctuation
     contrasena = ''.join(random.choice(caracteres) for _ in range(10))
@@ -266,6 +272,7 @@ def detalle_mascota(request, pk=None):
 def confirmar_eliminar_mascota(request, mascota_id):
     return render(request,'mis_mascotas/confirmar_eliminar.html', {'id': mascota_id, 'accion': "eliminar mascota"})
 
+@login_required
 def eliminar_mascota(request, mascota_id):
     mascota = get_object_or_404(Mascota, id=mascota_id)
     messages.success(request, f'Se ha dado de baja a : "{mascota.nombre}" ')
@@ -275,7 +282,7 @@ def eliminar_mascota(request, mascota_id):
         (Q(estado='E') | Q(estado='A') | Q(estado='R'))
     )
     
-    turnos_sin_asistir.delete()
+    cancelar_turnos(turnos_sin_asistir)
     #visitas_mascota = Visitas.objects.filter(mascota=mascota)
     #visitas_mascota.delete()
     mascota.viva= False
@@ -753,7 +760,7 @@ def registrar_mascota(request):
                 mascota.foto = request.FILES['foto']
             mascota.fecha_nac =fecha
             #Aca obtengo el dueño al que pertenece el usuario
-            mascota.dueno = Cliente.objects.filter(datos__correo=request.user.email)[0] # asignar el valor adicional al campo correspondiente
+            mascota.dueno = Cliente.objects.get(usuario__email=request.user.email)# asignar el valor adicional al campo correspondiente
 
             mascota.save()
             #Si todo salio bien vuelve al menu principal
@@ -941,12 +948,16 @@ def registrar_primera_mascota(request, email_de_cliente):
 @login_required
 def ver_clientes(request):
     lista =  Cliente.objects.all()
-
+    for i in lista: 
+        print(i)
     return render(request, "clientes/lista_de_clientes.html", {'lista': lista, 'no_hay': MENSAJE_NO_HAY_CLIENTES})
 
 @login_required
 def ver_turnos_clientes(request, pk):
-    pass
+    lista =  Turno.objects.filter(cliente = pk)
+
+    return render(request, "clientes/lista_turnos_cliente.html", {'data': lista, 'no_hay': MENSAJE_NO_HAY_TURNOS})
+
 
 @login_required
 def ver_mascotas_clientes(request, pk):

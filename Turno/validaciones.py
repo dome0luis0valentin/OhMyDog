@@ -18,8 +18,10 @@ def archivo_is_valid(archivo):
     if len(df.columns) < 2:
         return False
     
+    #Formato es Fecha, nombre y direccion
     primera_columna = df.iloc[:, 0]
     segunda_columna = df.iloc[:, 1]
+    #Falta la tercera y direccion
 
     if primera_columna.dtype != 'object':
         return False
