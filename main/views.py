@@ -11,7 +11,7 @@ from django.core.paginator import Paginator
 from datetime import datetime
 
 from .models import Mascota,Intentos,Visitas, Cliente, Mascota_Adopcion, Red_Social, Turno, Prestador_Servicios, Vacuna_tipoA , Vacuna_tipoB
-from .form import UrgenciaForm,UsuarioForm,FormularioAdopcionForm, MascotaAdopcionForm,Red_SocialForm , MascotaForm, TurnoForm, ServicioForm
+from .form import FormularioDeshabilitarServicio, UrgenciaForm,UsuarioForm,FormularioAdopcionForm, MascotaAdopcionForm,Red_SocialForm , MascotaForm, TurnoForm, ServicioForm
 from tinder.models import UsuarioTinder
 
 from django.contrib.auth.views import LoginView
@@ -47,6 +47,7 @@ from django.shortcuts import redirect
 #from .form import RegistroForm
 from .models import Persona
 
+from Funciones import fecha_es_posterior
 import re
 
 from validate_email_address import validate_email
@@ -162,15 +163,15 @@ def inicio_sesion(request):
         existe = Cliente.objects.filter(usuario__email=nombre_usuario).exists()
 
         if (existe):
-            intentos=Intentos.objects.filter(usuario=nombre_usuario)
+           
 
             #Inicializo los intento si el usuario es nuevo
-            if(len(intentos) == 0):
+            if not(Intentos.objects.filter(usuario=nombre_usuario).exists()):
                 intento = Intentos.objects.create(usuario = nombre_usuario,
                                                   cantidad = 0,
                                                   estado = 'n')   
             else:
-                intento = intentos[0]
+                intento = Intentos.objects.get(usuario=nombre_usuario)
 
         #Si la contraseña o usuario no son validos
         if user is  None:
@@ -486,7 +487,7 @@ class ServiciosListView(generic.ListView):
 
     #Metodo que devuelve los turnos sin confirmar
     def get_queryset(self):
-        return Prestador_Servicios.objects.all()
+        return Prestador_Servicios.objects.filter(vivo=True)
     
     queryset = get_queryset
 
@@ -878,7 +879,9 @@ def registro(request):
                 cliente.save()
                 
 
-
+            if (is_veterinario):
+                return redirect("menu")
+            else:
                 return redirect('registrar_primera_mascota', correo)
         else:
             if not son_todos_letras:
@@ -976,3 +979,35 @@ def ver_machs(request):
     lista = UsuarioTinder.objects.all()
 
     return render(request, "tinder/ver_machs.html", {'lista':lista})
+
+
+def cancelar_deshabilitar_servicio(request):
+    messages.info(request, "Deshabilitación Cancelada")
+    return redirect("menu") 
+
+def deshabilitar_servicio(request, pk):
+    
+    if request.method == "POST":
+
+        form = FormularioDeshabilitarServicio()
+        fecha = request.POST["fecha"]
+        fecha_posterior = fecha_es_posterior(fecha)
+
+        if form.is_valid and fecha_posterior:
+            servicio = Prestador_Servicios.objects.get(pk=pk)
+            servicio.vivo = False
+            cleaned_data = request.POST
+            servicio.deshabilitado_hasta = cleaned_data["fecha"]
+            servicio.save()
+            messages.success(request, "Deshabilitación Exitosa")
+
+            return redirect("menu")
+        else:
+            if (fecha_es_posterior):
+                form.errors["fecha"] = [MENSAJE_FECHA_ANTERIOR_SERVICIOS]
+            return render(request, "servicios/deshabilitar.html", {'form': form})
+        
+    else:
+        form = FormularioDeshabilitarServicio()
+
+        return render(request, "servicios/deshabilitar.html", {'form': form})        

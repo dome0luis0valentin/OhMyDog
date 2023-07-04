@@ -40,5 +40,11 @@
 </div>
 <div class="text-center mt-2">
   <a href="http://127.0.0.1:8000/ver_servicios/" class="btn btn-primary">Volver</a>
+
+  {% if user.is_veterinario %}
+  <form action="{% url 'deshabilitar servicio' pk=servicio.pk %}" method="get" style="display:inline-block;">
+    {% csrf_token %}  
+    <button class="m-2 btn btn-danger" type="submit">Deshabilitar</button>
+  </form>  {% endif %}
 </div>
 {% endblock %}

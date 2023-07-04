@@ -31,7 +31,9 @@ class FormularioAdopcionForm(forms.Form):
     telefono = forms.CharField(max_length=100)
     motivo = forms.CharField(widget=forms.Textarea)
 
-
+class FormularioDeshabilitarServicio(forms.Form):
+    fecha = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd (DOB)', 'class': 'datepicker'}), label="¿Hasta cuando lo quiere deshabilitar?")
+    
 class CustomPasswordChangeForm(PasswordChangeForm):
     error_messages = {
         'password_mismatch': _("Las contraseñas no coinciden."),

@@ -75,6 +75,15 @@ def fecha_anterior_is_valid(fecha):
         return False
     
 
+def fecha_es_posterior(fecha):
+    try:
+        hoy = datetime.now().date()
+        fecha_ingresada = datetime.strptime(fecha, "%Y-%m-%d").date()
+        return fecha_ingresada > hoy
+    except:
+        return False
+    
+
 def usuario_is_valid(username):
     try:
         user = User.objects.get(email=username)

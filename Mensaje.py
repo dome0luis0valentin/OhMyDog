@@ -32,7 +32,13 @@ MENSAJE_USUARIO_INVALIDO = 'Usuario incorrecto, revise que el email sea correcto
 MENSAJE_SOLO_LETRAS = 'Solo se permiten letras, no ingrese numeros, ni simbolos como #,$,/, etc.'
 MENSAJE_SOLO_NUMEROS = "Solo se permiten números, no ingrese simbolos como .,-, /, etc."
 MENSAJE_MASCOTA_REPETIDA = "Ya tiene una mascota registrada con este nombre, si desea continuar con el registro, cambie el nombre de la mascota"
+    
+    
     #CLIENTES
 MENSAJE_NO_HAY_CLIENTES = "No hay clientes registrados"
 MENSAJE_NO_HAY_MASCOTAS= "Sin mascotas registradas"
 MENSAJE_NO_HAY_TURNOS = "Sin turnos solicitados"
+
+    #Paseadores y Cuidadores
+MENSAJE_FECHA_ANTERIOR_SERVICIOS = "Deshabilitación fallida: la fecha debe ser posterior a la actual"
+

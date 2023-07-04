@@ -41,9 +41,14 @@ urlpatterns = [
     path('marcar_adopcion/<int:pk>/', views.marcar_adopcion, name='marcar_adopcion'),
     path('registrar_adopcion/', views.registrar_adopcion, name='registrar adopcion'),    
     
+    #Servicios
     path('registrar_servicio/', views.registrar_servicio, name='registrar servicio'),
     path('ver_servicios/', views.ServiciosListView.as_view(), name='ver servicio'),
     path('ver_servicios/<int:pk>',views.servicio_detail_view, name="detalle servicio"), 
+    path('cancelar_deshabilitar_servicio/', views.cancelar_deshabilitar_servicio, name ="cancelar deshabilitar servicio"),
+    path('deshabilitar_servicio/<int:pk>/', views.deshabilitar_servicio, name= "deshabilitar servicio"),
+
+
     path('favicon.ico', RedirectView.as_view(url='/main/static/img/favicon.ico')),
 
     #Clientes

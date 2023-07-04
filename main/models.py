@@ -1,5 +1,7 @@
 from django.db import models
 
+import datetime 
+
 from django.urls import reverse #Used to generate URLs by reversing the URL patterns
 
 #from django.contrib.auth.models import User
@@ -157,7 +159,7 @@ class Campana(models.Model):
     motivo = models.CharField(max_length=50)
     fecha_fin=models.DateField(error_messages={
             'invalid': 'Fecha incorrecta. Use el formato AAAA-MM-DD'
-        })
+        }, default=datetime.date.today().isoformat())
     Total_donado =models.FloatField()
 
             
@@ -165,7 +167,11 @@ class Campana(models.Model):
 class Prestador_Servicios(models.Model):
     datos = models.ForeignKey(Persona, on_delete=models.CASCADE)
     zona = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(25)], blank= True, default=1)
-
+    vivo = models.BooleanField(default=True)
+    deshabilitado_hasta =models.DateField(error_messages={
+            'invalid': 'Fecha incorrecta. Use el formato AAAA-MM-DD'
+        }, default=datetime.date.today().isoformat())
+    
     def __str__(self) -> str:
         return self.datos.nombre
     
