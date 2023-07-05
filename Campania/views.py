@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from validate_email_address import validate_email
 from .validaciones import *
 from .models import *
-
+from Mensaje import MENSAJE_NO_HAY_DONACIONES
 @login_required
 def crear_campana(request):
     if request.method == 'POST':
@@ -48,6 +48,25 @@ def ver_campanas(request , user_id):
     # Pasar las campañas a la plantilla para su visualización
     context = {'campanas': campanas , 'user_id':user_id , 'fecha_hoy':hoy ,'tipo_usuario':tipo_usuario}
     return render(request, 'ver_campanas.html', context)
+
+from itertools import chain
+
+@login_required
+def ver_donacionesa_a_campaña(request, pk):
+    # Obtener los QuerySets individuales
+    campania = Campana.objects.get(pk= pk)
+    queryset1 = Donaciones.objects.filter(campania= campania.nombre)
+    queryset2 = DonacionesVisitantes.objects.filter(campania= campania.nombre)
+
+    # Combinar los QuerySets en una única lista
+    lista = list(chain(queryset1, queryset2))
+
+    return render(request, "lista_de_donaciones.html", {'lista': lista, 'no_hay': MENSAJE_NO_HAY_DONACIONES})
+
+@login_required
+def ver_donaciones(request):
+    lista = Campana.objects.all()
+    return render(request, "lista_de_campañas.html", {'lista': lista})
 
 def ver_campanas_visitante(request):
     

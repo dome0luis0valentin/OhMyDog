@@ -34,9 +34,7 @@ urlpatterns = [
     #Cobro
     path('ver_cobros/', views.ver_cobros, name="Ver cobros"),
 
-    #Donaciones
-    path('ver_donaciones/', views.ver_donaciones, name="Ver donaciones"),
-
+    
 
     path('ver_libreta_sanitaria/<int:pk>',views.ver_libreta_sanitaria, name="ver libreta sanitaria"),
 

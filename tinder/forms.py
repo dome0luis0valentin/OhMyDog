@@ -9,7 +9,7 @@ class UsuarioTinderForm(forms.Form):
     contacto = forms.CharField(max_length = 100)
     hembra = forms.BooleanField(required=False, label = "Es hembra: ")
     fecha_de_celo = forms.CharField(required=False, max_length = 200, label ="Fecha de celo")
-
+    foto = forms.ImageField()
     def __init__(self, usuario, email, *args, **kwargs):
         super(UsuarioTinderForm, self).__init__(*args, **kwargs)
         self.fields['contacto'].initial = email

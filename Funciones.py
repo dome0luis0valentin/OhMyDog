@@ -1,9 +1,16 @@
 import re,string,random
 from django.core.mail import EmailMessage
 from datetime import datetime
-from main.models import User
+from main.models import User, Prestador_Servicios
 from Turno.models import Cobro
 
+def revivir():
+    servicios = Prestador_Servicios.objects.all()
+    for servivio in servicios:
+        hoy = datetime.now().date()
+        if (servivio.deshabilitado_hasta <= hoy ):
+            servivio.vivo = True
+            servivio.save()
 
 def generar_contrasena():
     caracteres = string.ascii_letters + string.digits + string.punctuation

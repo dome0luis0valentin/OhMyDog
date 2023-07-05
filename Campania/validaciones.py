@@ -14,8 +14,8 @@ def cacular_descuento(monto):
     return round(monto * 0.20 ) 
 
 def proceso_pago(numero_tarjeta,monto):
-    conexionBanco = random.choice([True, False])
-    tarjetas_validas=[(1234567890123456,10000),(1234567890987654,0)]
+    conexionBanco = random.choice([True, False, True, True, True])
+    tarjetas_validas=[(1234567890123456,10000),(1234567890987654,0), (123,100000000000000)]
     if conexionBanco:
         for tarjeta in tarjetas_validas:
             numeor = int(tarjeta[0])

@@ -5,6 +5,7 @@ from .forms import VeterinariasForm , FormularioSimple , DesparasitanteForm ,Vac
 from django.urls import reverse
 from Campania.models import Donaciones, DonacionesVisitantes
 from django.db.models import Q
+from main.models import Campana
 
 
 from datetime import datetime , timedelta , date
@@ -97,6 +98,8 @@ def detalle_visita(request, id):
     visita = get_object_or_404(Visitas, id=id)
 
     return render(request, 'detalle_visita.html', {'visita': visita})
+
+@login_required
 def ver_todas_las_visitas(request):
     
     visitas = Visitas.objects.all().order_by('fecha')
@@ -281,7 +284,7 @@ def aceptar_turno(request, turno_id):
 @login_required
 def turnos_programados(request):
     fecha_actual = date.today()
-    turnos_programados = Turno.objects.filter(fecha=fecha_actual, estado="A")
+    turnos_programados = Turno.objects.filter(fecha=fecha_actual, estado="A").order_by("fecha")
     contexto = {'turnos': turnos_programados , 'tipo' : "C", 'titulo': "Turnos Programados", 'no_hay': "No hay turnos programados para hoy"}
     return render(request, "lista_de_turnos_aceptados.html", contexto)  
 
@@ -527,20 +530,8 @@ def calcelar_turno(request, turno_id):
 
 @login_required
 def ver_cobros(request):
-    lista = Cobro.objects.all()
+    lista = Cobro.objects.all().order_by("fecha")
 
     return render(request, "lista_de_cobros.html", {'lista': lista, 'no_hay': MENSAJE_NO_HAY_COBROS})
 
-from itertools import chain
-@login_required
-def ver_donaciones(request):
-    
 
-    # Obtener los QuerySets individuales
-    queryset1 = Donaciones.objects.all()
-    queryset2 = DonacionesVisitantes.objects.all()
-
-    # Combinar los QuerySets en una única lista
-    lista = list(chain(queryset1, queryset2))
-
-    return render(request, "lista_de_donaciones.html", {'lista': lista, 'no_hay': MENSAJE_NO_HAY_DONACIONES})

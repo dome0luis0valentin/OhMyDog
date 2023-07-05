@@ -4,14 +4,16 @@ from main.models import Mascota
 from django.core.mail import send_mail
 from django.core.mail import EmailMessage
 
-def agregar_errores(form, fecha, registrada):
+def agregar_errores(form, fecha, registrada, foto_valida):
+    if not(foto_valida):
+        form.errors["foto"] = ["Imagen invalida, verifique que el archivo sea de tipo .jpg, .png o jpeg"]
     if fecha:
         form.errors['fecha_de_celo'] = [MENSAJE_FECHA_FALTANTE]
 
     if registrada:
         form.errors['mascota'] = [MENSAJE_MASCOTA_REGISTRADA]
 
-def registrar_mascota_tinder(form, mascota, hembra , dueno_p):
+def registrar_mascota_tinder(form, mascota, hembra , dueno_p, foto):
 
     if UsuarioTinder.objects.filter(mascota__id = mascota).exists():
         mascota = UsuarioTinder.objects.get(mascota__id = mascota)
@@ -21,6 +23,7 @@ def registrar_mascota_tinder(form, mascota, hembra , dueno_p):
         mascota = Mascota.objects.get(id= mascota)
         mascota = UsuarioTinder.objects.create(mascota = mascota,
                                                 hembra = hembra,
+                                                foto = foto, 
                                                 fecha_de_celo = form.cleaned_data['fecha_de_celo'],
                                                 contacto = form.cleaned_data['contacto'],
                                                 dueno = dueno_p)
@@ -28,8 +31,9 @@ def registrar_mascota_tinder(form, mascota, hembra , dueno_p):
     return mascota
 
 def obtener_coincidencias(mascota, hembra):
+    mi_mascota = UsuarioTinder.objects.get(mascota = mascota)
     raza = Mascota.objects.get(id = mascota).raza
-    return UsuarioTinder.objects.filter(mascota__raza=raza, hembra = not(hembra)).exclude(mascota__id=mascota)
+    return UsuarioTinder.objects.filter(mascota__raza=raza, hembra = not(hembra)).exclude(dueno=mi_mascota.dueno)
 
 def enviar_notificación(user, datos):
     remitente = 'grupo21ing2@gmail.com'  # Dirección de correo electrónico del remitente

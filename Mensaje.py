@@ -16,6 +16,8 @@ MENSAJE_DECIMAL = "Asegurece de que no el monto ingresado no tenga más de 9 dig
 #Mensajes de Tinder
 MENSAJE_MASCOTA_REGISTRADA = "Esta mascota ya esta registrada"
 MENSAJE_FECHA_FALTANTE = "Si la mascota es hembra debe ingresar una fecha aproximada de celo"
+MENSAJE_DE_CONCIENCIA = "¡Bienvenido a nuestra aplicación de creación de parejas de perros! \nRecuerda que esta aplicación es solo para fines recreativos y no reemplaza el consejo de profesionales veterinarios y criadores responsables. Considera la adopción de perros abandonados como una opción maravillosa.\n La tenencia de mascotas requiere responsabilidad y cuidado. Asegúrate de brindarles amor y atención adecuados. \n ¡Gracias por usar Oh My Dog!"
+MENSAJE_NO_HAY_PERROS_EN_MATCH_PERRUNO = "No hay perros registrados en el match perruno"
 
 #Mensaje de cobro
 MENSAJE_NO_HAY_COBROS = "No hay cobros registrados"

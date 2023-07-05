@@ -34,7 +34,9 @@ urlpatterns = [
     path('confirmar_eliminar_mascota/<int:mascota_id>/', views.confirmar_eliminar_mascota, name='confirmar_eliminar_mascota'),
     path('ver_mis_mascotas/<int:pk>', views.MascotaDetailView.as_view(), name='detalle de mis mascota'),
 
-    path('adopcion/<int:pk>', views.AdopcionDetailView.as_view(), name='detalle de mascota'),
+
+    #Adopción 
+    path('adopcion/<int:pk>', views.AdopcionDetailView.as_view(), name='detalle adopcion'),
     path('adopcion/', views.AdopcionListView.as_view(), name='adopciones'),
     path('ver_mis_adopciones/', views.MisAdopcionesListView.as_view(), name='ver mis adopciones'),
     path('formulario_adopcion/', views.formulario_adopcion, name='formulario_adopcion'),
@@ -43,7 +45,7 @@ urlpatterns = [
     
     #Servicios
     path('registrar_servicio/', views.registrar_servicio, name='registrar servicio'),
-    path('ver_servicios/', views.ServiciosListView.as_view(), name='ver servicio'),
+    path('ver_servicios/', views.ver_servicios, name='ver servicio'),
     path('ver_servicios/<int:pk>',views.servicio_detail_view, name="detalle servicio"), 
     path('cancelar_deshabilitar_servicio/', views.cancelar_deshabilitar_servicio, name ="cancelar deshabilitar servicio"),
     path('deshabilitar_servicio/<int:pk>/', views.deshabilitar_servicio, name= "deshabilitar servicio"),

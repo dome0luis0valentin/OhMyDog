@@ -26,6 +26,10 @@
               Raza: {{ perro.mascota.raza}}
             </strong> 
       </div>
+      <form method="post" action="{% url 'enviar solicitud' perro.pk mascota hembra %}">
+        {% csrf_token %}
+        <input type="submit" value="Enviar Solicitud" class="btn btn-success">
+      </form>
     </div>
     {% endfor %}
   </div>

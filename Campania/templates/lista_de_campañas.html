@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+<head>
+    <title>Lista de campañas</title>
+</head>
+
+<body>
+    <div>
+        <h1 class="text-center">Lista de campañas</h1>
+    </div>
+    <div class="container">
+        <div class="justing-conten-center">
+            {% for campana in lista %}
+            <div class="card mx-auto col-md-5 text-center mt-5">
+                <div class="card-header">
+                    <h3 class="">{{ campana.nombre }}</h3>
+                </div>
+                <div class="card-body">
+                    <h5 class="">{{ campana.motivo }}</h5>
+                    {% if campana.nombre != "Donaciones a Refugio"%}
+                        <label for="">Donaciones Hasta el: </label>{{ campana.fecha_fin }}
+                    {% endif %}  
+                </div>
+                <div class="card-footer">
+                    {% if campana.fecha_fin >= fecha_hoy%}
+                        <p style="color: red;">Finalizada</p>  
+                    {% endif %}    
+                </div>
+                    <a href="{% url 'Ver donaciones a campaña' pk=campana.pk%}">Detalle</a>
+            </div>
+            {% empty %} 
+            <div class="text-center">
+                <label for="" class="text-danger h1">
+                    No hay campañas disponibles
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+{% endblock %}

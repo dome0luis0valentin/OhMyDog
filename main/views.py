@@ -47,7 +47,7 @@ from django.shortcuts import redirect
 #from .form import RegistroForm
 from .models import Persona
 
-from Funciones import fecha_es_posterior
+from Funciones import fecha_es_posterior, revivir
 import re
 
 from validate_email_address import validate_email
@@ -59,6 +59,9 @@ from django.db.models import Q
 from .form import CustomPasswordChangeForm
 
 from Mensaje import *
+
+def existe_en_adopcion(nombre, email):
+    return Mascota_Adopcion.objects.filter(dueno__usuario__email = email, nombre = nombre).exists()
 
 
 def cancelar_turnos(lista):
@@ -487,6 +490,7 @@ class ServiciosListView(generic.ListView):
 
     #Metodo que devuelve los turnos sin confirmar
     def get_queryset(self):
+        revivir()
         return Prestador_Servicios.objects.filter(vivo=True)
     
     queryset = get_queryset
@@ -495,6 +499,14 @@ class ServiciosListView(generic.ListView):
     template_name = 'servicios/lista_de_servicios.html' 
 
 
+def ver_servicios(request):
+    revivir()
+    if (request.user.is_authenticated and request.user.is_veterinario):
+        lista = Prestador_Servicios.objects.all()
+    else: 
+        lista = Prestador_Servicios.objects.filter(vivo=True)
+
+    return render(request, 'servicios/lista_de_servicios.html', {'object_list': lista})
 
 
 #-----------------SECCION DE LISTAS DE DETALLES----------------------
@@ -581,7 +593,9 @@ def registrar_adopcion(request):
         ingreso_solo_letras = todos_cadenas(nombre, color, raza)
         fecha_es_anterior_a_hoy = fecha_anterior_is_valid(fecha)
 
-        if form.is_valid() and fecha_es_anterior_a_hoy  and ingreso_solo_letras:
+        existe_otra = existe_en_adopcion(nombre, request.user.email)
+
+        if form.is_valid() and fecha_es_anterior_a_hoy  and ingreso_solo_letras and not(existe_otra):
 
             mi_objeto = form.save(commit=False)
             
@@ -596,12 +610,16 @@ def registrar_adopcion(request):
             return render(request, "index.html")
         else:
             # Verificar errores y mostrar mensajes personalizados
-
+           
             if not fecha_es_anterior_a_hoy:
                 form.errors['fecha_nac'] = [MENSAJE_FECHA_POSTERIOR]
 
+            form.errors['nombre'] = []
             if not cadena_is_valid(nombre):
                 form.errors['nombre'] = [MENSAJE_SOLO_LETRAS]
+
+            if existe_otra:
+                form.errors['nombre'] = [MENSAJE_MASCOTA_REGISTRADA]
 
             if not cadena_is_valid(raza):
                 form.errors['raza'] = [MENSAJE_SOLO_LETRAS]
@@ -978,7 +996,7 @@ def ver_detalle_mascotas_clientes(request, pk):
 def ver_machs(request):
     lista = UsuarioTinder.objects.all()
 
-    return render(request, "tinder/ver_machs.html", {'lista':lista})
+    return render(request, "tinder/ver_machs.html", {'lista':lista, 'no_hay': MENSAJE_NO_HAY_PERROS_EN_MATCH_PERRUNO})
 
 
 def cancelar_deshabilitar_servicio(request):

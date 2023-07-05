@@ -7,6 +7,9 @@ urlpatterns = [
     path('formulario_pago_visitante/<int:campana_id>/', views.formulario_pago_visitante , name='formulario_pago_visitante'),
     path('ver_campanas/<int:user_id>/', views.ver_campanas, name='ver_campanas'),
     path('ver_campanas/', views.ver_campanas_visitante, name='ver_campanas'),
-    path('ver_mis_donaciones/', views.ver_mis_donaciones, name = 'ver mis donaciones')
+    path('ver_mis_donaciones/', views.ver_mis_donaciones, name = 'ver mis donaciones'),
+    #Donaciones
+    path('ver_donacionesa_a_campaña/<int:pk>/', views.ver_donacionesa_a_campaña, name="Ver donaciones a campaña"),
+    path('ver_donaciones/', views.ver_donaciones, name="Ver donaciones"),
 
 ]

@@ -15,7 +15,7 @@
         <p class="m-2">
           <strong>Nombre: </strong>{{perro}}
         </p>
-        <a class="m-2" href="{{ perro.get_absolute_url }}"> Detalle </a>
+        <a class="m-2" href="{% url 'detalle adopcion' pk=perro.pk %}"> Detalle </a>
 
         {% if perro.estado == "a"%}
           <p class="m-2"><strong><label class="h4" style="color:#e87c09">Adoptado</label></strong></p>

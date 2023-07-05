@@ -7,32 +7,31 @@
 
 {% if lista %}
 
-{% for perro in lista %}
-<div class="card mb-5 col-md-5">
-  <div class="card-header text-center">
-    <h4><strong>Nombre:</strong> {{ perro.mascota.nombre }} {% if perro.activa %}
-      <p class="m-2"><strong><label class="h4" style="color:#e80909">Inactivo</label></strong></p>
-     {% else %}      
-      <p class="m-2"><strong><label class="h4" style="color:#14e809">Activo</label></strong></p> 
-     {% endif %}</h4>
+  {% for perro in lista %}
+  <div class="card mb-5 col-md-5">
+    <div class="card-header text-center">
+      <h4><strong>Nombre:</strong> {{ perro.mascota.nombre }} {% if perro.activa %}
+        <p class="m-2"><strong><label class="h4" style="color:#e80909">Inactivo</label></strong></p>
+      {% else %}      
+        <p class="m-2"><strong><label class="h4" style="color:#14e809">Activo</label></strong></p> 
+      {% endif %}</h4>
+    </div>
+    <div class="card-body p-2">
+
+      <p><strong>Dueño:</strong> {{ perro.dueno.datos.apellido}} {{ perro.dueno.datos.nombre}} ({{ perro.dueno.usuario.email}})</p>
+      <p><strong>Raza:</strong> {{ perro.mascota.raza }}</p>
+      <p><strong>Fecha de Nacimiento:</strong> {{ perro.mascota.fecha_nac }}</p>
+      {% if perro.hembre %}
+          <p><strong>Sexo:</strong>Hembra</p>
+          <p><strong>Fecha de Celo:</strong> {{ perro.fecha_de_celo }}</p>
+      {%else%}
+          <p><strong>Sexo:</strong>Macho</p>
+      {% endif %}
+
+    </div>
   </div>
-  <div class="card-body p-2">
-
-    <p><strong>Dueño:</strong> {{ perro.dueno.datos.apellido}} {{ perro.dueno.datos.nombre}} ({{ perro.dueno.usuario.email}})</p>
-    <p><strong>Raza:</strong> {{ perro.mascota.raza }}</p>
-    <p><strong>Fecha de Nacimiento:</strong> {{ perro.mascota.fecha_nac }}</p>
-    {% if perro.hembre %}
-        <p><strong>Sexo:</strong>Hembra</p>
-        <p><strong>Fecha de Celo:</strong> {{ perro.fecha_de_celo }}</p>
-    {%else%}
-        <p><strong>Sexo:</strong>Macho</p>
-    {% endif %}
-
-  </div>
-</div>
-{% endfor %}
-
+  {% endfor %}
 {% else %}
-<p>{{ no_hay }}</p>
+<p>No hay perros registrados en el match perruno</p>
 {% endif %}
 {% endblock %}

@@ -25,26 +25,35 @@
                         <div class="col-md-6">
                             <p><strong>Dirección:</strong> {{ cliente.datos.direccion }}</p>
                             <p><strong>Teléfono:</strong> {{ cliente.datos.telefono }}</p>
-                            <p><strong>Mascotas:</strong></p>
-                            {% if cliente.mascotas %}
-                                <ul>
-                                    {% for mascota in mascotas %}
-                                        <li>{{ mascota.nombre }} ({{ mascota.raza }})</li>
-                                    {% endfor %}
-                                </ul>
+
+                            {% if user.is_veterinario %}
+
                             {% else %}
-                                <p>No tienes mascotas registradas.</p>
+                                <p><strong>Mascotas:</strong></p>
+                                {% if cliente.mascotas %}
+                                    <ul>
+                                        {% for mascota in mascotas %}
+                                            <li>{{ mascota.nombre }} ({{ mascota.raza }})</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p>No tienes mascotas registradas.</p>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
                 </div>
+
+                {% if user.is_veterinario %}
+
+                {% else%}
                 <form style="display: inline-block;" action="http://127.0.0.1:8000/ver_historial_de_turnos/">
                     <input type="submit" class="m-2 btn btn-success" value="Ver Historial de Turnos" />
                 </form>
                 <form style="display: inline-block;" action="http://127.0.0.1:8000/ver_mis_donaciones/">
                     <input type="submit" class="m-2 btn btn-success" value="Ver Mis Donaciones" />
                 </form>
-                
+                {% endif %}
             </div>
         </div>
     </div>
