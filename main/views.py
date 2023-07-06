@@ -61,7 +61,7 @@ from .form import CustomPasswordChangeForm
 from Mensaje import *
 
 def existe_en_adopcion(nombre, email):
-    return Mascota_Adopcion.objects.filter(dueno__usuario__email = email, nombre = nombre).exists()
+    return Mascota_Adopcion.objects.filter(dueno__usuario__email = email, nombre = nombre, vivo = True).exists()
 
 
 def cancelar_turnos(lista):
@@ -299,6 +299,17 @@ def marcar_adopcion(request, pk):
     perro.save()
     return redirect('ver mis adopciones')
 
+def confirmar_eliminar_adopcion(request, pk):
+    return render(request,'mis_adopciones/confirmar_eliminar.html', {'pk': pk, 'accion': "eliminar la mascota de adopción"})
+
+
+def eliminar_adopcion(request, pk):
+    perro = get_object_or_404(Mascota_Adopcion, pk=pk)
+    perro.vivo = False
+    perro.save()
+    messages.success(request, f"Se ha dado de baja a : {perro.nombre} de adopción")
+    return redirect('ver mis adopciones')
+
 
 def formulario_adopcion(request):
     print("Por lo menos estoy aca")
@@ -449,7 +460,7 @@ class AdopcionListView(generic.ListView):
             queryset = super().get_queryset()
             queryset = queryset.exclude(dueno__usuario__email=user_email)
         else:
-            queryset = Mascota_Adopcion.objects.all()    
+            queryset = Mascota_Adopcion.objects.filter(vivo = True)    
             
         return queryset
 
@@ -474,7 +485,7 @@ class MisAdopcionesListView(generic.ListView):
     #Metodo que devuelve las mascotas
     def get_queryset(self):
         #return Mascota.objects.filter(dueno__correo=self.request.user).order_by('nombre')
-        return Mascota_Adopcion.objects.filter(dueno__usuario__email=self.request.user.email)
+        return Mascota_Adopcion.objects.filter(dueno__usuario__email=self.request.user.email, vivo = True)
     queryset = get_queryset
 
     template_name = 'mis_adopciones/lista_mis_adopciones.html'  # Specify your own template name/location
@@ -500,13 +511,18 @@ class ServiciosListView(generic.ListView):
 
 
 def ver_servicios(request):
-    revivir()
+    hay_habilitados = revivir()
+    print(hay_habilitados)
     if (request.user.is_authenticated and request.user.is_veterinario):
         lista = Prestador_Servicios.objects.all()
+        print("******************--")
+        return render(request, 'servicios/lista_de_servicios.html', {'object_list': lista, 'hay_habilitados': hay_habilitados})
+
     else: 
         lista = Prestador_Servicios.objects.filter(vivo=True)
+        print("__________________--")
+        return render(request, 'servicios/lista_de_servicios_no_vet.html', {'object_list': lista, 'hay_habilitados': hay_habilitados})
 
-    return render(request, 'servicios/lista_de_servicios.html', {'object_list': lista})
 
 
 #-----------------SECCION DE LISTAS DE DETALLES----------------------
@@ -1029,3 +1045,12 @@ def deshabilitar_servicio(request, pk):
         form = FormularioDeshabilitarServicio()
 
         return render(request, "servicios/deshabilitar.html", {'form': form})        
+
+def habilitar_servicio(request, pk):
+    servicio = Prestador_Servicios.objects.get(pk = pk)
+    servicio.vivo = True
+    servicio.deshabilitado_hasta = datetime.now().date()
+    servicio.save()
+    messages.success(request, "Habilitación Exitosa")
+
+    return redirect("menu")

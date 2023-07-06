@@ -42,9 +42,19 @@
   <a href="http://127.0.0.1:8000/ver_servicios/" class="btn btn-primary">Volver</a>
 
   {% if user.is_veterinario %}
-  <form action="{% url 'deshabilitar servicio' pk=servicio.pk %}" method="get" style="display:inline-block;">
-    {% csrf_token %}  
-    <button class="m-2 btn btn-danger" type="submit">Deshabilitar</button>
-  </form>  {% endif %}
+
+    {% if servicio.vivo %}
+      <form action="{% url 'deshabilitar servicio' pk=servicio.pk %}" method="get" style="display:inline-block;">
+        {% csrf_token %}  
+        <button class="m-2 btn btn-danger" type="submit">Deshabilitar</button>
+      </form>
+    {% else %}
+      <form action="{% url 'habilitar servicio' pk=servicio.pk %}" method="get" style="display:inline-block;">
+        {% csrf_token %}  
+        <button class="m-2 btn btn-success" type="submit">Habilitar</button>
+      </form>
+    {% endif %}
+  
+  {% endif %}
 </div>
 {% endblock %}

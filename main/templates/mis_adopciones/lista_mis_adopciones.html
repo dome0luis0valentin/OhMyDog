@@ -25,14 +25,17 @@
           {% csrf_token %}  
           <button class="m-2 btn btn-success" type="submit" {% if perro.estado == "a" %}disabled{% endif %}>Marcar como Adoptado</button>
         </form>
-        <br>
-        <br>
+
+        <form action="{% url 'confirmar_eliminar_adopcion' pk=perro.pk %}" method="post" style="display:inline-block;">
+          {% csrf_token %}  
+          <button class="m-2 btn btn-danger" type="submit">Eliminar Mascota en Adopción</button>
+        </form>
         <br>
       </div>
       {% endfor %}
 
     </div>
     {% else %}
-      <p>Todavia no hay perros en adopcion, regrese más tarde</p>
+      <p>Todavia no hay perros en adopcion</p>
     {% endif %}
 {% endblock %}

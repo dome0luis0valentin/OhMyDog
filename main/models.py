@@ -76,6 +76,7 @@ class Mascota_Adopcion(models.Model):
     color = models.CharField(max_length=50)
     raza = models.CharField(max_length=1000)
     fecha_nac = models.DateField()
+    vivo = models.BooleanField(default=True)
     ESTADO_ADOPCION = (
         ('a', 'Adoptado'),
         ('e', 'Esperando'),

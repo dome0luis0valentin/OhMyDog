@@ -41,6 +41,8 @@ urlpatterns = [
     path('ver_mis_adopciones/', views.MisAdopcionesListView.as_view(), name='ver mis adopciones'),
     path('formulario_adopcion/', views.formulario_adopcion, name='formulario_adopcion'),
     path('marcar_adopcion/<int:pk>/', views.marcar_adopcion, name='marcar_adopcion'),
+    path('eliminar_adopcion/<int:pk>/', views.eliminar_adopcion, name='eliminar_adopcion'),
+    path('confirmar_eliminar_adopcion/<int:pk>/', views.confirmar_eliminar_adopcion, name='confirmar_eliminar_adopcion'),
     path('registrar_adopcion/', views.registrar_adopcion, name='registrar adopcion'),    
     
     #Servicios
@@ -49,6 +51,7 @@ urlpatterns = [
     path('ver_servicios/<int:pk>',views.servicio_detail_view, name="detalle servicio"), 
     path('cancelar_deshabilitar_servicio/', views.cancelar_deshabilitar_servicio, name ="cancelar deshabilitar servicio"),
     path('deshabilitar_servicio/<int:pk>/', views.deshabilitar_servicio, name= "deshabilitar servicio"),
+    path('habilitar_servicio/<int:pk>/', views.habilitar_servicio, name= "habilitar servicio"),
 
 
     path('favicon.ico', RedirectView.as_view(url='/main/static/img/favicon.ico')),

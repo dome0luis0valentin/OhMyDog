@@ -6,12 +6,17 @@ from Turno.models import Cobro
 
 def revivir():
     servicios = Prestador_Servicios.objects.all()
-    for servivio in servicios:
+    hay_habilitados = False
+    for servicio in servicios:
+       
         hoy = datetime.now().date()
-        if (servivio.deshabilitado_hasta <= hoy ):
-            servivio.vivo = True
-            servivio.save()
-
+        if (servicio.deshabilitado_hasta <= hoy ):
+            servicio.vivo = True
+            servicio.save()
+        print(servicio.vivo)
+        if (servicio.vivo):
+            hay_habilitados = True
+    return hay_habilitados
 def generar_contrasena():
     caracteres = string.ascii_letters + string.digits + string.punctuation
     contrasena = ''.join(random.choice(caracteres) for _ in range(10))
