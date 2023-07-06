@@ -8,15 +8,15 @@
       <h1 class="text-center">{{servicio.datos.nombre}} {{ servicio.datos.apellido}} </h1>
     </div>
     <div class="card-body m-2">
-      <p><strong>Servicio:</strong>  
-        {% if servicio.tipo == 'p' %} 
-          Paseador 
-        {% else %} 
-          Cuidador
-      {% endif %}
+      <p><strong>Servicio:</strong>
+        {% if servicio.tipo == 'p' %}
+        Paseador
+        {% else %}
+        Cuidador
+        {% endif %}
       </p>
-      {% if servicio.tipo == 'p' %} 
-        <p><strong>Zona:</strong> {{ servicio.zona }}</p>
+      {% if servicio.tipo == 'p' %}
+      <p><strong>Zona:</strong> {{ servicio.zona }}</p>
       {% endif %}
       <p><strong>Correo:</strong> {{ servicio.datos.correo }}</p>
       <p><strong>Telefono de contacto:</strong> {{ servicio.datos.telefono }}</p>
@@ -28,33 +28,25 @@
       <p>Seguime en <strong> {{ red_social.nombre_red }} </strong> como {{ red_social.usuario_red }} </p>
       {% endif %}
     </div>
-    
-    <div class="card-footer text-center">
 
-      {% if object.tipo == 'p' %} 
-      <p><strong>Zona</strong> {{ object.zona }}</p>
-      {% endif %}
-      
+    {% if user.is_veterinario %}
+    <div class="card-footer text-center">
+      <form action="{% url 'deshabilitar servicio' pk=servicio.pk %}" method="get" style="display:inline-block;">
+        {% csrf_token %}
+        {% if servicio.vivo == 1 %}
+        <button class="m-2 btn btn-danger" type="submit">Deshabilitar</button>
+        {% else %} 
+        <button class="m-2 btn btn-danger" type="submit" disabled>Deshabilitar</button>
+        {% endif %}
+      </form>
     </div>
+      {% endif %}
   </div>
+
 </div>
 <div class="text-center mt-2">
   <a href="http://127.0.0.1:8000/ver_servicios/" class="btn btn-primary">Volver</a>
 
-  {% if user.is_veterinario %}
 
-    {% if servicio.vivo %}
-      <form action="{% url 'deshabilitar servicio' pk=servicio.pk %}" method="get" style="display:inline-block;">
-        {% csrf_token %}  
-        <button class="m-2 btn btn-danger" type="submit">Deshabilitar</button>
-      </form>
-    {% else %}
-      <form action="{% url 'habilitar servicio' pk=servicio.pk %}" method="get" style="display:inline-block;">
-        {% csrf_token %}  
-        <button class="m-2 btn btn-success" type="submit">Habilitar</button>
-      </form>
-    {% endif %}
-  
-  {% endif %}
 </div>
 {% endblock %}

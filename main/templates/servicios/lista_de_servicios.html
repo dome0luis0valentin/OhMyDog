@@ -4,7 +4,6 @@
 <div class="container">
   <div class="col-md-12 text-center row">
     {% if object_list %}
-    
     <div class="titulo">
       <img class="m-5" style="width: 80px;"
         src="https://files.cults3d.com/uploaders/14728184/illustration-file/e7344747-32a4-4f27-b460-f34ba9594bf7/PATA-PIES-CORAZON-ALMOHADA.png"
@@ -13,38 +12,46 @@
       <img class="m-5" style="width: 80px;"
         src="https://files.cults3d.com/uploaders/14728184/illustration-file/e7344747-32a4-4f27-b460-f34ba9594bf7/PATA-PIES-CORAZON-ALMOHADA.png"
         alt="" srcset="">
-       
+
     </div>
-      {% for servicio in object_list %}
-      
-        <!--Si es veterinario y no esta Habilitado-->
-        {% if servicio.vivo %} 
-          <div class="card col-md-4 mb-4 p-4 bg-light">
-          {% if servicio.tipo == 'p' %}
-              <p class="m-4"><strong>Tipo de Servicio:</strong>Paseador</p>
-          {% else %}
-              <p class="m-4"><strong>Tipo de Servicio: </strong>Cuidador</p>
-          {%endif%}
-          <p><strong>Nombre de la persona: </strong>{{servicio}}</p>
-              <a class="m-4" href="{{ servicio.get_absolute_url }}">Detalle</a>
-          </div>   
-        {% else %}
-          <div class="card col-md-4 mb-4 p-4 bg-light">
-            <p class="m-2"><strong><label class="h4" style="color:#e83609">Deshabilitado</label></strong></p>
-          {% if servicio.tipo == 'p' %}
-              <p class="m-4"><strong>Tipo de Servicio:</strong>Paseador</p>
-          {% else %}
-              <p class="m-4"><strong>Tipo de Servicio: </strong>Cuidador</p>
-          {%endif%}
-          <p><strong>Nombre de la persona: </strong>{{servicio}}</p>
-              <a class="m-4" href="{{ servicio.get_absolute_url }}">Detalle</a>
-          </div>
-        {% endif %}
-      
-      {% endfor %}
+    {% for servicio in object_list %}
+
+    {% if user.is_veterinario %}
+    <div class="card col-md-4 mb-4 p-4 bg-light">
+      {% if servicio.vivo == 0 %}
+      <p class="m-2"><strong><label class="h4 text-danger">Deshabilitado</label></strong></p>
+      {% else %}
+      <p></p><p></p><p></p>
+      {%endif%}
+      {% if servicio.tipo == 'p' %}
+      <p class="m-4"><strong>Tipo de Servicio:</strong>Paseador</p>
+      {% else %}
+      <p class="m-4"><strong>Tipo de Servicio: </strong>Cuidador</p>
+      {%endif%}
+      <p><strong>Nombre de la persona: </strong>{{servicio}}</p>
+      <a class="m-4" href="{{ servicio.get_absolute_url }}">Detalle</a>
     </div>
+
+    {% else %}
+    <div class="card col-md-4 mb-4 p-4 bg-light">
+      {% if servicio.tipo == 'p' %}
+      <p class="m-4"><strong>Tipo de Servicio: </strong>Paseador</p>
+      {% else %}
+      <p class="m-4"><strong>Tipo de Servicio: </strong>Cuidador</p>
+      {%endif%}
+      <p><strong>Nombre de la persona: </strong>{{servicio}}</p>
+      <a class="m-4" href="{{ servicio.get_absolute_url }}">Detalle</a>
+    </div>
+    {% endif %}
+
+
+
+    {% endfor %}
+
   </div>
-  {% else %}
-      <p>No hay paseadores ni cuidadores para mostrar, vuelva más tarde</p>
-  {% endif %}
+</div>
+{% else %}
+<p>No hay paseadores ni cuidadores para mostrar, vuelva más tarde</p>
+
+{% endif %}
 {% endblock %}
