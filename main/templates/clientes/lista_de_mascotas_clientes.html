@@ -7,23 +7,40 @@
 
 {% if lista %}
 
-{% for mascota in lista %}
-<div class="card mb-5 col-md-5">
-  <div class="card-header text-center">
-    <h4><strong>Nombre:</strong> {{ mascota.nombre }} </h4>
-  </div>
-  <div class="card-body p-2">
-    {% if mascota.viva == False %}
-        <p class="m-2"><strong><label class="h4" style="color:#e80914">Eliminada</label></strong></p>
-    {% endif %}
-    <div class="text-center card-footer">
-        <a href="{% url 'Ver detalle mascotas clientes' pk=mascota.pk %}">Detalle</a>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      {% for mascota in lista %}
+      <div class="card mt-4">
+        <div class="card-header text-center">
+          <h1>Nombre: {{ mascota }}</h1>
+        </div>
+        <div class="card-body">
+          <p><strong>Color:</strong> {{ mascota.color }}</p>
+          <p><strong>Raza:</strong> {{ mascota.raza }}</p>
+          <p><strong>Fecha De Nacimiento:</strong> {{ mascota.fecha_nac }}</p>
+          <p><strong>Foto: </strong></p>
+          {%if mascota.foto %}
+          <img src="{{ mascota.foto.url }}" alt="Foto de la mascota">
+          {%else%}
+          <label for="" class="text-danger fw-bold">
+            No tiene foto
+          </label>
+          {%endif%}
+        </div>
+        <div class="card-footer justify-content-center btn-group">
+          <a class="m-2 btn btn-success" href="http://127.0.0.1:8000/ver_historial_de_visitas/{{ mascota.id  }}">Ver
+            Historial de Visitas</a>
+          <a class="m-2 btn btn-success" href="http://127.0.0.1:8000/ver_libreta_sanitaria/{{ mascota.id  }}">Ver
+            Libreta Sanitaria</a>
+          </form>
+        </div>
+
+      </div>
+      {% endfor %}
     </div>
-    
-    
   </div>
 </div>
-{% endfor %}
 
 {% else %}
 <p>{{ no_hay }}</p>
