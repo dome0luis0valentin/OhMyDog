@@ -23,10 +23,10 @@ def archivo_is_valid(archivo):
     segunda_columna = df.iloc[:, 1]
     #Falta la tercera y direccion
 
-    if primera_columna.dtype != 'object':
+    if segunda_columna.dtype != 'object':
         return False
     
-    for fecha in segunda_columna:
+    for fecha in primera_columna:
         if isinstance(fecha, pd.Timestamp):
             fecha = fecha.strftime('%d/%m/%Y')
         try:
