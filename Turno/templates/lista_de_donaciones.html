@@ -2,16 +2,16 @@
 
 {% block content %}
 <div class="text-center">
-  <h1>Donaciones Realizadas</h1>
+  <h1>Donaciones a: {{campania.nombre}}</h1>
 </div>
-
+<div class="text-center">
+  <label for="" class="h2">
+    Monto recaudado: $<strong>{{campania.Total_donado}}</strong> 
+  </label>
+</div>
 {% if lista %}
-
 {% for donacion in lista %}
 <div class="card mb-5 col-md-5">
-  <div class="card-header text-center">
-    <h4><strong>Donación a :</strong> {{ donacion.campania}}</h4>
-  </div>
   <div class="card-body p-2">
     {% if donacion.correo%}
         <p><strong>Donante:</strong> {{ donacion.correo }}</p>
@@ -28,4 +28,8 @@
 {% else %}
 <p>{{ no_hay }}</p>
 {% endif %}
+<div class="text-center">
+  <a class="btn btn-primary" href="http://127.0.0.1:8000/ver_donaciones/">Volver</a>
+
+</div>
 {% endblock %}
