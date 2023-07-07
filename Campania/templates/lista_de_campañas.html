@@ -26,8 +26,8 @@
                     {% if campana.fecha_fin >= fecha_hoy%}
                         <p style="color: red;">Finalizada</p>  
                     {% endif %}    
-                </div>
                     <a href="{% url 'Ver donaciones a campaña' pk=campana.pk%}">Detalle</a>
+                </div>
             </div>
             {% empty %} 
             <div class="text-center">
