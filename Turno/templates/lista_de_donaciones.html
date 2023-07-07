@@ -5,9 +5,11 @@
   <h1>Donaciones a: {{campania.nombre}}</h1>
 </div>
 <div class="text-center">
+  {% if campania.Total_donado != 0 %}
   <label for="" class="h2">
     Monto recaudado: $<strong>{{campania.Total_donado}}</strong> 
   </label>
+  {% endif %}
 </div>
 {% if lista %}
 {% for donacion in lista %}
