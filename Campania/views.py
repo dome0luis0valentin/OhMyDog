@@ -61,7 +61,7 @@ def ver_donacionesa_a_campaña(request, pk):
     # Combinar los QuerySets en una única lista
     lista = list(chain(queryset1, queryset2))
 
-    return render(request, "lista_de_donaciones.html", {'lista': lista, 'no_hay': MENSAJE_NO_HAY_DONACIONES})
+    return render(request, "lista_de_donaciones.html", {'campania':campania,'lista': lista, 'no_hay': MENSAJE_NO_HAY_DONACIONES})
 
 @login_required
 def ver_donaciones(request):
