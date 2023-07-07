@@ -16,7 +16,7 @@
 
     <p><strong>Apellido:</strong> {{ cliente.datos.apellido }}</p>
     <p><strong>Nombre:</strong> {{ cliente.datos.nombre}}</p>
-
+  </div>
     <div class="text-center card-footer">
         <a href="{% url 'Ver mascotas clientes' pk=cliente.pk %}">Ver Mascotas</a>
     </div>
@@ -24,7 +24,7 @@
         <a href="{% url 'Ver turnos clientes' pk=cliente.pk %}">Ver historial de Turnos</a>
     </div>
     
-  </div>
+  
 </div>
 {% endfor %}
 
