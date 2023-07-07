@@ -161,7 +161,7 @@ class Campana(models.Model):
     fecha_fin=models.DateField(error_messages={
             'invalid': 'Fecha incorrecta. Use el formato AAAA-MM-DD'
         }, default=datetime.date.today().isoformat())
-    Total_donado =models.FloatField()
+    Total_donado = models.DecimalField(max_digits=10, decimal_places=2)
 
             
 
