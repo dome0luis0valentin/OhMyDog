@@ -322,8 +322,13 @@ def cargar_veterinarias(request):
     form = VeterinariasForm()
 
     if request.method == 'POST':
-        form = VeterinariasForm(request.POST, request.FILES)
-        archivo = request.FILES['arch']
+        try:
+            form = VeterinariasForm(request.POST, request.FILES)
+            archivo = request.FILES['arch']
+        except:
+          messages.error(request, MENSAJE_NO_HAY_VETERINARIAS_CARGADAS)
+          return redirect('cargar veterinarias de turno')      
+        
         if form.is_valid() and archivo_is_valid(archivo):
             #Cargar archivo
             veterinarias_de_turno = form.save(commit=False)

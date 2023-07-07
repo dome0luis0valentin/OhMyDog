@@ -7,6 +7,7 @@ MENSAJE_SOLO_LETRAS = 'Solo se permiten letras, no ingrese numeros, ni simbolos 
 MENSAJE_SOLO_NUMEROS = "Solo se permiten números, no ingrese simbolos como .,-, /, etc."
 MENSAJE_ARCHIVO_TURNOS = "Archivo invalido, verifique que el archivo sea de tipo .csv, .xls o .xlsx y que dentro tenga columnas con: fechas con el formato DD/MM/AAAA, nombre de la veterinaria y dirección en ese orden"
 MENSAJE_NO_HAY_VETERINARIAS = "No se encuentra el listado de veterinarias de turno"
+MENSAJE_NO_HAY_VETERINARIAS_CARGADAS = "No se cargo el listado de veterinarias de turno"
 MENSAJE_IMAGEN_INVALIDA = "Imagen invalida, verifique que el archivo sea de tipo .jpg, .png o jpeg"
 MENSAJE_MASCOTA_YA_PERDIDA = "Esta mascota ya esta registrada en mascotas perdidas"
 MENSAJE_SIN_VISITAS= "Sin vacunaciones o desparasitaciones registradas"
