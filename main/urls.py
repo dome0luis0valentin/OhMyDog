@@ -37,8 +37,8 @@ urlpatterns = [
 
     #Adopción 
     path('adopcion/<int:pk>', views.AdopcionDetailView.as_view(), name='detalle adopcion'),
-    path('adopcion/', views.AdopcionListView.as_view(), name='adopciones'),
-    path('ver_mis_adopciones/', views.MisAdopcionesListView.as_view(), name='ver mis adopciones'),
+    path('adopcion/', views.adopcion, name='adopciones'),
+    path('ver_mis_adopciones/', views.ver_mis_adopciones, name='ver mis adopciones'),
     path('formulario_adopcion/', views.formulario_adopcion, name='formulario_adopcion'),
     path('marcar_adopcion/<int:pk>/', views.marcar_adopcion, name='marcar_adopcion'),
     path('eliminar_adopcion/<int:pk>/', views.eliminar_adopcion, name='eliminar_adopcion'),

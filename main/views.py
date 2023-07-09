@@ -312,7 +312,6 @@ def eliminar_adopcion(request, pk):
 
 
 def formulario_adopcion(request):
-    print("Por lo menos estoy aca")
     if request.method == 'POST':
         form = FormularioAdopcionForm(request.POST)
         
@@ -347,9 +346,9 @@ def formulario_adopcion(request):
                 return redirect('adopciones')
             else:
                 if not ingreso_solo_letras:
-                    messages.info(request, "El nombre y apellido deben contener solo letras")
+                    messages.info(request, MENSAJE_SOLO_LETRAS)
                 if not ingreso_solo_numeros:
-                    messages.info(request, "El DNI y teléfono deben contener solo números")
+                    messages.info(request, MENSAJE_SOLO_NUMEROS)
                 if not correo_existe:
                     messages.info(request, "La dirección de correo electrónico no existe")
 
@@ -358,7 +357,7 @@ def formulario_adopcion(request):
                 for error in errors:
                     messages.info(request, f"Error en el campo {field}: {error}")
 
-        return redirect('adopciones')
+        return redirect('formulario_adopcion')
 
     else:
         initial_data = {}
@@ -446,6 +445,14 @@ def enviar_formulario_adopcion(request):
 #-----------------------------SECCION DE LISTAS-------------------------------------
 
 
+def adopcion(request):
+    if request.user.is_authenticated:
+        lista =  Mascota_Adopcion.objects.filter( vivo = True).exclude(dueno__usuario__email=request.user.email )
+    else:
+        lista =  Mascota_Adopcion.objects.filter(vivo = True)
+
+    return render(request, "adopcion/lista_mascotas_adopcion.html", {'object_list': lista, 'no_hay': MENSAJE_NO_HAY_MASCOTAS})
+
 class AdopcionListView(generic.ListView):
     
     model = Mascota_Adopcion 
@@ -458,9 +465,15 @@ class AdopcionListView(generic.ListView):
         if self.request.user.is_authenticated:
             user_email = self.request.user.email
             queryset = super().get_queryset()
-            queryset = queryset.exclude(dueno__usuario__email=user_email)
+            print(user_email)
+            queryset = queryset.exclude(dueno__usuario__email=user_email).exclude(vivo = True)
+            print("Mascotas en adopcion\n")
+            for i in queryset:
+                print(i.dueno.usuario.email, "\n")
         else:
-            queryset = Mascota_Adopcion.objects.filter(vivo = True)    
+            queryset = queryset = super().get_queryset()    
+            queryset = queryset.exclude(vivo = True)
+
             
         return queryset
 
@@ -476,17 +489,26 @@ class MascotaListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 6
     
 
+@login_required
+def ver_mis_adopciones(request):
+    lista = Mascota_Adopcion.objects.filter(dueno__usuario__email=request.user.email, vivo = True)
+
+
+    return render(request, "mis_adopciones/lista_mis_adopciones.html", {'object_list': lista, 'no_hay': MENSAJE_NO_HAY_MASCOTAS})
+
+
 class MisAdopcionesListView(generic.ListView):
     
     model = Mascota_Adopcion # Modelo al que le va a consultar los datos
 
-    context_object_name = 'mi_lista_mascotas_adopcion'   # your own name for the list as a template variable
+    context_object_name = 'mi_lista_mascotas_adopcion'   
 
     #Metodo que devuelve las mascotas
     def get_queryset(self):
-        #return Mascota.objects.filter(dueno__correo=self.request.user).order_by('nombre')
-        return Mascota_Adopcion.objects.filter(dueno__usuario__email=self.request.user.email, vivo = True)
-    queryset = get_queryset
+        queryset = super().get_queryset()
+        queryset.filter(dueno__usuario__email=self.request.user.email, vivo = True)
+        return queryset
+
 
     template_name = 'mis_adopciones/lista_mis_adopciones.html'  # Specify your own template name/location
 
