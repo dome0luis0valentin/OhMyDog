@@ -1039,7 +1039,7 @@ def ver_machs(request):
 
 def cancelar_deshabilitar_servicio(request):
     messages.info(request, "Deshabilitación Cancelada")
-    return redirect("menu") 
+    return redirect("ver servicio") 
 
 def deshabilitar_servicio(request, pk):
     
@@ -1057,7 +1057,7 @@ def deshabilitar_servicio(request, pk):
             servicio.save()
             messages.success(request, "Deshabilitación Exitosa")
 
-            return redirect("menu")
+            return redirect("ver servicio")
         else:
             if (fecha_es_posterior):
                 form.errors["fecha"] = [MENSAJE_FECHA_ANTERIOR_SERVICIOS]
@@ -1075,4 +1075,4 @@ def habilitar_servicio(request, pk):
     servicio.save()
     messages.success(request, "Habilitación Exitosa")
 
-    return redirect("menu")
+    return redirect("ver servicio")
