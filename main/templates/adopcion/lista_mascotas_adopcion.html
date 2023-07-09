@@ -20,9 +20,10 @@
           <strong class="h3">
             {{perro}}
           </strong>
+          
         </div>
         <div class="card-body">
-
+         
           <p>
             <strong>
               Dueño:
@@ -38,11 +39,16 @@
           <a class="mb-2" href="{{ perro.get_absolute_url }}">Detalle</a>
         </div>
         <div class="card-footer">
-
+          {% if perro.estado == "a"%}
+          <p class="m-2"><strong><label class="h4" style="color:#e87c09">Adoptado</label></strong></p>
+        
+          {% else %}
           <form action="http://127.0.0.1:8000/formulario_adopcion/">
             <input class="btn btn-success mb-2" type="submit" value="Adoptar Mascota" {% if perro.is_adoptado %}
               disabled {% endif %} />
           </form>
+          {% endif %}
+          
         </div>
 
 
