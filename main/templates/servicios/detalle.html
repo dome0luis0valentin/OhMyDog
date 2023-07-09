@@ -31,16 +31,19 @@
 
     {% if user.is_veterinario %}
     <div class="card-footer text-center">
+      {% if servicio.vivo %}
       <form action="{% url 'deshabilitar servicio' pk=servicio.pk %}" method="get" style="display:inline-block;">
         {% csrf_token %}
-        {% if servicio.vivo == 1 %}
         <button class="m-2 btn btn-danger" type="submit">Deshabilitar</button>
-        {% else %} 
-        <button class="m-2 btn btn-danger" type="submit" disabled>Deshabilitar</button>
-        {% endif %}
       </form>
-    </div>
+      {% else %}
+      <form action="{% url 'habilitar servicio' pk=servicio.pk %}" method="get" style="display:inline-block;">
+        {% csrf_token %}
+        <button class="m-2 btn btn-success" type="submit">Habilitar</button>
+      </form>
       {% endif %}
+    </div>
+    {% endif %}
   </div>
 
 </div>
