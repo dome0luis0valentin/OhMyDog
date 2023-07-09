@@ -143,6 +143,10 @@ def formulario_pago_visitante(request , campana_id ):
             # Guarda los cambios en la base de datos
             campana.save()
             
+            if int(cantidad) <= 0:
+                messages.info(request,"la cantidad a abonar tiene que ser mayor a 0 ")    
+                return redirect('formulario_pago_visitante',campana_id=campana_id)
+            
             #correo_existe = (True == validate_email(correo, verify=True))
             
             estado_pago = proceso_pago(numero_de_tarjeta,cantidad)
