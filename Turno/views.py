@@ -412,7 +412,7 @@ def ver_libreta_sanitaria(request, pk):
     else:
         data = []
 
-    return render(request, 'historial/visitas.html', {'data': data, 'titulo':"Ver Libreta Sanitatia", 'mensaje_no_hay':MENSAJE_SIN_VISITAS})
+    return render(request, 'historial/visitas.html', {'data': data, 'titulo':"Ver Libreta Sanitaria", 'mensaje_no_hay':MENSAJE_SIN_VISITAS})
 
 @login_required
 def formulario_simple(request, turno_id):
