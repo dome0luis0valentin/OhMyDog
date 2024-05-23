@@ -3,4 +3,6 @@ Este repositorio se crea para almacenar el sitio web que crearemos con el equipo
 
 # Uso
 instala los requerimientos con el comando
+#
+
 pip install -r requirements
